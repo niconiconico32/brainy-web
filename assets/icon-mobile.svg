@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Mobile icon</title>
+  <desc id="desc">Phone and tap gesture icon representing low-friction access</desc>
+  <rect x="8" y="8" width="48" height="48" rx="14" fill="#C9FD5A"/>
+  <rect x="24" y="16" width="16" height="32" rx="4" stroke="#280D8C" stroke-width="3"/>
+  <circle cx="32" cy="43" r="1.8" fill="#280D8C"/>
+  <path d="M46 24C48.5 26.3 48.5 30.7 46 33" stroke="#280D8C" stroke-width="3" stroke-linecap="round"/>
+  <path d="M18 24C15.5 26.3 15.5 30.7 18 33" stroke="#280D8C" stroke-width="3" stroke-linecap="round"/>
+</svg>

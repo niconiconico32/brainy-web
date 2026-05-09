@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Focus icon</title>
+  <desc id="desc">Spark and check icon representing focused progress</desc>
+  <defs>
+    <linearGradient id="g1" x1="12" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C9FD5A"/>
+      <stop offset="1" stop-color="#9EE63A"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="48" height="48" rx="14" fill="url(#g1)"/>
+  <path d="M23 33.5L29 39.5L41.5 26.5" stroke="#280D8C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16 20L19 21M46 16L45 20M48 44L45 43M20 48L21 45" stroke="#280D8C" stroke-width="3" stroke-linecap="round"/>
+</svg>

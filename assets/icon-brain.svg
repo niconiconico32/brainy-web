@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Brain icon</title>
+  <desc id="desc">Stylized brain icon for cognitive support</desc>
+  <rect x="8" y="8" width="48" height="48" rx="14" fill="#C9FD5A"/>
+  <path d="M30 20C26 18 21 21 21 26C18 27 17 31 19 34C18 37 19 42 24 43C25 46 30 48 33 45" stroke="#280D8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M34 20C38 18 43 21 43 26C46 27 47 31 45 34C46 37 45 42 40 43C39 46 34 48 31 45" stroke="#280D8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M32 23V42M27 27H30M34 35H37" stroke="#280D8C" stroke-width="3" stroke-linecap="round"/>
+</svg>
