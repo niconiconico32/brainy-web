@@ -3,30 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - Brainy Web</title>
+    <title>Brainy ADHD - Gamify Your Focus, Befriend Your Brain</title>
+    <meta name="description" content="Meet Brainy, the ADHD companion app that turns focus into a game. Conquer paralysis, build habits with your digital pet, and reduce anxiety.">
+    
     <style>
+        /* Definición de la Paleta RGB del usuario */
+        :root {
+            --color-bg: rgb(236, 240, 237);     /* #ECF0ED - Soft White */
+            --color-text: rgb(40, 13, 140);   /* #280D8C - Deep Purple */
+            --color-accent: rgb(118, 99, 242); /* #7663F2 - Vibrant Purple */
+            --color-dopamine: rgb(201, 253, 90);/* #C9FD5A - Dopamine Lime */
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
             line-height: 1.6;
-            color: #333;
-            background-color: #fff;
+            overflow-x: hidden;
         }
 
-        header {
-            border-bottom: 1px solid #e0e0e0;
-            padding: 2rem 0;
+        h1, h2, h3 {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
         }
 
-        nav {
-            max-width: 1200px;
+        a {
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        /* Utilidades */
+        .container {
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 0 1rem;
+            padding: 0 20px;
+        }
+
+        .btn-dopamine {
+            background-color: var(--color-dopamine);
+            color: var(--color-text);
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: inline-block;
+            box-shadow: 0 4px 14px rgba(201, 253, 90, 0.4);
+        }
+
+        .btn-dopamine:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201, 253, 90, 0.6);
+        }
+
+        /* --- Header --- */
+        header {
+            padding: 20px 0;
+            position: absolute;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -34,76 +80,260 @@
 
         .logo {
             font-size: 1.5rem;
-            font-weight: 600;
-            text-decoration: none;
-            color: #000;
+            font-weight: 900;
+            color: var(--color-text);
         }
 
-        nav ul {
-            list-style: none;
+        .logo span {
+            color: var(--color-accent);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            padding: 150px 0 100px 0;
+            min-height: 80vh;
             display: flex;
-            gap: 2rem;
+            align-items: center;
+            position: relative;
         }
 
-        nav a {
-            text-decoration: none;
-            color: #666;
-            font-size: 0.95rem;
-            transition: color 0.2s;
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 50px;
+            align-items: center;
         }
 
-        nav a:hover {
-            color: #000;
+        .hero-text h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
         }
 
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 4rem 1rem;
+        .hero-text p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
         }
 
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        p {
-            font-size: 1.1rem;
-            color: #666;
-            max-width: 600px;
-            margin-bottom: 2rem;
-        }
-
-        footer {
-            border-top: 1px solid #e0e0e0;
-            padding: 2rem;
+        .hero-mockup {
+            background-color: white;
+            padding: 20px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(40, 13, 140, 0.1);
             text-align: center;
-            color: #999;
+            border: 4px solid var(--color-accent);
+        }
+
+        /* Placeholder para tu Widget o Mascota */
+        .mockup-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, var(--color-accent), #9b8df7);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* --- Store Badges --- */
+        .store-badges {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: flex-start;
+        }
+
+        .store-badge img {
+            height: 45px;
+            width: auto;
+        }
+
+        /* --- Features/Benefits Section --- */
+        .benefits {
+            background-color: var(--color-accent);
+            color: white;
+            padding: 100px 0;
+            border-radius: 50px;
+            margin: 0 20px;
+        }
+
+        .benefits h2 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+        }
+
+        .benefits h2 span {
+            color: var(--color-dopamine);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .benefit-card {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .benefit-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .benefit-card h3 {
+            color: var(--color-dopamine);
+            margin-bottom: 15px;
+        }
+
+        /* --- CTA Final --- */
+        .final-cta {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: var(--color-text);
+            color: rgba(255,255,255,0.8);
+            padding: 50px 0;
             font-size: 0.9rem;
-            margin-top: 4rem;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .footer-links a {
+            color: white;
+            opacity: 0.7;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--color-dopamine);
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-text h1 {
+                font-size: 2.8rem;
+            }
+            .hero-mockup {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            .store-badges {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
+
     <header>
-        <nav>
-            <a href="/" class="logo">Brainy Web</a>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/privacy.html">Privacy</a></li>
-                <li><a href="/contact.html">Contact</a></li>
-            </ul>
-        </nav>
+        <div class="container nav-content">
+            <a href="#" class="logo">Brainy<span>ADHD</span></a>
+        </div>
     </header>
 
-    <main>
-        <h1>Welcome to Brainy Web</h1>
-        <p>A minimalist web presence. Clean design, simple purpose. Get in touch with us or learn more about our privacy practices.</p>
-    </main>
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1>Stop ADHD Paralysis. <br>Start <span>Doing</span>.</h1>
+                <p>Meet Brainy, the companion that turns tedious tasks into a rewarding game. Built for brains that work differently.</p>
+                
+                <a href="#download" class="btn-dopamine">Level Up Your Focus</a>
+
+                <div class="store-badges">
+                    <a href="#" class="store-badge"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1276556400&h=7e68c7300c3b885237b6c7a98d36b412" alt="Download on the App Store"></a>
+                    <a href="#" class="store-badge"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" style="height: 64px; margin-top: -10px;"></a>
+                </div>
+            </div>
+            
+            <div class="hero-mockup">
+                <div class="mockup-placeholder">
+                    [ Awesome Pet Mockup Here ]
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="benefits" id="features">
+        <div class="container">
+            <h2>Your ADHD Brain, <span>Upgraded</span>.</h2>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <span class="benefit-icon">👾</span>
+                    <h3>Feed Your Focus</h3>
+                    <p>Complete tasks to earn treats for your digital companion. Turn "boring" into a mission that rewards your brain instantly.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <span class="benefit-icon">🧠</span>
+                    <h3>Defeat Paralysis</h3>
+                    <p>Brainy helps you break giant, overwhelming projects into tiny, dopamine-inducing micro-steps. Just focus on the next step.</p>
+                </div>
+
+                <div class="benefit-card">
+                    <span class="benefit-icon">📱</span>
+                    <h3>Zero Friction</h3>
+                    <p>Access your immediate next action directly from your iOS Widget. Don't open the app, just do the task.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="final-cta" id="download">
+        <div class="container">
+            <h2>Befriend your brain today.</h2>
+            <p style="margin-bottom: 30px; font-size: 1.2rem;">Join thousands gamifying their focus and reducing anxiety.</p>
+            <a href="#" class="btn-dopamine">Get Brainy Now</a>
+        </div>
+    </section>
 
     <footer>
-        <p>&copy; 2026 Brainy Web. All rights reserved.</p>
+        <div class="container footer-content">
+            <p>&copy; 2026 brainyahdh.com. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="support.html">Support</a>
+            </div>
+        </div>
     </footer>
+
 </body>
 </html>
