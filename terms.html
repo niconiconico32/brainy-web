@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Brainy ADHD</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --color-bg: rgb(236, 240, 237);
+            --color-text: rgb(40, 13, 140);
+            --color-accent: rgb(118, 99, 242);
+            --color-dopamine: rgb(201, 253, 90);
+            --color-card: rgba(255, 255, 255, 0.68);
+            --color-border: rgba(40, 13, 140, 0.14);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 20px 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 20;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-decoration: none;
+            color: var(--color-text);
+        }
+
+        .logo span {
+            color: var(--color-accent);
+        }
+
+        .top-nav {
+            list-style: none;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .top-nav a {
+            text-decoration: none;
+            color: var(--color-text);
+            font-size: 0.95rem;
+            font-weight: 700;
+            opacity: 0.85;
+            transition: all 0.2s ease;
+        }
+
+        .top-nav a:hover,
+        .top-nav a[aria-current="page"] {
+            color: var(--color-accent);
+            opacity: 1;
+        }
+
+        .hero-privacy {
+            padding: 140px 0 44px 0;
+        }
+
+        .hero-privacy h1 {
+            font-size: 3rem;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-privacy p {
+            max-width: 760px;
+            font-size: 1.16rem;
+            opacity: 0.9;
+        }
+
+        .back-link {
+            display: inline-flex;
+            margin-bottom: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            color: var(--color-accent);
+        }
+
+        .back-link:hover {
+            color: var(--color-text);
+        }
+
+        .policy-layout {
+            padding-bottom: 90px;
+            display: grid;
+            gap: 18px;
+        }
+
+        .policy-card {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 24px;
+            padding: 24px;
+            backdrop-filter: blur(6px);
+        }
+
+        .policy-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--color-accent);
+            letter-spacing: -0.01em;
+        }
+
+        .policy-card p {
+            margin-bottom: 12px;
+            color: rgba(40, 13, 140, 0.88);
+        }
+
+        .policy-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .policy-card ul {
+            margin-left: 20px;
+            color: rgba(40, 13, 140, 0.88);
+        }
+
+        .policy-card li {
+            margin-bottom: 8px;
+        }
+
+        footer {
+            background-color: var(--color-text);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 50px 0;
+            font-size: 0.9rem;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-links {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: white;
+            opacity: 0.7;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover,
+        .footer-links a[aria-current="page"] {
+            opacity: 1;
+            color: var(--color-dopamine);
+        }
+
+        @media (max-width: 900px) {
+            .nav-content {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .hero-privacy h1 { font-size: 2.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-content">
+            <a href="index.html" class="logo">Brainy<span>ADHD</span></a>
+            <ul class="top-nav">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="privacy.html">Privacy</a></li>
+                <li><a href="terms.html" aria-current="page">Terms</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-privacy">
+            <div class="container">
+                <a href="index.html" class="back-link">&larr; Back to Home</a>
+                <h1>Terms of Service</h1>
+                <p><strong>Last Updated: May 2026</strong></p>
+                <p>By using <strong>Brainy ADHD</strong>, you agree to the following terms. Please read them carefully as they form a legal contract between you and brainyadhd.com.</p>
+            </div>
+        </section>
+
+        <section class="container policy-layout">
+            <article class="policy-card" style="border-left: 6px solid var(--color-accent);">
+                <h2>1. Medical Disclaimer (Important)</h2>
+                <p><strong>Brainy ADHD is a productivity and habit-tracking tool, not a medical device.</strong></p>
+                <p>The content provided within the app is for informational and organizational purposes only. It is not intended to be a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition or TDAH (ADHD) treatment.</p>
+            </article>
+
+            <article class="policy-card">
+                <h2>2. Use of the App</h2>
+                <p>You must be at least 13 years old to use this service. You agree to use Brainy ADHD only for lawful purposes and in a way that does not infringe the rights of others or restrict their use and enjoyment of the app.</p>
+            </article>
+
+            <article class="policy-card">
+                <h2>3. Subscriptions &amp; Payments</h2>
+                <p>Our "PRO" features are offered via subscription. All payments are processed through the Apple App Store or Google Play Store. By subscribing, you agree to their respective terms of service.</p>
+                <ul>
+                    <li>Subscriptions renew automatically unless canceled at least 24 hours before the end of the current period.</li>
+                    <li>If you are using a <strong>Reverse Trial</strong>, your access to PRO features may be restricted at the end of the trial period unless a purchase is made.</li>
+                </ul>
+            </article>
+
+            <article class="policy-card">
+                <h2>4. Virtual Goods &amp; Digital Pets</h2>
+                <p>Digital pets, items, and "skins" earned or purchased within Brainy ADHD are licenses to use those assets within the app environment. These virtual goods have no real-world monetary value and cannot be transferred or sold to other users.</p>
+            </article>
+
+            <article class="policy-card">
+                <h2>5. Account Termination</h2>
+                <p>We reserve the right to suspend or terminate your account if we detect any attempt to manipulate the app's code, exploit bugs, or engage in behavior that violates these terms.</p>
+            </article>
+
+            <article class="policy-card">
+                <h2>6. Limitation of Liability</h2>
+                <p>Brainy ADHD is provided "as is." We do not guarantee that the app will always be error-free or uninterrupted. In no event shall brainyadhd.com be liable for any indirect or consequential damages arising out of your use of the app.</p>
+            </article>
+
+            <article class="policy-card">
+                <h2>7. Contact</h2>
+                <p>If you have any questions regarding these Terms, please reach out to our team:</p>
+                <p><strong>Email:</strong> support@brainyadhd.com</p>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; 2026 brainyadhd.com. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html" aria-current="page">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
