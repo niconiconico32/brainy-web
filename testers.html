@@ -934,8 +934,8 @@
 
             loginPanel.style.display = 'none';
             workspace.classList.add('active');
-            setSaveStatus(db ? 'Todo ok' : 'Todo ok', 'good');
-            syncState.textContent = db;
+            setSaveStatus(db ? 'Sesion cargada desde Firestore' : 'Sesion cargada', 'good');
+            syncState.textContent = db ? 'Sincronizacion: lista para guardar cambios en Firestore.' : 'Sincronizacion: lista para guardar cambios localmente.';
             localStorage.setItem(LAST_USER_KEY, normalized);
         }
 
@@ -954,15 +954,17 @@
             openWorkspace(usernameInput.value);
         });
 
-        rememberButton.addEventListener('click', () => {
-            const lastUser = localStorage.getItem(LAST_USER_KEY) || '';
-            if (!lastUser) {
-                setLoginError('No hay un usuario previo guardado en este navegador.');
-                return;
-            }
-            usernameInput.value = lastUser;
-            openWorkspace(lastUser);
-        });
+        if (rememberButton) {
+            rememberButton.addEventListener('click', () => {
+                const lastUser = localStorage.getItem(LAST_USER_KEY) || '';
+                if (!lastUser) {
+                    setLoginError('No hay un usuario previo guardado en este navegador.');
+                    return;
+                }
+                usernameInput.value = lastUser;
+                openWorkspace(lastUser);
+            });
+        }
 
         switchUserButton.addEventListener('click', logout);
 
