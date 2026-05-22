@@ -532,36 +532,18 @@
             <article class="panel intro">
                 <span class="eyebrow">Plataforma privada de testing</span>
                 <h1>Testers</h1>
-                <p>Acceso por URL con usuario único. Cada tester entra a su propia vista, completa el checklist, deja comentarios por ítem y el progreso se guarda automáticamente para que pueda retomarse sin perder avances.</p>
-                <div class="hero-meta">
-                    <div class="meta-card">
-                        Estado
-                        <strong>Autosave activo</strong>
-                    </div>
-                    <div class="meta-card">
-                        Usuarios permitidos
-                        <strong>francia, benja, naty</strong>
-                    </div>
-                    <div class="meta-card">
-                        Persistencia
-                        <strong>Firestore + local fallback</strong>
-                    </div>
-                </div>
-                <div class="footer-note compact">
-                    La página no aparece en la navegación principal; sólo se usa con la URL directa.
-                </div>
             </article>
+                
 
             <aside class="panel login-panel" id="loginPanel">
                 <h2>Ingresar al laboratorio</h2>
-                <p>Escribe sólo tu username. Si coincide con uno de los tres valores autorizados, se abrirá tu plataforma con progreso recuperable.</p>
+                <p>Escribe tu username.</p>
                 <div class="field">
                     <label for="usernameInput">Username</label>
-                    <input id="usernameInput" type="text" inputmode="text" autocomplete="username" placeholder="francia / benja / naty" />
+                    <input id="usernameInput" type="text" inputmode="text" autocomplete="username" placeholder="el usuario que te pasé x chat" />
                 </div>
                 <div class="primary-actions">
                     <button class="btn btn-primary" id="loginButton" type="button">Entrar</button>
-                    <button class="btn btn-secondary" id="rememberButton" type="button">Usar último usuario</button>
                 </div>
                 <div class="login-error" id="loginError" role="alert"></div>
             </aside>
@@ -651,27 +633,27 @@
 
         const CHECKLIST = [
             'Abrir la app por primera vez y validar que no crashee en arranque.',
-            'Completar onboarding completo y verificar que finaliza correctamente.',
-            'Iniciar sesión con cuenta existente y validar persistencia al reabrir la app.',
-            'Cerrar sesión y volver a iniciar sesión para confirmar flujo limpio.',
-            'Crear tarea manual desde el tab principal y verificar que aparece en lista.',
-            'Editar una tarea existente (título/duración) y validar guardado.',
-            'Marcar tarea como completada y confirmar actualización visual/estado.',
+            'Iniciar sesión con apple y validar persistencia al reabrir la app',
+            'Completar las pantallas de inicio hasta firmar el compromiso".',
+            'Cerrar sesión y volver a iniciar sesión (no deberia mostrar de nuevo las preguntas de inicio)',
+            'Crear tarea manual desde el boton + principal y verificar que quede guardada en la pantalla principal.',
+            'Editar una tarea existente (título/duración)  (manteniendo presionada la tarea en el menu principal)y validar guardado.',
+            'Marcar tarea como completada y confirmar actualización en la pantalla principal.',
             'Eliminar tarea y verificar que desaparece sin errores.',
-            'Probar creación por voz: aceptar permisos de micrófono y generar tarea.',
             'Probar creación por voz: denegar permiso y validar mensaje/recuperación.',
-            'Probar creación por voz con red lenta o sin red y validar manejo de error.',
             'Validar permiso de reconocimiento de voz en iOS (aceptar/denegar).',
-            'Confirmar que el texto del permiso de fotos es claro y no hay rechazo del flujo.',
             'Revisar widget en pantalla de inicio: agregar widget y verificar carga.',
             'Verificar que el widget refleja cambios en tareas (crear/completar/eliminar).',
-            'Probar notificaciones locales (si aplican) y validar sonido/horario.',
-            'Cambiar idioma ES/EN y verificar strings principales sin truncados.',
-            'Probar modo claro/oscuro y verificar legibilidad en pantallas críticas.',
-            'Probar comportamiento en background/foreground (sin perder estado).',
-            'Validar deep links principales (si existen) abriendo desde Safari.',
-            'Revisar rendimiento básico: scroll, navegación entre tabs, sin stutters severos.',
-            'Validar que no haya cierres inesperados durante 10-15 minutos de uso continuo.'
+            'Crear una rutina y validar que se muestra correctamente en la sección de rutinas.',
+            'Completar una rutina y que quede marcada en la sección de rutinas.',
+            'Revisar rendimiento básico: scroll, navegación entre tabs, sin que se pegue o baje la perfomance',
+            'Que aparezca la pantalla de recibir un Regalo luego de terminar la primera tarea o rutina',
+            'Que el regalo active el modo PRO (se deberian poder comprar todos los items de la tienda)',
+            'Validar que el codigo BRAINY2026 entregue 2000 coronas cuando se ocupe desde la opcion Canjear Codigo del menu de arriba a la derecha',
+            'Poder comprar skins y fondos y que al equiparlos se refleje en la pantalla principal',
+            'Volver a abrir la app al dia siguiente y validar que los items equipados sigan en la pantalla principal',
+            'Tambien al dia siguiente, que la rutinas guarden el registro de la completada del dia anterior y se pueda marcar un nuevo dia completado'
+
         ];
 
         const STORAGE_KEY = 'brainy-testers-progress-v1';
@@ -935,7 +917,7 @@
         async function openWorkspace(username) {
             const normalized = normalizeUsername(username);
             if (!Object.prototype.hasOwnProperty.call(USERS, normalized)) {
-                setLoginError('Usuario inválido. Sólo se acepta: francia, benja o naty.');
+                setLoginError('Usuario inválido.');
                 return;
             }
 
