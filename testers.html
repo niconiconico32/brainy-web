@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow">
+    <title>Testers</title>
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --panel: rgba(255, 255, 255, 0.76);
+            --panel-strong: rgba(255, 255, 255, 0.9);
+            --text: #24123f;
+            --muted: rgba(36, 18, 63, 0.7);
+            --accent: #5b4bf4;
+            --accent-2: #f2c94c;
+            --success: #178a4a;
+            --danger: #d33c3c;
+            --border: rgba(36, 18, 63, 0.12);
+            --shadow: 0 24px 70px rgba(36, 18, 63, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(91, 75, 244, 0.18), transparent 32%),
+                radial-gradient(circle at top right, rgba(242, 201, 76, 0.22), transparent 24%),
+                linear-gradient(180deg, #fffdf8 0%, var(--bg) 55%, #efe8dd 100%);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: linear-gradient(rgba(36, 18, 63, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(36, 18, 63, 0.025) 1px, transparent 1px);
+            background-size: 36px 36px;
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.85), transparent 88%);
+        }
+
+        .shell {
+            position: relative;
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 28px 0 48px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+            gap: 24px;
+            align-items: stretch;
+            margin-top: 10px;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            border-radius: 28px;
+        }
+
+        .intro {
+            padding: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .intro::after {
+            content: "";
+            position: absolute;
+            right: -110px;
+            top: -110px;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(91, 75, 244, 0.18), rgba(91, 75, 244, 0));
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(91, 75, 244, 0.1);
+            color: var(--accent);
+            font-size: 0.88rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        h1, h2, h3 {
+            letter-spacing: -0.03em;
+        }
+
+        h1 {
+            margin-top: 18px;
+            font-size: clamp(2.2rem, 4vw, 4.4rem);
+            line-height: 0.98;
+        }
+
+        .intro p {
+            max-width: 68ch;
+            margin-top: 18px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--muted);
+        }
+
+        .hero-meta {
+            margin-top: 28px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .meta-card {
+            padding: 16px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(36, 18, 63, 0.08);
+        }
+
+        .meta-card strong {
+            display: block;
+            margin-top: 6px;
+            font-size: 1.1rem;
+        }
+
+        .login-panel {
+            padding: 26px;
+            display: grid;
+            gap: 16px;
+            align-content: center;
+            background:
+                radial-gradient(circle at top right, rgba(242, 201, 76, 0.28), transparent 40%),
+                linear-gradient(180deg, rgba(91, 75, 244, 0.18), rgba(255, 255, 255, 0.8));
+        }
+
+        .login-panel h2 {
+            font-size: 1.8rem;
+        }
+
+        .login-panel p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 800;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            border: 1px solid rgba(36, 18, 63, 0.14);
+            border-radius: 16px;
+            background: var(--panel-strong);
+            color: var(--text);
+            padding: 14px 16px;
+            font: inherit;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: rgba(91, 75, 244, 0.7);
+            box-shadow: 0 0 0 4px rgba(91, 75, 244, 0.14);
+        }
+
+        .primary-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        button {
+            border: 0;
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 48px;
+            padding: 12px 18px;
+            border-radius: 999px;
+            font-weight: 800;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 16px 30px rgba(91, 75, 244, 0.22);
+        }
+
+        .btn-secondary {
+            background: rgba(36, 18, 63, 0.08);
+            color: var(--text);
+        }
+
+        .login-error {
+            display: none;
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: rgba(211, 60, 60, 0.12);
+            color: #a21f1f;
+            font-weight: 700;
+        }
+
+        .workspace {
+            display: none;
+            margin-top: 24px;
+            gap: 20px;
+        }
+
+        .workspace.active {
+            display: grid;
+            animation: fadeUp 0.35s ease both;
+        }
+
+        .workspace-header {
+            padding: 24px 26px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .workspace-title {
+            display: grid;
+            gap: 6px;
+        }
+
+        .workspace-title h2 {
+            font-size: 1.8rem;
+        }
+
+        .workspace-title p {
+            color: var(--muted);
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(23, 138, 74, 0.12);
+            color: var(--success);
+            font-weight: 800;
+            border: 1px solid rgba(23, 138, 74, 0.16);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 320px;
+            gap: 20px;
+        }
+
+        .checklist-panel {
+            padding: 10px;
+        }
+
+        .checklist-head,
+        .side-head {
+            padding: 18px 18px 14px;
+        }
+
+        .checklist-head h3,
+        .side-head h3 {
+            font-size: 1.2rem;
+        }
+
+        .checklist-head p,
+        .side-head p {
+            margin-top: 6px;
+            color: var(--muted);
+        }
+
+        .progress-bar {
+            height: 12px;
+            border-radius: 999px;
+            background: rgba(36, 18, 63, 0.08);
+            overflow: hidden;
+            margin-top: 16px;
+        }
+
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            width: 0%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            transition: width 0.25s ease;
+        }
+
+        .checklist {
+            display: grid;
+            gap: 12px;
+            padding: 0 8px 8px;
+        }
+
+        .check-item {
+            background: rgba(255, 255, 255, 0.84);
+            border: 1px solid rgba(36, 18, 63, 0.1);
+            border-radius: 22px;
+            padding: 18px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .check-item.done {
+            border-color: rgba(23, 138, 74, 0.26);
+            box-shadow: inset 0 0 0 1px rgba(23, 138, 74, 0.04);
+        }
+
+        .check-top {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 14px;
+            align-items: start;
+        }
+
+        .check-index {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(91, 75, 244, 0.08);
+            color: var(--accent);
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .check-title {
+            font-weight: 800;
+            line-height: 1.45;
+        }
+
+        .status-controls {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .status-btn {
+            color: var(--text);
+            background: rgba(36, 18, 63, 0.08);
+            min-width: 46px;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-weight: 900;
+        }
+
+        .status-btn[data-status="fail"].active {
+            background: rgba(211, 60, 60, 0.16);
+            color: var(--danger);
+        }
+
+        .status-btn[data-status="pass"].active {
+            background: rgba(23, 138, 74, 0.16);
+            color: var(--success);
+        }
+
+        .comment-box {
+            display: grid;
+            gap: 8px;
+        }
+
+        .comment-box textarea {
+            min-height: 82px;
+            resize: vertical;
+        }
+
+        .sidebar {
+            display: grid;
+            gap: 14px;
+            align-content: start;
+        }
+
+        .summary-card {
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.88);
+            border-top: 1px solid rgba(36, 18, 63, 0.08);
+        }
+
+        .summary-list {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .summary-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(91, 75, 244, 0.06);
+        }
+
+        .item-status {
+            font-weight: 900;
+        }
+
+        .note-card {
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.88);
+            display: grid;
+            gap: 12px;
+        }
+
+        .note-card strong {
+            font-size: 1rem;
+        }
+
+        .note-card p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .compact {
+            font-size: 0.95rem;
+        }
+
+        .footer-note {
+            margin-top: 14px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: rgba(36, 18, 63, 0.05);
+            color: var(--muted);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 980px) {
+            .hero,
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .shell {
+                width: min(100% - 20px, 1180px);
+                padding-top: 14px;
+            }
+
+            .intro,
+            .login-panel,
+            .workspace-header,
+            .check-item,
+            .side-head,
+            .summary-card,
+            .note-card {
+                border-radius: 22px;
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .check-top {
+                grid-template-columns: auto 1fr;
+            }
+
+            .status-controls {
+                grid-column: 1 / -1;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="shell">
+        <section class="hero">
+            <article class="panel intro">
+                <span class="eyebrow">Plataforma privada de testing</span>
+                <h1>Testers</h1>
+                <p>Acceso por URL con usuario único. Cada tester entra a su propia vista, completa el checklist, deja comentarios por ítem y el progreso se guarda automáticamente para que pueda retomarse sin perder avances.</p>
+                <div class="hero-meta">
+                    <div class="meta-card">
+                        Estado
+                        <strong>Autosave activo</strong>
+                    </div>
+                    <div class="meta-card">
+                        Usuarios permitidos
+                        <strong>francia, benja, naty</strong>
+                    </div>
+                    <div class="meta-card">
+                        Persistencia
+                        <strong>Firestore + local fallback</strong>
+                    </div>
+                </div>
+                <div class="footer-note compact">
+                    La página no aparece en la navegación principal; sólo se usa con la URL directa.
+                </div>
+            </article>
+
+            <aside class="panel login-panel" id="loginPanel">
+                <h2>Ingresar al laboratorio</h2>
+                <p>Escribe sólo tu username. Si coincide con uno de los tres valores autorizados, se abrirá tu plataforma con progreso recuperable.</p>
+                <div class="field">
+                    <label for="usernameInput">Username</label>
+                    <input id="usernameInput" type="text" inputmode="text" autocomplete="username" placeholder="francia / benja / naty" />
+                </div>
+                <div class="primary-actions">
+                    <button class="btn btn-primary" id="loginButton" type="button">Entrar</button>
+                    <button class="btn btn-secondary" id="rememberButton" type="button">Usar último usuario</button>
+                </div>
+                <div class="login-error" id="loginError" role="alert"></div>
+            </aside>
+        </section>
+
+        <section class="workspace" id="workspace">
+            <header class="panel workspace-header">
+                <div class="workspace-title">
+                    <span class="eyebrow" id="platformTag">Plataforma</span>
+                    <h2 id="workspaceHeading">Checklist de testing</h2>
+                    <p id="workspaceSubtitle">Tu progreso se guarda automáticamente mientras avanzas.</p>
+                </div>
+                <div class="primary-actions">
+                    <span class="status-pill" id="saveStatus">Listo para guardar</span>
+                    <button class="btn btn-secondary" id="switchUserButton" type="button">Cambiar usuario</button>
+                </div>
+            </header>
+
+            <section class="dashboard">
+                <article class="panel checklist-panel">
+                    <div class="checklist-head">
+                        <h3>Checklist de testing</h3>
+                        <p>Marca cada ítem con X roja o tick verde y agrega comentarios donde haga falta.</p>
+                        <div class="progress-bar" aria-hidden="true"><span id="progressBarFill"></span></div>
+                        <p class="muted compact" id="progressText">0 de 0 completados</p>
+                    </div>
+                    <div class="checklist" id="checklist"></div>
+                </article>
+
+                <aside class="sidebar">
+                    <article class="panel">
+                        <div class="side-head">
+                            <h3>Resumen</h3>
+                            <p>Visión rápida del estado actual.</p>
+                        </div>
+                        <div class="summary-card">
+                            <ul class="summary-list" id="summaryList"></ul>
+                        </div>
+                    </article>
+
+                    <article class="panel note-card">
+                        <strong>Persistencia de progreso</strong>
+                        <p>El estado se guarda por username en Firestore. Si cierras y vuelves a abrir la página, retomas exactamente donde quedaste. Si la configuración de Firebase aún no está cargada, la página usa almacenamiento local como respaldo.</p>
+                        <p class="compact" id="syncState">Sincronización: local activa.</p>
+                    </article>
+                </aside>
+            </section>
+        </section>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+
+        const FIREBASE_CONFIG = {
+            apiKey: 'AIzaSyDED9qlB70ODgrwD4SxYqy9AdQe1ETIrIQ',
+            authDomain: 'backendwebrainy.firebaseapp.com',
+            projectId: 'backendwebrainy',
+            storageBucket: 'backendwebrainy.firebasestorage.app',
+            messagingSenderId: '605955281738',
+            appId: '1:605955281738:web:78987731e92372a5cbe7b3',
+            measurementId: 'G-1E64N8592M'
+        };
+
+        const hasFirebaseConfig = Object.values(FIREBASE_CONFIG).every((value) => value && !String(value).startsWith('REEMPLAZA_'));
+        const firebaseApp = hasFirebaseConfig ? initializeApp(FIREBASE_CONFIG) : null;
+        const db = firebaseApp ? getFirestore(firebaseApp) : null;
+        const FIRESTORE_COLLECTION = 'brainytesters';
+
+        const USERS = {
+            francia: {
+                label: 'Francia',
+                subtitle: 'Plataforma de validación principal para Francia.',
+                accent: '#5b4bf4'
+            },
+            benja: {
+                label: 'Benja',
+                subtitle: 'Plataforma de validación orientada a flujo y regresión.',
+                accent: '#178a4a'
+            },
+            naty: {
+                label: 'Naty',
+                subtitle: 'Plataforma de validación orientada a experiencia y estabilidad.',
+                accent: '#d33c3c'
+            }
+        };
+
+        const CHECKLIST = [
+            'Abrir la app por primera vez y validar que no crashee en arranque.',
+            'Completar onboarding completo y verificar que finaliza correctamente.',
+            'Iniciar sesión con cuenta existente y validar persistencia al reabrir la app.',
+            'Cerrar sesión y volver a iniciar sesión para confirmar flujo limpio.',
+            'Crear tarea manual desde el tab principal y verificar que aparece en lista.',
+            'Editar una tarea existente (título/duración) y validar guardado.',
+            'Marcar tarea como completada y confirmar actualización visual/estado.',
+            'Eliminar tarea y verificar que desaparece sin errores.',
+            'Probar creación por voz: aceptar permisos de micrófono y generar tarea.',
+            'Probar creación por voz: denegar permiso y validar mensaje/recuperación.',
+            'Probar creación por voz con red lenta o sin red y validar manejo de error.',
+            'Validar permiso de reconocimiento de voz en iOS (aceptar/denegar).',
+            'Confirmar que el texto del permiso de fotos es claro y no hay rechazo del flujo.',
+            'Revisar widget en pantalla de inicio: agregar widget y verificar carga.',
+            'Verificar que el widget refleja cambios en tareas (crear/completar/eliminar).',
+            'Probar notificaciones locales (si aplican) y validar sonido/horario.',
+            'Cambiar idioma ES/EN y verificar strings principales sin truncados.',
+            'Probar modo claro/oscuro y verificar legibilidad en pantallas críticas.',
+            'Probar comportamiento en background/foreground (sin perder estado).',
+            'Validar deep links principales (si existen) abriendo desde Safari.',
+            'Revisar rendimiento básico: scroll, navegación entre tabs, sin stutters severos.',
+            'Validar que no haya cierres inesperados durante 10-15 minutos de uso continuo.'
+        ];
+
+        const STORAGE_KEY = 'brainy-testers-progress-v1';
+        const LAST_USER_KEY = 'brainy-testers-last-user';
+
+        const loginPanel = document.getElementById('loginPanel');
+        const workspace = document.getElementById('workspace');
+        const usernameInput = document.getElementById('usernameInput');
+        const loginButton = document.getElementById('loginButton');
+        const rememberButton = document.getElementById('rememberButton');
+        const switchUserButton = document.getElementById('switchUserButton');
+        const loginError = document.getElementById('loginError');
+        const checklistEl = document.getElementById('checklist');
+        const summaryList = document.getElementById('summaryList');
+        const progressBarFill = document.getElementById('progressBarFill');
+        const progressText = document.getElementById('progressText');
+        const saveStatus = document.getElementById('saveStatus');
+        const syncState = document.getElementById('syncState');
+        const platformTag = document.getElementById('platformTag');
+        const workspaceHeading = document.getElementById('workspaceHeading');
+        const workspaceSubtitle = document.getElementById('workspaceSubtitle');
+
+        let activeUser = null;
+        let activeState = null;
+        let saveTimer = null;
+
+        function normalizeUsername(value) {
+            return value.trim().toLowerCase();
+        }
+
+        function readStore() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            } catch {
+                return {};
+            }
+        }
+
+        function writeStore(store) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+        }
+
+        function getDefaultState(username) {
+            const items = {};
+            CHECKLIST.forEach((_, index) => {
+                items[index] = { status: '', comment: '' };
+            });
+
+            return {
+                username,
+                updatedAt: null,
+                items
+            };
+        }
+
+        function normalizeState(state, username) {
+            const defaultState = getDefaultState(username);
+            return {
+                ...defaultState,
+                ...(state || {}),
+                username,
+                items: {
+                    ...defaultState.items,
+                    ...((state && state.items) || {})
+                }
+            };
+        }
+
+        function loadLocalState(username) {
+            const store = readStore();
+            const localState = store[username] || getDefaultState(username);
+            return normalizeState(localState, username);
+        }
+
+        function persistLocalState(state) {
+            const store = readStore();
+            store[state.username] = state;
+            writeStore(store);
+            localStorage.setItem(LAST_USER_KEY, state.username);
+        }
+
+        function getFirestoreDoc(username) {
+            return doc(db, FIRESTORE_COLLECTION, username);
+        }
+
+        async function loadRemoteState(username) {
+            if (!db) {
+                return null;
+            }
+
+            const snapshot = await getDoc(getFirestoreDoc(username));
+            return snapshot.exists() ? snapshot.data() : null;
+        }
+
+        async function persistRemoteState(state) {
+            if (!db) {
+                return false;
+            }
+
+            await setDoc(getFirestoreDoc(state.username), {
+                ...state,
+                updatedAt: serverTimestamp()
+            }, { merge: true });
+
+            return true;
+        }
+
+        function setLoginError(message) {
+            loginError.textContent = message;
+            loginError.style.display = message ? 'block' : 'none';
+        }
+
+        function setSaveStatus(message, tone = 'neutral') {
+            saveStatus.textContent = message;
+            if (tone === 'good') {
+                saveStatus.style.background = 'rgba(23, 138, 74, 0.12)';
+                saveStatus.style.color = 'var(--success)';
+            } else if (tone === 'bad') {
+                saveStatus.style.background = 'rgba(211, 60, 60, 0.12)';
+                saveStatus.style.color = 'var(--danger)';
+            } else {
+                saveStatus.style.background = 'rgba(91, 75, 244, 0.12)';
+                saveStatus.style.color = 'var(--accent)';
+            }
+        }
+
+        function renderChecklist() {
+            checklistEl.innerHTML = '';
+
+            CHECKLIST.forEach((text, index) => {
+                const entry = activeState.items[index] || { status: '', comment: '' };
+
+                const item = document.createElement('article');
+                item.className = `check-item ${entry.status === 'pass' ? 'done' : ''}`;
+                item.dataset.index = String(index);
+
+                item.innerHTML = `
+                    <div class="check-top">
+                        <div class="check-index">${index + 1}</div>
+                        <div class="check-title"></div>
+                        <div class="status-controls">
+                            <button class="status-btn" type="button" data-status="fail" aria-label="Marcar como fallo">✗</button>
+                            <button class="status-btn" type="button" data-status="pass" aria-label="Marcar como completado">✓</button>
+                        </div>
+                    </div>
+                    <div class="comment-box">
+                        <label>Comentario</label>
+                        <textarea rows="2" placeholder="Deja una observación breve..."></textarea>
+                    </div>
+                `;
+
+                item.querySelector('.check-title').textContent = text;
+
+                const buttons = item.querySelectorAll('.status-btn');
+                buttons.forEach((button) => {
+                    if (button.dataset.status === entry.status) {
+                        button.classList.add('active');
+                    }
+                    button.addEventListener('click', () => {
+                        updateItem(index, 'status', button.dataset.status === entry.status ? '' : button.dataset.status);
+                    });
+                });
+
+                const textarea = item.querySelector('textarea');
+                textarea.value = entry.comment || '';
+                textarea.addEventListener('input', (event) => {
+                    updateItem(index, 'comment', event.target.value);
+                });
+
+                checklistEl.appendChild(item);
+            });
+        }
+
+        function renderSummary() {
+            const completed = CHECKLIST.filter((_, index) => activeState.items[index]?.status === 'pass').length;
+            const failed = CHECKLIST.filter((_, index) => activeState.items[index]?.status === 'fail').length;
+            const commented = CHECKLIST.filter((_, index) => (activeState.items[index]?.comment || '').trim().length > 0).length;
+            const total = CHECKLIST.length;
+            const pct = Math.round((completed / total) * 100);
+
+            progressBarFill.style.width = `${pct}%`;
+            progressText.textContent = `${completed} de ${total} completados`;
+
+            summaryList.innerHTML = '';
+            [
+                ['Completados', `${completed}`],
+                ['Fallos / bloqueos', `${failed}`],
+                ['Con comentario', `${commented}`],
+                ['Avance', `${pct}%`]
+            ].forEach(([label, value]) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${label}</span><span class="item-status">${value}</span>`;
+                summaryList.appendChild(li);
+            });
+        }
+
+        function updateWorkspaceBrand(username) {
+            const user = USERS[username];
+            platformTag.textContent = `Plataforma ${user.label}`;
+            platformTag.style.background = `color-mix(in srgb, ${user.accent} 16%, white)`;
+            platformTag.style.color = user.accent;
+            workspaceHeading.textContent = `Checklist de testing - ${user.label}`;
+            workspaceSubtitle.textContent = user.subtitle;
+            document.documentElement.style.setProperty('--accent', user.accent);
+        }
+
+        function updateItem(index, field, value) {
+            activeState = {
+                ...activeState,
+                updatedAt: new Date().toISOString(),
+                items: {
+                    ...activeState.items,
+                    [index]: {
+                        ...(activeState.items[index] || { status: '', comment: '' }),
+                        [field]: value
+                    }
+                }
+            };
+
+            const itemEl = checklistEl.querySelector(`[data-index="${index}"]`);
+            if (itemEl) {
+                const statusButtons = itemEl.querySelectorAll('.status-btn');
+                statusButtons.forEach((button) => {
+                    const active = button.dataset.status === activeState.items[index].status;
+                    button.classList.toggle('active', active);
+                });
+                itemEl.classList.toggle('done', activeState.items[index].status === 'pass');
+            }
+
+            renderSummary();
+            queueSave();
+        }
+
+        function queueSave() {
+            setSaveStatus('Guardando...', 'neutral');
+            syncState.textContent = db ? 'Sincronización: enviando cambios a Firestore.' : 'Sincronización: Firebase no configurado, usando almacenamiento local.';
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(() => {
+                persistLocalState(activeState);
+                syncToFirestore(activeState);
+            }, 250);
+        }
+
+        async function syncToFirestore(state) {
+            try {
+                if (!db) {
+                    setSaveStatus('Guardado local', 'neutral');
+                    syncState.textContent = 'Sincronización: Firebase no configurado, usando almacenamiento local.';
+                    return;
+                }
+
+                await persistRemoteState(state);
+                setSaveStatus('Guardado en Firestore', 'good');
+                syncState.textContent = 'Sincronización: Firestore conectado.';
+            } catch {
+                setSaveStatus('Guardado local', 'neutral');
+                syncState.textContent = 'Sincronización: Firestore no disponible, usando almacenamiento local.';
+            }
+        }
+
+        async function openWorkspace(username) {
+            const normalized = normalizeUsername(username);
+            if (!Object.prototype.hasOwnProperty.call(USERS, normalized)) {
+                setLoginError('Usuario inválido. Sólo se acepta: francia, benja o naty.');
+                return;
+            }
+
+            setLoginError('');
+            activeUser = normalized;
+            setSaveStatus('Cargando progreso...', 'neutral');
+            syncState.textContent = db ? 'Sincronización: cargando datos desde Firestore...' : 'Sincronización: cargando datos locales...';
+
+            const localState = loadLocalState(normalized);
+            const remoteState = await loadRemoteState(normalized);
+            activeState = normalizeState(remoteState || localState, normalized);
+
+            persistLocalState(activeState);
+
+            updateWorkspaceBrand(normalized);
+            renderChecklist();
+            renderSummary();
+
+            loginPanel.style.display = 'none';
+            workspace.classList.add('active');
+            setSaveStatus(db ? 'Sesión cargada desde Firestore' : 'Sesión cargada', 'good');
+            syncState.textContent = db ? 'Sincronización: lista para guardar cambios en Firestore.' : 'Sincronización: lista para guardar cambios localmente.';
+            localStorage.setItem(LAST_USER_KEY, normalized);
+        }
+
+        function logout() {
+            activeUser = null;
+            activeState = null;
+            workspace.classList.remove('active');
+            loginPanel.style.display = 'grid';
+            usernameInput.value = '';
+            setLoginError('');
+            setSaveStatus('Listo para guardar', 'neutral');
+            syncState.textContent = 'Sincronización: local activa.';
+        }
+
+        loginButton.addEventListener('click', () => {
+            openWorkspace(usernameInput.value);
+        });
+
+        rememberButton.addEventListener('click', () => {
+            const lastUser = localStorage.getItem(LAST_USER_KEY) || '';
+            if (!lastUser) {
+                setLoginError('No hay un usuario previo guardado en este navegador.');
+                return;
+            }
+            usernameInput.value = lastUser;
+            openWorkspace(lastUser);
+        });
+
+        switchUserButton.addEventListener('click', logout);
+
+        usernameInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                openWorkspace(usernameInput.value);
+            }
+        });
+
+        const rememberedUser = localStorage.getItem(LAST_USER_KEY);
+        if (rememberedUser && Object.prototype.hasOwnProperty.call(USERS, rememberedUser)) {
+            usernameInput.value = rememberedUser;
+            openWorkspace(rememberedUser);
+        }
+    </script>
+</body>
+</html>
