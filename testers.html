@@ -776,6 +776,12 @@
             }
         }
 
+        function setSyncState(message) {
+            if (syncState) {
+                syncState.textContent = message;
+            }
+        }
+
         function renderChecklist() {
             checklistEl.innerHTML = '';
 
@@ -885,7 +891,7 @@
 
         function queueSave() {
             setSaveStatus('Guardando...', 'neutral');
-            syncState.textContent = db ? 'Sincronización: enviando cambios a Firestore.' : 'Sincronización: Firebase no configurado, usando almacenamiento local.';
+            setSyncState(db ? 'Sincronización: enviando cambios a Firestore.' : 'Sincronización: Firebase no configurado, usando almacenamiento local.');
             clearTimeout(saveTimer);
             saveTimer = setTimeout(() => {
                 persistLocalState(activeState);
@@ -897,16 +903,16 @@
             try {
                 if (!db) {
                     setSaveStatus('Guardado local', 'neutral');
-                    syncState.textContent = 'Sincronización: Firebase no configurado, usando almacenamiento local.';
+                    setSyncState('Sincronización: Firebase no configurado, usando almacenamiento local.');
                     return;
                 }
 
                 await persistRemoteState(state);
                 setSaveStatus('Guardado en Firestore', 'good');
-                syncState.textContent = 'Sincronización: Firestore conectado.';
+                setSyncState('Sincronización: Firestore conectado.');
             } catch {
                 setSaveStatus('Guardado local', 'neutral');
-                syncState.textContent = 'Sincronización: Firestore no disponible, usando almacenamiento local.';
+                setSyncState('Sincronización: Firestore no disponible, usando almacenamiento local.');
             }
         }
 
@@ -920,7 +926,7 @@
             setLoginError('');
             activeUser = normalized;
             setSaveStatus('Cargando progreso...', 'neutral');
-            syncState.textContent = db ? 'Sincronización: cargando datos desde Firestore...' : 'Sincronización: cargando datos locales...';
+            setSyncState(db ? 'Sincronización: cargando datos desde Firestore...' : 'Sincronización: cargando datos locales...');
 
             const localState = loadLocalState(normalized);
             const remoteState = await loadRemoteState(normalized);
@@ -935,7 +941,7 @@
             loginPanel.style.display = 'none';
             workspace.classList.add('active');
             setSaveStatus(db ? 'Sesion cargada desde Firestore' : 'Sesion cargada', 'good');
-            syncState.textContent = db ? 'Sincronizacion: lista para guardar cambios en Firestore.' : 'Sincronizacion: lista para guardar cambios localmente.';
+            setSyncState(db ? 'Sincronizacion: lista para guardar cambios en Firestore.' : 'Sincronizacion: lista para guardar cambios localmente.');
             localStorage.setItem(LAST_USER_KEY, normalized);
         }
 
@@ -947,7 +953,7 @@
             usernameInput.value = '';
             setLoginError('');
             setSaveStatus('Listo para guardar', 'neutral');
-            syncState.textContent = 'Sincronización: local activa.';
+            setSyncState('Sincronización: local activa.');
         }
 
         loginButton.addEventListener('click', () => {
