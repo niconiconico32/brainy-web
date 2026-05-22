@@ -584,11 +584,7 @@
                         </div>
                     </article>
 
-                    <article class="panel note-card">
-                        <strong>Persistencia de progreso</strong>
-                        <p>El estado se guarda por username en Firestore. Si cierras y vuelves a abrir la página, retomas exactamente donde quedaste. Si la configuración de Firebase aún no está cargada, la página usa almacenamiento local como respaldo.</p>
-                        <p class="compact" id="syncState">Sincronización: local activa.</p>
-                    </article>
+
                 </aside>
             </section>
         </section>
@@ -616,24 +612,24 @@
         const USERS = {
             francia: {
                 label: 'Francia',
-                subtitle: 'Plataforma de validación principal para Francia.',
+                subtitle: 'Plataforma testing Francia',
                 accent: '#5b4bf4'
             },
             benja: {
                 label: 'Benja',
-                subtitle: 'Plataforma de validación orientada a flujo y regresión.',
+                subtitle: 'Plataforma testing Benja',
                 accent: '#178a4a'
             },
             naty: {
                 label: 'Naty',
-                subtitle: 'Plataforma de validación orientada a experiencia y estabilidad.',
+                subtitle: 'Plataforma testing Naty',
                 accent: '#d33c3c'
             }
         };
 
         const CHECKLIST = [
             'Abrir la app por primera vez y validar que no crashee en arranque.',
-            'Iniciar sesión con apple y validar persistencia al reabrir la app',
+            'Iniciar sesión con apple exitosamente',
             'Completar las pantallas de inicio hasta firmar el compromiso".',
             'Cerrar sesión y volver a iniciar sesión (no deberia mostrar de nuevo las preguntas de inicio)',
             'Crear tarea manual desde el boton + principal y verificar que quede guardada en la pantalla principal.',
@@ -938,8 +934,8 @@
 
             loginPanel.style.display = 'none';
             workspace.classList.add('active');
-            setSaveStatus(db ? 'Sesión cargada desde Firestore' : 'Sesión cargada', 'good');
-            syncState.textContent = db ? 'Sincronización: lista para guardar cambios en Firestore.' : 'Sincronización: lista para guardar cambios localmente.';
+            setSaveStatus(db ? 'Todo ok' : 'Todo ok', 'good');
+            syncState.textContent = db;
             localStorage.setItem(LAST_USER_KEY, normalized);
         }
 
