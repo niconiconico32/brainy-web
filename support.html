@@ -241,6 +241,21 @@
             box-shadow: 0 6px 20px rgba(201, 253, 90, 0.6);
         }
 
+        .status-message {
+            margin-top: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            min-height: 22px;
+        }
+
+        .status-message.success {
+            color: rgb(29, 128, 80);
+        }
+
+        .status-message.error {
+            color: rgb(176, 41, 77);
+        }
+
         footer {
             background-color: var(--color-text);
             color: rgba(255, 255, 255, 0.8);
@@ -349,7 +364,7 @@
             <div class="form-card">
                 <h2>Submit a Support Ticket</h2>
                 <p>Describe your issue and we'll get right on it.</p>
-                <form action="mailto:support@brainyadhd.com" method="post" enctype="text/plain">
+                <form id="supportForm" method="post" novalidate>
                     <div class="form-grid">
                         <div class="form-field">
                             <label for="name">Name</label>
@@ -366,6 +381,7 @@
                     </div>
                     <div class="btn-container">
                         <button type="submit">Send Ticket</button>
+                        <p id="formStatus" class="status-message" aria-live="polite"></p>
                     </div>
                 </form>
             </div>
@@ -382,5 +398,54 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        const SUPPORT_FORM_ENDPOINT = "https://formspree.io/f/meewgplz;
+
+        const supportForm = document.getElementById("supportForm");
+        const formStatus = document.getElementById("formStatus");
+
+        function setFormStatus(message, type) {
+            formStatus.textContent = message;
+            formStatus.className = "status-message " + type;
+        }
+
+        supportForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            if (!supportForm.checkValidity()) {
+                setFormStatus("Please complete all required fields.", "error");
+                supportForm.reportValidity();
+                return;
+            }
+
+            if (SUPPORT_FORM_ENDPOINT.includes("REPLACE_WITH_YOUR_FORM_ID")) {
+                setFormStatus("Configure your Formspree endpoint first.", "error");
+                return;
+            }
+
+            setFormStatus("Sending your message...", "success");
+
+            try {
+                const formData = new FormData(supportForm);
+                const response = await fetch(SUPPORT_FORM_ENDPOINT, {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error("Request failed");
+                }
+
+                supportForm.reset();
+                setFormStatus("Message sent. We will get back to you soon.", "success");
+            } catch (error) {
+                setFormStatus("Could not send right now. Please try again in a moment.", "error");
+            }
+        });
+    </script>
 </body>
 </html>
