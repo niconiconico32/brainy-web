@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Support - Brainy ADHD</title>
+	<meta name="description" content="Need help with Brainy ADHD? Send us your email, message, and an optional screenshot so we can support you faster.">
+	<style>
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		:root {
+			--color-bg: rgb(236, 240, 237);
+			--color-text: rgb(40, 13, 140);
+			--color-accent: rgb(118, 99, 242);
+			--color-dopamine: rgb(201, 253, 90);
+			--color-card: rgba(255, 255, 255, 0.68);
+			--color-border: rgba(40, 13, 140, 0.14);
+			--color-danger: rgb(191, 43, 83);
+			--color-success: rgb(34, 123, 85);
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			line-height: 1.6;
+			color: var(--color-text);
+			background-color: var(--color-bg);
+			overflow-x: hidden;
+		}
+
+		.container {
+			max-width: 1100px;
+			margin: 0 auto;
+			padding: 0 20px;
+		}
+
+		header {
+			padding: 20px 0;
+			position: absolute;
+			top: 0;
+			width: 100%;
+			z-index: 20;
+		}
+
+		.nav-content {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.logo {
+			font-size: 1.5rem;
+			font-weight: 900;
+			text-decoration: none;
+			color: var(--color-text);
+		}
+
+		.logo span {
+			color: var(--color-accent);
+		}
+
+		.top-nav {
+			list-style: none;
+			display: flex;
+			gap: 24px;
+			align-items: center;
+		}
+
+		.top-nav a {
+			text-decoration: none;
+			color: var(--color-text);
+			font-size: 0.95rem;
+			font-weight: 700;
+			opacity: 0.85;
+			transition: all 0.2s ease;
+		}
+
+		.top-nav a:hover,
+		.top-nav a[aria-current="page"] {
+			color: var(--color-accent);
+			opacity: 1;
+		}
+
+		.hero-support {
+			padding: 140px 0 44px 0;
+		}
+
+		.hero-support h1 {
+			font-size: 3rem;
+			line-height: 1.1;
+			margin-bottom: 1rem;
+			letter-spacing: -0.02em;
+		}
+
+		.hero-support p {
+			max-width: 780px;
+			font-size: 1.16rem;
+			opacity: 0.9;
+		}
+
+		.support-layout {
+			padding-bottom: 90px;
+			display: grid;
+			grid-template-columns: 0.95fr 1.25fr;
+			gap: 24px;
+		}
+
+		.support-card,
+		.form-card {
+			background: var(--color-card);
+			border: 1px solid var(--color-border);
+			border-radius: 24px;
+			padding: 28px;
+			backdrop-filter: blur(6px);
+		}
+
+		h2 {
+			margin-bottom: 10px;
+			font-size: 1.5rem;
+			letter-spacing: -0.01em;
+		}
+
+		.support-card p,
+		.form-card p {
+			color: rgba(40, 13, 140, 0.85);
+			margin-bottom: 16px;
+		}
+
+		.support-list {
+			list-style: none;
+			display: grid;
+			gap: 12px;
+			margin-top: 12px;
+		}
+
+		.support-list li {
+			padding: 12px 14px;
+			border-radius: 14px;
+			background-color: rgba(118, 99, 242, 0.08);
+			border: 1px solid rgba(118, 99, 242, 0.2);
+		}
+
+		.support-list a {
+			color: var(--color-text);
+			text-decoration: none;
+			font-weight: 700;
+		}
+
+		.support-list a:hover {
+			color: var(--color-accent);
+		}
+
+		.form-grid {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 14px;
+		}
+
+		.form-field {
+			display: grid;
+			gap: 6px;
+		}
+
+		label {
+			font-weight: 700;
+			font-size: 0.92rem;
+		}
+
+		input[type="email"],
+		textarea,
+		input[type="file"] {
+			width: 100%;
+			border: 1px solid rgba(118, 99, 242, 0.35);
+			background-color: rgba(255, 255, 255, 0.88);
+			color: var(--color-text);
+			border-radius: 12px;
+			padding: 12px 14px;
+			font-family: inherit;
+			font-size: 1rem;
+			transition: border-color 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		input[type="email"]:focus,
+		textarea:focus,
+		input[type="file"]:focus {
+			outline: none;
+			border-color: var(--color-accent);
+			box-shadow: 0 0 0 3px rgba(118, 99, 242, 0.2);
+		}
+
+		textarea {
+			min-height: 180px;
+			resize: vertical;
+		}
+
+		.meta-row {
+			display: flex;
+			justify-content: space-between;
+			gap: 12px;
+			align-items: center;
+			font-size: 0.9rem;
+			color: rgba(40, 13, 140, 0.72);
+		}
+
+		.file-help {
+			font-size: 0.85rem;
+			color: rgba(40, 13, 140, 0.75);
+		}
+
+		.preview-wrap {
+			display: none;
+			margin-top: 10px;
+			padding: 10px;
+			border-radius: 12px;
+			border: 1px solid rgba(118, 99, 242, 0.28);
+			background-color: rgba(255, 255, 255, 0.72);
+		}
+
+		.preview-wrap img {
+			width: 100%;
+			max-height: 240px;
+			object-fit: contain;
+			border-radius: 10px;
+			background-color: rgba(255, 255, 255, 0.85);
+		}
+
+		.actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			align-items: center;
+			margin-top: 4px;
+		}
+
+		button {
+			background-color: var(--color-dopamine);
+			color: var(--color-text);
+			border: none;
+			border-radius: 999px;
+			padding: 13px 22px;
+			font-size: 1rem;
+			font-weight: 800;
+			cursor: pointer;
+			box-shadow: 0 4px 14px rgba(201, 253, 90, 0.4);
+			transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+
+		button:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(201, 253, 90, 0.6);
+		}
+
+		.status {
+			min-height: 24px;
+			font-size: 0.93rem;
+			font-weight: 600;
+		}
+
+		.status.error {
+			color: var(--color-danger);
+		}
+
+		.status.success {
+			color: var(--color-success);
+		}
+
+		footer {
+			background-color: var(--color-text);
+			color: rgba(255, 255, 255, 0.82);
+			padding: 44px 0;
+			font-size: 0.9rem;
+		}
+
+		.footer-content {
+			text-align: center;
+		}
+
+		.footer-links {
+			margin-top: 20px;
+			display: flex;
+			justify-content: center;
+			gap: 24px;
+			flex-wrap: wrap;
+		}
+
+		.footer-links a {
+			text-decoration: none;
+			color: white;
+			opacity: 0.75;
+			transition: opacity 0.2s ease;
+		}
+
+		.footer-links a:hover {
+			opacity: 1;
+			color: var(--color-dopamine);
+		}
+
+		@media (max-width: 940px) {
+			.support-layout {
+				grid-template-columns: 1fr;
+			}
+
+			.hero-support h1 {
+				font-size: 2.45rem;
+			}
+
+			.nav-content {
+				flex-direction: column;
+				gap: 12px;
+			}
+
+			.top-nav {
+				justify-content: center;
+				flex-wrap: wrap;
+			}
+		}
+
+		@media (max-width: 600px) {
+			.hero-support {
+				padding-top: 132px;
+			}
+
+			.hero-support h1 {
+				font-size: 2.05rem;
+			}
+
+			.support-card,
+			.form-card {
+				padding: 22px;
+				border-radius: 18px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<header>
+		<div class="container nav-content">
+			<a href="index.html" class="logo">Brainy<span>ADHD</span></a>
+			<ul class="top-nav">
+				<li><a href="contact.html">Contact</a></li>
+				<li><a href="support.html" aria-current="page">Support</a></li>
+				<li><a href="privacy.html">Privacy</a></li>
+				<li><a href="terms.html">Terms</a></li>
+			</ul>
+		</div>
+	</header>
+
+	<section class="hero-support">
+		<div class="container">
+			<h1>Need help? We are here for you.</h1>
+			<p>Send us your email and your message. You can also attach an optional screenshot to help us understand the issue faster.</p>
+		</div>
+	</section>
+
+	<main class="container support-layout">
+		<aside class="support-card">
+			<h2>Support details</h2>
+			<p>If the form does not open your email app, write us directly and include as much detail as possible.</p>
+
+			<ul class="support-list">
+				<li>Email: <a href="mailto:support@brainyahdh.com">support@brainyahdh.com</a></li>
+				<li>Typical response time: within 24-48 hours</li>
+				<li>Best format: describe what happened, expected behavior, and your device model</li>
+			</ul>
+		</aside>
+
+		<section class="form-card" aria-label="Support form">
+			<h2>Send a support request</h2>
+			<p>Fields marked as required must be completed before sending.</p>
+
+			<form id="supportForm" class="form-grid" novalidate>
+				<div class="form-field">
+					<label for="userEmail">Your email (required)</label>
+					<input type="email" id="userEmail" name="userEmail" placeholder="you@example.com" required>
+				</div>
+
+				<div class="form-field">
+					<label for="userMessage">Message (required)</label>
+					<textarea id="userMessage" name="userMessage" maxlength="1500" placeholder="Tell us what happened and how we can help." required></textarea>
+					<div class="meta-row">
+						<span>Max 1500 characters</span>
+						<span id="charCounter">0/1500</span>
+					</div>
+				</div>
+
+				<div class="form-field">
+					<label for="issueImage">Optional image upload</label>
+					<input type="file" id="issueImage" name="issueImage" accept="image/png,image/jpeg,image/webp,image/gif">
+					<p class="file-help">Optional: upload a screenshot. This page will preview it locally before you send.</p>
+					<div id="previewWrap" class="preview-wrap">
+						<img id="previewImage" alt="Selected issue screenshot preview">
+					</div>
+				</div>
+
+				<div class="actions">
+					<button type="submit">Send support email</button>
+					<span id="formStatus" class="status" aria-live="polite"></span>
+				</div>
+			</form>
+		</section>
+	</main>
+
+	<footer>
+		<div class="container footer-content">
+			<p>&copy; 2026 brainyahdh.com. All rights reserved.</p>
+			<div class="footer-links">
+				<a href="contact.html">Contact</a>
+				<a href="support.html">Support</a>
+				<a href="privacy.html">Privacy</a>
+				<a href="terms.html">Terms</a>
+			</div>
+		</div>
+	</footer>
+
+	<script>
+		const supportForm = document.getElementById("supportForm");
+		const userEmailInput = document.getElementById("userEmail");
+		const userMessageInput = document.getElementById("userMessage");
+		const issueImageInput = document.getElementById("issueImage");
+		const previewWrap = document.getElementById("previewWrap");
+		const previewImage = document.getElementById("previewImage");
+		const formStatus = document.getElementById("formStatus");
+		const charCounter = document.getElementById("charCounter");
+		const supportEmail = "support@brainyahdh.com";
+
+		function setStatus(message, type) {
+			formStatus.textContent = message;
+			formStatus.className = "status " + type;
+		}
+
+		function buildEmailBody(message, selectedImageName) {
+			const details = [
+				"Support request details:",
+				"",
+				message.trim(),
+				""
+			];
+
+			if (selectedImageName) {
+				details.push("Selected image: " + selectedImageName);
+				details.push("Please attach this image file manually when your email client opens.");
+			}
+
+			return details.join("\n");
+		}
+
+		userMessageInput.addEventListener("input", () => {
+			charCounter.textContent = userMessageInput.value.length + "/1500";
+		});
+
+		issueImageInput.addEventListener("change", () => {
+			const file = issueImageInput.files[0];
+
+			if (!file) {
+				previewImage.removeAttribute("src");
+				previewWrap.style.display = "none";
+				return;
+			}
+
+			const imageTypeAllowed = file.type.startsWith("image/");
+			if (!imageTypeAllowed) {
+				issueImageInput.value = "";
+				previewImage.removeAttribute("src");
+				previewWrap.style.display = "none";
+				setStatus("Please upload a valid image file.", "error");
+				return;
+			}
+
+			previewImage.src = URL.createObjectURL(file);
+			previewWrap.style.display = "block";
+			setStatus("Image selected: " + file.name, "success");
+		});
+
+		supportForm.addEventListener("submit", (event) => {
+			event.preventDefault();
+
+			const email = userEmailInput.value.trim();
+			const message = userMessageInput.value.trim();
+			const selectedImage = issueImageInput.files[0];
+
+			if (!email) {
+				setStatus("Please enter your email.", "error");
+				userEmailInput.focus();
+				return;
+			}
+
+			if (!userEmailInput.checkValidity()) {
+				setStatus("Please enter a valid email address.", "error");
+				userEmailInput.focus();
+				return;
+			}
+
+			if (!message) {
+				setStatus("Please enter your support message.", "error");
+				userMessageInput.focus();
+				return;
+			}
+
+			const subject = encodeURIComponent("Support request - Brainy ADHD");
+			const body = encodeURIComponent(buildEmailBody(message, selectedImage ? selectedImage.name : ""));
+			const mailtoUrl = "mailto:" + supportEmail + "?subject=" + subject + "&body=" + body;
+
+			window.location.href = mailtoUrl;
+			setStatus("Opening your email app now.", "success");
+		});
+	</script>
+</body>
+</html>
