@@ -83,6 +83,7 @@
 
         .hero-contact {
             padding: 140px 0 44px 0;
+            text-align: center;
         }
 
         .hero-contact h1 {
@@ -93,32 +94,9 @@
         }
 
         .hero-contact p {
-            font-size: 1.16rem;
-            max-width: 740px;
-            opacity: 0.9;
-        }
-
-        .contact-hero {
-            padding: 140px 0 120px 0;
-            min-height: 70vh;
-            display: flex;
-            align-items: center;
-        }
-
-        .contact-container {
-            text-align: center;
-        }
-
-        .contact-container h1 {
-            font-size: 3rem;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            letter-spacing: -0.02em;
-        }
-
-        .contact-container p {
             font-size: 1.2rem;
-            margin-bottom: 12px;
+            max-width: 740px;
+            margin: 0 auto;
             opacity: 0.9;
         }
 
@@ -137,7 +115,7 @@
         .response-time {
             font-size: 1.1rem !important;
             color: rgba(40, 13, 140, 0.75);
-            margin-top: 18px !important;
+            margin-top: 12px !important;
         }
 
         .content-grid {
@@ -176,16 +154,17 @@
         }
 
         .contact-list li {
-            padding: 12px 14px;
+            padding: 14px;
             border-radius: 14px;
             background-color: rgba(118, 99, 242, 0.08);
             border: 1px solid rgba(118, 99, 242, 0.2);
+            text-align: center;
         }
 
         .contact-list a {
             color: var(--color-text);
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .contact-list a:hover {
@@ -215,7 +194,6 @@
 
         input[type="text"],
         input[type="email"],
-        input[type="tel"],
         textarea {
             width: 100%;
             border: 1px solid rgba(118, 99, 242, 0.35);
@@ -230,7 +208,6 @@
 
         input[type="text"]:focus,
         input[type="email"]:focus,
-        input[type="tel"]:focus,
         textarea:focus {
             outline: none;
             border-color: var(--color-accent);
@@ -238,8 +215,12 @@
         }
 
         textarea {
-            min-height: 150px;
+            min-height: 120px;
             resize: vertical;
+        }
+
+        .btn-container {
+            margin-top: 10px;
         }
 
         button {
@@ -247,7 +228,7 @@
             color: var(--color-text);
             border: none;
             border-radius: 999px;
-            padding: 13px 22px;
+            padding: 13px 26px;
             font-size: 1rem;
             font-weight: 800;
             cursor: pointer;
@@ -310,17 +291,9 @@
                 font-size: 2.4rem;
             }
 
-            .contact-hero {
-                padding: 130px 0 100px 0;
-                min-height: auto;
-            }
-
-            .contact-container h1 {
-                font-size: 2.4rem;
-            }
-
-            .contact-container p {
-                font-size: 1.1rem;
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
             }
         }
 
@@ -337,19 +310,6 @@
                 font-size: 1.03rem;
             }
 
-            .contact-hero {
-                padding: 120px 0 80px 0;
-                min-height: auto;
-            }
-
-            .contact-container h1 {
-                font-size: 1.88rem;
-            }
-
-            .contact-container p {
-                font-size: 1.04rem;
-            }
-
             .response-time {
                 font-size: 0.98rem !important;
             }
@@ -363,17 +323,51 @@
             <ul class="top-nav">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="privacy.html">Privacy</a></li>
-                <li><a href="contact.html" aria-current="page">Contact</a></li>
+                <li><a href="support.html" aria-current="page">Support</a></li>
             </ul>
         </div>
     </header>
 
-    <main>
-        <section class="contact-hero">
-            <div class="container contact-container">
-                <h1>Need help with Brainy?</h1>
-                <p>Contact us at <a href="mailto:support@brainyadhd.com" class="email-link">support@brainyadhd.com</a></p>
-                <p class="response-time">We respond to all ADHD-related inquiries within 24 hours.</p>
+    <main class="container">
+        <section class="hero-contact">
+            <h1>Need help with Brainy? 🧠</h1>
+            <p>We are here to support your ADHD journey. Reach out to our team at any time.</p>
+            <p class="response-time">We respond to all inquiries within 24 hours.</p>
+        </section>
+
+        <section class="content-grid">
+            <div class="contact-card">
+                <h2>Direct Contact</h2>
+                <p>Skip the forms and email our specialist support team directly.</p>
+                <ul class="contact-list">
+                    <li>
+                        <a href="mailto:support@brainyadhd.com">📩 support@brainyadhd.com</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="form-card">
+                <h2>Submit a Support Ticket</h2>
+                <p>Describe your issue and we'll get right on it.</p>
+                <form action="mailto:support@brainyadhd.com" method="post" enctype="text/plain">
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" placeholder="Your name" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="Your email" required>
+                        </div>
+                        <div class="form-field full">
+                            <label for="message">How can we help you?</label>
+                            <textarea id="message" name="message" placeholder="Describe the issue or feature request..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="btn-container">
+                        <button type="submit">Send Ticket</button>
+                    </div>
+                </form>
             </div>
         </section>
     </main>
