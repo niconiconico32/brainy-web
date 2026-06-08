@@ -364,7 +364,7 @@
             <div class="form-card">
                 <h2>Submit a Support Ticket</h2>
                 <p>Describe your issue and we'll get right on it.</p>
-                <form id="supportForm" method="post" novalidate>
+                <form id="supportForm" action="https://formspree.io/f/meewgplz" method="post" novalidate>
                     <div class="form-grid">
                         <div class="form-field">
                             <label for="name">Name</label>
@@ -400,7 +400,7 @@
     </footer>
 
     <script>
-        const SUPPORT_FORM_ENDPOINT = "https://formspree.io/f/meewgplz;
+        const SUPPORT_FORM_ENDPOINT = "https://formspree.io/f/meewgplz";
 
         const supportForm = document.getElementById("supportForm");
         const formStatus = document.getElementById("formStatus");
