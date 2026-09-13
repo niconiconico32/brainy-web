@@ -1,7 +1,13 @@
 {
+  "scripts": {
+    "test:e2e:funnel": "node testers/e2e-regression.cjs"
+  },
   "dependencies": {
     "@revenuecat/purchases-js": "^1.60.1",
     "firebase": "^12.13.0",
     "qrcode-generator": "^2.0.4"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
   }
 }
