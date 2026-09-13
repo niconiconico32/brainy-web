@@ -1,0 +1,3807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,follow">
+    <title>Brainy — Tu sistema + tu mascota</title>
+    <meta name="description" content="Dos minutos. Diez preguntas. Una mascota que empieza a crecer con cada paso pequeño.">
+    <style>
+        :root {
+            --bg: #f4f1ea;
+            --panel: rgba(255, 255, 255, 0.76);
+            --panel-strong: rgba(255, 255, 255, 0.94);
+            --text: #24123f;
+            --muted: rgba(36, 18, 63, 0.68);
+            --accent: #5b4bf4;
+            --accent-2: #f2c94c;
+            --dopamine: #c9fd5a;
+            --success: #178a4a;
+            --danger: #d33c3c;
+            --border: rgba(36, 18, 63, 0.12);
+            --shadow: 0 24px 70px rgba(36, 18, 63, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(91, 75, 244, 0.18), transparent 32%),
+                radial-gradient(circle at top right, rgba(242, 201, 76, 0.22), transparent 24%),
+                linear-gradient(180deg, #fffdf8 0%, var(--bg) 55%, #efe8dd 100%);
+            line-height: 1.5;
+        }
+
+        .shell {
+            position: relative;
+            width: 100%;
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 20px 16px 56px;
+        }
+
+        .funnel-progress {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            padding: 14px 4px 10px;
+            background: linear-gradient(180deg, #fffdf8 0%, rgba(255, 253, 248, 0.9) 70%, transparent 100%);
+        }
+
+        .funnel-progress-track {
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(36, 18, 63, 0.08);
+            overflow: hidden;
+        }
+
+        .funnel-progress-track span {
+            display: block;
+            height: 100%;
+            width: 0%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            transition: width 0.35s ease;
+        }
+
+        .funnel-progress-label {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--muted);
+            text-align: center;
+            letter-spacing: 0.02em;
+        }
+
+        .funnel-root > .step {
+            animation: fadeUp 0.35s ease both;
+        }
+
+        .step-top {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 14px;
+            min-height: 46px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 14px;
+            border: 0;
+            border-radius: 999px;
+            background: rgba(36, 18, 63, 0.07);
+            color: var(--text);
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.18s ease, background 0.18s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-1px);
+            background: rgba(36, 18, 63, 0.12);
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            border-radius: 28px;
+            padding: 26px 24px 30px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 13px;
+            border-radius: 999px;
+            background: rgba(91, 75, 244, 0.1);
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        h1, h2, h3 {
+            letter-spacing: -0.03em;
+        }
+
+        .card-head h1 {
+            margin-top: 14px;
+            font-size: clamp(1.7rem, 6vw, 2.35rem);
+            line-height: 1.08;
+            font-weight: 900;
+        }
+
+        .card-head .sub {
+            margin-top: 12px;
+            font-size: 1.02rem;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .opt {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            min-height: 56px;
+            padding: 15px 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--panel-strong);
+            color: var(--text);
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+        }
+
+        .opt:hover {
+            transform: translateY(-1px);
+        }
+
+        .opt.selected {
+            border-color: rgba(91, 75, 244, 0.55);
+            background: rgba(91, 75, 244, 0.07);
+            box-shadow: 0 0 0 3px rgba(91, 75, 244, 0.12);
+        }
+
+        .opt-emoji {
+            font-size: 1.7rem;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .opt-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .opt-label {
+            display: block;
+            font-weight: 800;
+            font-size: 1.02rem;
+        }
+
+        .opt-desc {
+            display: block;
+            margin-top: 2px;
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+        .opt-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 999px;
+            border: 2px solid rgba(36, 18, 63, 0.18);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 900;
+            color: transparent;
+            flex-shrink: 0;
+        }
+
+        .opt.selected .opt-check {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        .note {
+            margin-top: 16px;
+            padding: 15px 17px;
+            border-radius: 18px;
+            background: rgba(242, 201, 76, 0.14);
+            border: 1px solid rgba(242, 201, 76, 0.4);
+            color: var(--text);
+            font-size: 0.96rem;
+            line-height: 1.55;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .field {
+            margin-top: 16px;
+        }
+
+        .field:first-child {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"] {
+            width: 100%;
+            border: 1px solid rgba(36, 18, 63, 0.14);
+            border-radius: 16px;
+            background: var(--panel-strong);
+            color: var(--text);
+            padding: 15px 16px;
+            font: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: rgba(91, 75, 244, 0.7);
+            box-shadow: 0 0 0 4px rgba(91, 75, 244, 0.14);
+        }
+
+        .field-error {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--danger);
+            display: none;
+        }
+
+        .check {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 8px;
+            font-size: 0.95rem;
+            color: var(--text);
+            line-height: 1.5;
+            cursor: pointer;
+        }
+
+        .check input {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            accent-color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .actions {
+            display: grid;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 52px;
+            width: 100%;
+            padding: 13px 20px;
+            border: 0;
+            border-radius: 999px;
+            font: inherit;
+            font-size: 1.03rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, opacity 0.18s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn[disabled] {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-dopamine {
+            background: var(--dopamine);
+            color: var(--text);
+            box-shadow: 0 14px 30px rgba(201, 253, 90, 0.38);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 14px 30px rgba(91, 75, 244, 0.24);
+        }
+
+        .btn-secondary {
+            background: rgba(36, 18, 63, 0.08);
+            color: var(--text);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--muted);
+            box-shadow: none;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(36, 18, 63, 0.06);
+        }
+
+        .lead {
+            margin-top: 18px;
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--muted);
+        }
+
+        .lead + .actions {
+            margin-top: 26px;
+        }
+
+        .body-copy {
+            margin-top: 16px;
+            font-size: 1.02rem;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 26px;
+        }
+
+        .brand-row svg {
+            width: 40px;
+            height: 40px;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 900;
+        }
+
+        .brand-name span {
+            color: var(--accent);
+        }
+
+        .mascot-hero {
+            text-align: center;
+            margin: 8px 0 4px;
+        }
+
+        .mascot-hero .egg,
+        .mascot-hero .pet {
+            margin: 0 auto;
+        }
+
+        .pet-stage {
+            position: relative;
+            width: 168px;
+            height: 168px;
+            margin: 0 auto;
+        }
+
+        .egg {
+            position: absolute;
+            left: 50%;
+            bottom: 4px;
+            transform: translateX(-50%);
+            width: 118px;
+            height: 148px;
+            border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+            background: linear-gradient(180deg, #fffdf5 20%, #f1e7ff 100%);
+            box-shadow: inset -14px -18px 30px rgba(91, 75, 244, 0.12), 0 14px 30px rgba(36, 18, 63, 0.16);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .egg::before,
+        .egg::after {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 11px;
+            border-radius: 50%;
+            background: rgba(91, 75, 244, 0.18);
+        }
+
+        .egg::before {
+            top: 44%;
+            left: 26%;
+        }
+
+        .egg::after {
+            top: 58%;
+            right: 24%;
+        }
+
+        .egg.cracked::after {
+            background: linear-gradient(135deg, rgba(36, 18, 63, 0.4) 0 2px, transparent 2px 100%);
+            width: 30px;
+            height: 26px;
+            right: 34%;
+            top: 26%;
+            border-radius: 0;
+            transform: rotate(18deg);
+        }
+
+        .pet {
+            position: absolute;
+            left: 50%;
+            bottom: 2px;
+            transform: translateX(-50%) scale(0.75);
+            opacity: 0;
+            filter: drop-shadow(0 0 0px rgba(201, 253, 90, 0));
+            transition: transform 0.45s ease, opacity 0.45s ease, filter 0.45s ease;
+        }
+
+        .pet svg {
+            display: block;
+            width: 150px;
+            height: 150px;
+        }
+
+        .pet-stage[data-stage="1"] .pet {
+            opacity: 0.35;
+            transform: translateX(-50%) scale(0.78);
+        }
+
+        .pet-stage[data-stage="2"] .pet {
+            opacity: 0.6;
+            transform: translateX(-50%) scale(0.87);
+        }
+
+        .pet-stage[data-stage="3"] .pet {
+            opacity: 0.85;
+            transform: translateX(-50%) scale(0.95);
+        }
+
+        .pet-stage[data-stage="4"] .pet {
+            opacity: 1;
+            transform: translateX(-50%) scale(1.05);
+            filter: drop-shadow(0 0 18px rgba(201, 253, 90, 0.75));
+        }
+
+        .pet-stage[data-stage="4"] .egg {
+            transform: translateX(-50%) translateY(6px) scale(0.92);
+            opacity: 0.25;
+        }
+
+        .sparkle {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            font-size: 2rem;
+            opacity: 0;
+            transform: scale(0.4) rotate(-20deg);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .pet-stage[data-stage="4"] .sparkle {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .step-caption {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .micro-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .micro {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            min-height: 54px;
+            padding: 13px 15px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--panel-strong);
+            color: var(--text);
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+        }
+
+        .micro:hover {
+            transform: translateY(-1px);
+        }
+
+        .micro.done {
+            border-color: rgba(23, 138, 74, 0.3);
+            background: rgba(23, 138, 74, 0.08);
+        }
+
+        .micro .micro-num {
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(91, 75, 244, 0.09);
+            color: var(--accent);
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .micro.done .micro-num {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .micro-label {
+            flex: 1;
+            font-weight: 800;
+            font-size: 0.98rem;
+        }
+
+        .curves {
+            margin-top: 22px;
+        }
+
+        .curves-card {
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--panel-strong);
+            padding: 20px 18px 18px;
+        }
+
+        .curves-svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .legend {
+            list-style: none;
+            display: grid;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .legend li {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .legend-dot {
+            width: 30px;
+            height: 8px;
+            border-radius: 999px;
+            margin-top: 7px;
+            flex-shrink: 0;
+        }
+
+        .legend-dot.bad {
+            background: repeating-linear-gradient(90deg, #b9b0d6 0 7px, transparent 7px 12px);
+        }
+
+        .legend-dot.good {
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        }
+
+        .legend strong {
+            display: block;
+            font-size: 0.98rem;
+        }
+
+        .legend p {
+            margin-top: 2px;
+            font-size: 0.86rem;
+            color: var(--muted);
+        }
+
+        .loading-list {
+            list-style: none;
+            display: grid;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .loading-item {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 15px 16px;
+            border-radius: 18px;
+            background: var(--panel-strong);
+            border: 1px solid var(--border);
+            font-weight: 700;
+            opacity: 0.25;
+            transform: translateY(8px);
+            transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.4s ease;
+        }
+
+        .loading-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .loading-item.done {
+            border-color: rgba(23, 138, 74, 0.28);
+        }
+
+        .loading-pill {
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(91, 75, 244, 0.1);
+            color: var(--accent);
+            font-size: 0.85rem;
+        }
+
+        .loading-item.done .loading-pill {
+            background: rgba(23, 138, 74, 0.14);
+            color: var(--success);
+        }
+
+        .loading-spin {
+            border: 2px solid rgba(91, 75, 244, 0.18);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            animation: spin 0.7s linear infinite;
+        }
+
+        .loading-final {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--success);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-final.visible {
+            opacity: 1;
+        }
+
+        .loading-hint {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+        .picker-cat {
+            margin-top: 24px;
+        }
+
+        .picker-cat:first-of-type {
+            margin-top: 20px;
+        }
+
+        .cat-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--muted);
+        }
+
+        .cat-head .cat-emoji {
+            font-size: 1.3rem;
+            filter: none;
+        }
+
+        .picker-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .pick-card {
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--panel-strong);
+            overflow: hidden;
+        }
+
+        .pick-card.selected {
+            border-color: rgba(91, 75, 244, 0.5);
+            box-shadow: 0 0 0 3px rgba(91, 75, 244, 0.1);
+        }
+
+        .pick-head {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .pick-expand {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 62px;
+            padding: 12px 14px;
+            border: 0;
+            background: transparent;
+            color: var(--text);
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .pick-emoji {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .pick-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .pick-body strong {
+            display: block;
+            font-size: 0.98rem;
+            font-weight: 800;
+            line-height: 1.35;
+        }
+
+        .pick-meta {
+            display: block;
+            margin-top: 3px;
+            font-size: 0.84rem;
+            color: var(--muted);
+        }
+
+        .pick-chev {
+            font-size: 0.9rem;
+            color: var(--muted);
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .pick-card.open .pick-chev {
+            transform: rotate(180deg);
+        }
+
+        .pick-check {
+            width: 54px;
+            flex-shrink: 0;
+            border: 0;
+            border-left: 1px solid var(--border);
+            background: transparent;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: rgba(36, 18, 63, 0.22);
+            transition: background 0.18s ease, color 0.18s ease;
+        }
+
+        .pick-card.selected .pick-check {
+            background: rgba(91, 75, 244, 0.1);
+            color: var(--accent);
+        }
+
+        .pick-steps {
+            padding: 4px 14px 16px 16px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .pick-steps[hidden] {
+            display: none;
+        }
+
+        .pick-steps ol {
+            margin: 14px 0 0;
+            padding-left: 20px;
+            display: grid;
+            gap: 8px;
+            font-size: 0.93rem;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        .pick-counter {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--muted);
+        }
+
+        .pick-counter strong {
+            color: var(--accent);
+}
+
+        .data-error {
+            margin-top: 22px;
+            padding: 18px;
+            border-radius: 18px;
+            background: rgba(211, 60, 60, 0.1);
+            color: var(--danger);
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .plan-block {
+            margin-top: 26px;
+        }
+
+        .plan-block h4 {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 900;
+            color: var(--text);
+        }
+
+        .plan-note {
+            margin: 6px 0 0;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .plan-rows {
+            margin-top: 12px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .plan-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 16px;
+            background: var(--panel-strong);
+            border: 1px solid rgba(91, 75, 244, 0.2);
+        }
+
+        .plan-emoji {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .plan-egg {
+            width: 40px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            box-shadow: inset -4px -6px 10px rgba(36, 18, 63, 0.18);
+        }
+
+        .plan-name {
+            flex: 1;
+            font-size: 0.94rem;
+            font-weight: 800;
+            line-height: 1.4;
+            color: var(--text);
+        }
+
+        .plan-sep {
+            color: var(--muted);
+            font-weight: 400;
+        }
+
+        .plan-meta {
+            flex-shrink: 0;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--muted);
+        }
+
+        .plan-copy {
+            margin-top: 26px;
+            padding: 16px 18px;
+            border-radius: 16px;
+            background: rgba(201, 253, 90, 0.14);
+            border: 1px dashed rgba(36, 18, 63, 0.25);
+            font-size: 0.92rem;
+            line-height: 1.6;
+            font-weight: 700;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .app-mock {
+            margin-top: 22px;
+            border: 1px solid var(--border);
+            border-radius: 26px;
+            background: var(--panel-strong);
+            overflow: hidden;
+            box-shadow: inset 0 0 0 6px rgba(36, 18, 63, 0.04);
+        }
+
+        .app-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .app-head h3 {
+            font-size: 1.05rem;
+            font-weight: 900;
+        }
+
+        .app-head span {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--muted);
+        }
+
+        .app-body {
+            padding: 14px 16px 20px;
+        }
+
+        .app-pet {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 0 2px;
+        }
+
+        .app-pet .pet-stage {
+            width: 128px;
+            height: 128px;
+        }
+
+        .app-pet .pet svg {
+            width: 118px;
+            height: 118px;
+        }
+
+        .app-pet .egg {
+            width: 92px;
+            height: 116px;
+            bottom: 0;
+        }
+
+        .app-body h4 {
+            margin: 14px 0 10px;
+            font-size: 0.9rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--muted);
+        }
+
+        .preview-mock {
+            margin-top: 18px;
+        }
+
+        .pv-label-row {
+            margin: 14px 0 10px;
+            font-size: 0.82rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+        }
+
+        .pv-companion {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(91, 75, 244, 0.1), rgba(242, 201, 76, 0.1));
+            border: 1px solid rgba(91, 75, 244, 0.25);
+        }
+
+        .pv-egg {
+            width: 56px;
+            height: 68px;
+            flex-shrink: 0;
+            border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: inset -5px -7px 12px rgba(36, 18, 63, 0.18);
+            transition: transform 0.2s ease;
+        }
+
+        .pv-egg.pulse {
+            animation: pvPulse 0.9s ease;
+        }
+
+        @keyframes pvPulse {
+            0% { transform: scale(1); }
+            35% { transform: scale(1.16) rotate(-4deg); }
+            60% { transform: scale(0.96); }
+            100% { transform: scale(1.06); }
+        }
+
+        .pv-companion-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .pv-egg-name {
+            font-size: 1rem;
+            font-weight: 900;
+            color: var(--text);
+        }
+
+        .pv-routine {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pv-count {
+            flex-shrink: 0;
+            font-size: 0.8rem;
+            font-weight: 900;
+            color: var(--accent);
+            background: rgba(91, 75, 244, 0.12);
+            padding: 6px 10px;
+            border-radius: 999px;
+        }
+
+        .pv-mission {
+            padding: 0 2px;
+        }
+
+        .pv-task {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.02rem;
+            font-weight: 900;
+            color: var(--text);
+        }
+
+        .pv-task-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            background: rgba(201, 253, 90, 0.4);
+            font-size: 1.05rem;
+            flex-shrink: 0;
+        }
+
+        .pv-hint {
+            margin: 10px 0 12px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .pv-steps {
+            display: grid;
+            gap: 8px;
+        }
+
+        .pv-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 13px 14px;
+            border-radius: 14px;
+            background: rgba(36, 18, 63, 0.05);
+            border: 1px solid transparent;
+            font-family: inherit;
+            font-size: 0.94rem;
+            font-weight: 800;
+            color: var(--text);
+            text-align: left;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .pv-step:hover {
+            background: rgba(91, 75, 244, 0.08);
+        }
+
+        .pv-step .pv-circle {
+            width: 26px;
+            height: 26px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(91, 75, 244, 0.6);
+            border-radius: 50%;
+            color: rgba(91, 75, 244, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .pv-step .pv-label {
+            flex: 1;
+        }
+
+        .pv-step .pv-check {
+            opacity: 0;
+            font-weight: 900;
+            color: var(--accent);
+            transform: scale(0.5);
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .pv-step.done {
+            background: rgba(201, 253, 90, 0.3);
+            border-color: var(--accent);
+        }
+
+        .pv-step.done .pv-circle {
+            border-color: var(--dopamine);
+            background: var(--dopamine);
+            color: transparent;
+        }
+
+        .pv-step.done .pv-check {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .pv-feedback {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: var(--dopamine);
+            color: var(--text);
+            font-size: 0.9rem;
+            font-weight: 900;
+            text-align: center;
+            animation: pvFadeIn 0.35s ease;
+        }
+
+        @keyframes pvFadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .field-note {
+            margin-top: 8px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .presell-box {
+            margin-top: 10px;
+        }
+
+        .presell-personalized {
+            background: linear-gradient(135deg, rgba(201, 253, 90, 0.14), rgba(91, 75, 244, 0.1));
+            border: 1px solid rgba(201, 253, 90, 0.5);
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+
+        .presell-personalized span {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .presell-personalized p {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.55;
+        }
+
+        .presell-benefit {
+            display: flex;
+            gap: 12px;
+            padding: 13px 4px;
+            border-bottom: 1px solid rgba(36, 18, 63, 0.08);
+        }
+
+        .presell-benefit:last-child {
+            border-bottom: none;
+        }
+
+        .presell-icon {
+            flex: 0 0 40px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(91, 75, 244, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .presell-body strong {
+            display: block;
+            font-size: 0.98rem;
+            margin-bottom: 2px;
+        }
+
+        .presell-body p {
+            margin: 0;
+            font-size: 0.86rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .handoff-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            margin-top: 16px;
+        }
+
+        .handoff-check {
+            width: 74px;
+            height: 74px;
+            border-radius: 50%;
+            background: var(--dopamine);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 900;
+            box-shadow: 0 0 0 8px rgba(201, 253, 90, 0.18);
+        }
+
+        .handoff-main {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .handoff-open {
+            width: 100%;
+        }
+
+        .handoff-hint {
+            margin: 10px 4px 0;
+            font-size: 0.84rem;
+            color: var(--muted);
+        }
+
+        .handoff-stores {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .store-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            padding: 0 20px;
+            border-radius: 14px;
+            border: 2px solid rgba(91, 75, 244, 0.28);
+            background: rgba(91, 75, 244, 0.06);
+            font-weight: 800;
+            font-size: 0.92rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .handoff-note {
+            margin-top: 12px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .handoff-desk-title {
+            margin: 0 0 8px;
+            font-weight: 900;
+            font-size: 1.02rem;
+        }
+
+        .handoff-steps {
+            text-align: left;
+            margin: 0 auto 14px;
+            padding-left: 20px;
+            max-width: 340px;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--muted);
+        }
+
+        .handoff-copy {
+            margin-top: 4px;
+        }
+
+        .paywall-summary {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 4px 0 14px;
+        }
+
+        .paywall-chip {
+            background: rgba(91, 75, 244, 0.08);
+            border: 1px solid rgba(91, 75, 244, 0.18);
+            border-radius: 999px;
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .plan-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 6px 0 14px;
+        }
+
+        .plan-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 16px 16px 16px 48px;
+            border-radius: 18px;
+            border: 2px solid var(--border);
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            text-align: left;
+            font: inherit;
+            color: var(--text);
+            transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+        }
+
+        .plan-card .plan-radio {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(36, 18, 63, 0.25);
+            background: #fff;
+        }
+
+        .plan-card .plan-radio.hl {
+            border-color: var(--accent);
+            background: var(--accent);
+            box-shadow: inset 0 0 0 4px #fff;
+        }
+
+        .plan-card.selected {
+            border-color: var(--accent);
+            background: rgba(91, 75, 244, 0.06);
+            transform: translateY(-1px);
+        }
+
+        .plan-card .plan-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .plan-card .plan-info strong {
+            font-size: 1.02rem;
+        }
+
+        .plan-card .plan-info span {
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        .plan-card .plan-price {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            flex-shrink: 0;
+        }
+
+        .plan-card .plan-price strong {
+            font-size: 1.12rem;
+            color: var(--accent);
+        }
+
+        .plan-card .plan-price span {
+            font-size: 0.76rem;
+            color: var(--muted);
+        }
+
+        .plan-badge {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: var(--dopamine);
+            color: var(--text);
+            font-size: 0.68rem;
+            font-weight: 900;
+            vertical-align: middle;
+        }
+
+        .paywall-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .paywall-recovery {
+            text-align: center;
+            padding: 18px 6px 4px;
+            color: var(--muted);
+        }
+
+        .paywall-recovery p {
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .success-checks {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 6px 0 16px;
+            padding: 0;
+        }
+
+        .success-checks li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.94rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .success-checks .ok {
+            width: 26px;
+            height: 26px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: var(--dopamine);
+            color: var(--text);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+        }
+
+        .handoff-qr {
+            margin: 6px 0 2px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 10px 28px rgba(36, 18, 63, 0.12);
+        }
+
+        .handoff-qr svg {
+            display: block;
+            width: 208px;
+            height: auto;
+        }
+
+        .paywall-status {
+            text-align: center;
+            padding: 26px 6px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .paywall-status .spinner {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            margin-right: 8px;
+            vertical-align: -4px;
+            border: 3px solid rgba(91, 75, 244, 0.25);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .footer-note {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%) translateY(20px);
+            z-index: 90;
+            max-width: min(92vw, 460px);
+            padding: 15px 18px;
+            border-radius: 20px;
+            background: var(--panel-strong);
+            border: 1px solid rgba(91, 75, 244, 0.24);
+            box-shadow: 0 18px 44px rgba(36, 18, 63, 0.2);
+            font-size: 0.96rem;
+            font-weight: 700;
+            line-height: 1.5;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 420px) {
+            .panel {
+                padding: 22px 18px 26px;
+                border-radius: 24px;
+            }
+
+            .opt {
+                padding: 13px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="shell">
+        <header class="funnel-progress" id="funnelProgress" hidden>
+            <div class="funnel-progress-track"><span id="funnelProgressFill"></span></div>
+            <span class="funnel-progress-label" id="funnelProgressLabel"></span>
+        </header>
+        <div class="funnel-root" id="funnelRoot" role="main"></div>
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </main>
+
+    <script src="assets/revenuecat-sdk.js"></script>
+    <script src="assets/qrcode.min.js"></script>
+    <script src="assets/revenuecat.js"></script>
+    <script>
+        const STORAGE_STATE_KEY = 'brainy_funnel_state';
+        const STORAGE_STEP_KEY = 'brainy_funnel_step';
+        const QUESTION_KEYS = ['q1_estado_actual', 'q2_dolor', 'q3_intentos_previos', 'q4_causa_fracaso', 'q5_identidad_futura', 'q6_area_prioritaria', 'q7_compromiso', 'q8_tiempo_disponible', 'q9_listo', 'q10_cuando_empezar'];
+
+        const CATEGORIES = [
+            { id: 'foco_productividad', emoji: '🧠', label: 'Foco & Productividad' },
+            { id: 'rutinas_organizacion', emoji: '🏠', label: 'Rutinas & Organización personal' },
+            { id: 'salud_energia', emoji: '💪', label: 'Salud & Energía' },
+            { id: 'calma_regulacion', emoji: '😌', label: 'Calma & Regulación emocional' }
+        ];
+
+        const EGGS = [
+            { catalogId: 'huevo_nebulosa', id: 'huevo_nebulosa', name: 'Nebulosa', emoji: '🌌', color: '#a99bff', imageUrl: null },
+            { catalogId: 'huevo_solar', id: 'huevo_solar', name: 'Solar', emoji: '☀️', color: '#f2c94c', imageUrl: null },
+            { catalogId: 'huevo_oceano', id: 'huevo_oceano', name: 'Océano', emoji: '🌊', color: '#5bc0eb', imageUrl: null },
+            { catalogId: 'huevo_bosque', id: 'huevo_bosque', name: 'Bosque', emoji: '🌿', color: '#58d68d', imageUrl: null },
+            { catalogId: 'huevo_cielo', id: 'huevo_cielo', name: 'Cielo', emoji: '☁️', color: '#85c1e9', imageUrl: null },
+            { catalogId: 'huevo_lava', id: 'huevo_lava', name: 'Lava', emoji: '🌋', color: '#ec7063', imageUrl: null },
+            { catalogId: 'huevo_flor', id: 'huevo_flor', name: 'Flor', emoji: '🌸', color: '#f5b7c5', imageUrl: null },
+            { catalogId: 'huevo_estrella', id: 'huevo_estrella', name: 'Estrella', emoji: '⭐', color: '#f7dc6f', imageUrl: null }
+        ];
+
+        const TASKS_JSON_URL = 'brainy-tasks-steps.json';
+        const ROUTINES_JSON_URL = 'brainy-daily-routines.json';
+
+        const FUNNEL_CONFIG = {
+            enableBackend: true,
+            supabaseUrl: 'https://auth.brainyadhd.com',
+            anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkcXdncWZpc2l0ZXN3YmJkdXJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDgxNTUsImV4cCI6MjA4MTA4NDE1NX0.oLadI1C5H89CWqGAz0NjDjbp_zwDGsl726YMVvlqIYg',
+            createPlanUrl: 'https://auth.brainyadhd.com/functions/v1/create-funnel-plan',
+            eggCatalogUrl: '',
+            iosStoreUrl: '',
+            androidStoreUrl: '',
+            analyticsEndpoint: '',
+            revenuecatWebApiKey: '',
+            revenuecatOfferingId: 'web_default',
+            revenuecatEntitlementId: 'brainy Pro',
+            revenuecatTermsUrl: '',
+            appDeepLinkScheme: 'brainy'
+        };
+
+        window.brainyFunnelConfig = FUNNEL_CONFIG;
+
+        const __deployedConfig__ = window.__BRAINY_FUNNEL_CONFIG__;
+        if (__deployedConfig__ && typeof __deployedConfig__ === 'object') {
+            Object.keys(__deployedConfig__).forEach((key) => {
+                if (key in FUNNEL_CONFIG) {
+                    FUNNEL_CONFIG[key] = __deployedConfig__[key];
+                }
+            });
+        }
+
+        const FUNNEL_EXPERIMENTS = {
+            interactivePreview: true,
+            showPrePaywall: true,
+            webCheckout: true
+        };
+
+        window.brainyAnalyticsQueue = [];
+
+        let tasksData = null;
+        let routinesData = null;
+        let loadDataError = null;
+
+        async function loadFunnelData() {
+            try {
+                const [tasksRes, routinesRes] = await Promise.all([
+                    fetch(TASKS_JSON_URL).then((res) => res.json()),
+                    fetch(ROUTINES_JSON_URL).then((res) => res.json())
+                ]);
+                tasksData = tasksRes;
+                routinesData = routinesRes;
+            } catch (err) {
+                loadDataError = err;
+            }
+        }
+
+        function routinesByCategory() {
+            const grouped = CATEGORIES.map((cat) => ({
+                ...cat,
+                items: (routinesData.daily_routines || []).filter((r) => r.category === cat.id)
+            }));
+            return grouped.filter((cat) => cat.items.length > 0);
+        }
+
+        function categoryMeta(id) {
+            return CATEGORIES.find((c) => c.id === id) || { emoji: '✅', label: 'Otros' };
+        }
+
+        const DEFAULT_STATE = {
+            q1_estado_actual: null,
+            q2_dolor: [],
+            q3_intentos_previos: null,
+            q4_causa_fracaso: null,
+            q5_identidad_futura: null,
+            q6_area_prioritaria: null,
+            q7_compromiso: null,
+            q8_tiempo_disponible: null,
+            q9_listo: null,
+            q10_cuando_empezar: null,
+            edad: null,
+            email: null,
+            marketing_optin: false,
+            selectedTasks: [],
+            selectedRoutines: [],
+            assignedRoutines: [],
+            previewInteracted: false,
+            emailSubmitted: false,
+            completedAt: null,
+            planId: null,
+            claimToken: null,
+            purchaseCompleted: false,
+            selectedPackageId: null,
+            pendingRedemptionUrl: null
+        };
+
+        const PET_SVG = `
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+                <defs>
+                    <linearGradient id="petGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="#a99bff"></stop>
+                        <stop offset="1" stop-color="#6d5ff5"></stop>
+                    </linearGradient>
+                </defs>
+                <ellipse cx="60" cy="70" rx="38" ry="34" fill="url(#petGrad)"></ellipse>
+                <ellipse cx="60" cy="88" rx="22" ry="10" fill="#5a4ed8" opacity="0.35"></ellipse>
+                <ellipse cx="48" cy="63" rx="4.5" ry="6" fill="#24123f"></ellipse>
+                <circle cx="49.6" cy="60.6" r="1.7" fill="#fff"></circle>
+                <ellipse cx="72" cy="63" rx="4.5" ry="6" fill="#24123f"></ellipse>
+                <circle cx="73.6" cy="60.6" r="1.7" fill="#fff"></circle>
+                <path d="M52 74 Q60 81 68 74" stroke="#24123f" stroke-width="3" fill="none" stroke-linecap="round"></path>
+                <ellipse cx="40" cy="76" rx="6" ry="3.6" fill="#d8b4fe" opacity="0.6"></ellipse>
+                <ellipse cx="80" cy="76" rx="6" ry="3.6" fill="#d8b4fe" opacity="0.6"></ellipse>
+            </svg>`;
+
+        function eggHtml(extraClass) {
+            return `<div class="egg ${extraClass || ''}"></div>`;
+        }
+
+        function petStageHtml(stage, compact) {
+            return `
+                <div class="pet-stage" data-stage="${stage || 4}"${compact ? ' style="width:128px;height:128px"' : ''}>
+                    <span class="sparkle">✨</span>
+                    ${eggHtml(compact ? '' : '')}
+                    <div class="pet">${PET_SVG}</div>
+                </div>`;
+        }
+
+        const CURVES_SVG = `
+            <svg class="curves-svg" viewBox="0 0 320 168" aria-hidden="true">
+                <defs>
+                    <linearGradient id="curveGrad" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0" stop-color="#5b4bf4"></stop>
+                        <stop offset="1" stop-color="#f2c94c"></stop>
+                    </linearGradient>
+                </defs>
+                <path d="M16 140 C42 120 44 44 70 62 C96 80 94 128 122 112 C150 96 148 30 178 46 C208 62 206 122 236 108 C266 94 262 58 304 30" fill="none" stroke="#b9b0d6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 9"></path>
+                <g fill="#c2b9e2">
+                    <circle cx="16" cy="140" r="4"></circle>
+                    <circle cx="70" cy="62" r="4"></circle>
+                    <circle cx="122" cy="112" r="4"></circle>
+                    <circle cx="178" cy="46" r="4"></circle>
+                    <circle cx="236" cy="108" r="4"></circle>
+                </g>
+                <path d="M16 140 C78 138 130 122 190 88 C238 62 284 38 304 22" fill="none" stroke="url(#curveGrad)" stroke-width="6" stroke-linecap="round"></path>
+                <circle cx="304" cy="22" r="7" fill="#f2c94c"></circle>
+                <circle cx="304" cy="22" r="12" fill="none" stroke="#f2c94c" opacity="0.35"></circle>
+            </svg>`;
+
+        const FUNNEL_STEPS = [
+            {
+                id: 'begin',
+                type: 'begin',
+                eyebrow: 'Brainy',
+                headline: 'Vamos a construir el sistema de tu mente',
+                sub: 'Dos minutos, diez preguntas. Al final, una mascota que empieza a crecer con cada paso pequeño que des.'
+            },
+            {
+                id: 'p1',
+                type: 'question',
+                questionIndex: 1,
+                key: 'q1_estado_actual',
+                eyebrow: 'Antes de empezar...',
+                headline: '¿Cuál de estos te describe hoy?',
+                sub: 'Sé honesto. Nadie más va a ver esto.',
+                options: [
+                    { emoji: '😵‍💫', label: 'Modo caos', desc: 'todo se acumula, no sé por dónde empezar' },
+                    { emoji: '🌀', label: 'Estancado', desc: 'lo intento pero no sostengo nada' },
+                    { emoji: '⚡', label: 'Casi ahí', desc: 'sé qué hacer, me cuesta arrancar' },
+                    { emoji: '🧠', label: 'Listo para ordenar mi mente', desc: 'solo me falta el sistema' },
+                    { emoji: '🤷', label: 'Aún no lo tengo claro', desc: '' }
+                ]
+            },
+            {
+                id: 'p2',
+                type: 'question',
+                questionIndex: 2,
+                key: 'q2_dolor',
+                multi: true,
+                headline: '¿Qué es lo que más te está frenando ahora?',
+                sub: 'Elegí todas las que apliquen.',
+                reassure: 'Gracias por compartirlo. Esto no es falta de voluntad — es que tu cabeza necesita un sistema distinto al de todos. Sigamos.',
+                options: [
+                    'Procrastino incluso en lo que quiero hacer',
+                    'Tengo mil tareas en la cabeza y no sé por dónde arrancar',
+                    'Empiezo cosas y no las termino',
+                    'Una tarea grande me abruma antes de empezarla',
+                    'Se me olvidan los hábitos si nada me lo recuerda'
+                ]
+            },
+            {
+                id: 'p3',
+                type: 'question',
+                questionIndex: 3,
+                key: 'q3_intentos_previos',
+                headline: '¿Cuántas veces intentaste ordenar esto antes?',
+                sub: 'No hay juicio, solo queremos entender tu punto de partida.',
+                options: [
+                    'Nunca lo intenté con un sistema real',
+                    'Probé apps o planners y los abandoné',
+                    'Perdí la cuenta de cuántas veces empecé de cero',
+                    'Vivo el ciclo: emoción inicial → abandono a los días'
+                ]
+            },
+            {
+                id: 'p4',
+                type: 'question',
+                questionIndex: 4,
+                key: 'q4_causa_fracaso',
+                headline: '¿Por qué creés que no se sostuvo la última vez?',
+                reassure: 'Esto no fue un fracaso tuyo. Fue un sistema que no estaba diseñado para un cerebro como el tuyo.',
+                options: [
+                    'La tarea se sentía enorme e inabarcable',
+                    'Perdí la motivación a los pocos días',
+                    'Nada me daba feedback ni recordaba por mí',
+                    'Nadie sabía que lo estaba intentando'
+                ]
+            },
+            {
+                id: 'interstitial_1',
+                type: 'interstitial',
+                headline: 'No estás solo en esto',
+                body: 'Diseñado para cerebros con TDAH. El patrón no es tu falta de voluntad: sin un sistema que desglose lo grande y te devuelva progreso, cualquier persona abandonaría. Brainy convierte eso en pasos chicos y una mascota que crece con cada uno.',
+                cta: 'Seguir →'
+            },
+            {
+                id: 'p5',
+                type: 'question',
+                questionIndex: 5,
+                key: 'q5_identidad_futura',
+                headline: '¿En qué versión de vos te querés convertir?',
+                options: [
+                    { emoji: '🎯', label: 'El Enfocado', desc: 'el que termina lo que empieza' },
+                    { emoji: '🗂️', label: 'El Organizado', desc: 'el que tiene un sistema, no caos' },
+                    { emoji: '🌱', label: 'El Constante', desc: 'el que sostiene hábitos sin depender de "tener ganas"' },
+                    { emoji: '😌', label: 'El Tranquilo', desc: 'el que dejó de sentirse abrumado por su propia lista' }
+                ]
+            },
+            {
+                id: 'interstitial_2',
+                type: 'interstitial',
+                headline: 'Así funciona un cerebro con sistema',
+                body: 'No es fuerza de voluntad. Es desglosar hasta que cada paso se sienta posible.',
+                cta: 'Quiero ver cómo crece la mía →',
+                breakdown: {
+                    title: '"Organizar mi clóset" se parte en:',
+                    steps: ['Sacar todo', 'Separar en 3 pilas', 'Doblar', 'Guardar'],
+                    caption: 'Cada micro-paso que completás también la hace crecer.'
+                }
+            },
+            {
+                id: 'p6',
+                type: 'question',
+                questionIndex: 6,
+                key: 'q6_area_prioritaria',
+                headline: '¿Qué área querés poner en orden primero?',
+                options: [
+                    { emoji: '🧠', label: 'Foco & Productividad', desc: 'trabajo/estudio' },
+                    { emoji: '🏠', label: 'Rutinas & Organización personal', desc: '' },
+                    { emoji: '💪', label: 'Salud & Energía', desc: '' },
+                    { emoji: '😌', label: 'Calma & Regulación emocional', desc: '' }
+                ]
+            },
+            {
+                id: 'p7',
+                type: 'question',
+                questionIndex: 7,
+                key: 'q7_compromiso',
+                headline: '¿Qué tan comprometido estás con cambiar esto, en serio, ahora mismo?',
+                options: [
+                    'Solo estoy mirando opciones',
+                    'Medio comprometido',
+                    'Totalmente comprometido — quiero empezar ya'
+                ]
+            },
+            {
+                id: 'p8',
+                type: 'question',
+                questionIndex: 8,
+                key: 'q8_tiempo_disponible',
+                headline: '¿Cuánto tiempo podés dedicarle por día?',
+                options: [
+                    'Menos de 15 min',
+                    '15-30 min',
+                    '30-60 min',
+                    'Más de 1 hora'
+                ]
+            },
+            {
+                id: 'interstitial_3',
+                type: 'interstitial',
+                headline: 'Así se ve intentarlo solo vs. tener un sistema',
+                body: 'No necesitás más disciplina. Necesitás un sistema que te sostenga en los días difíciles.',
+                cta: 'Continuar →',
+                curves: [
+                    { label: 'Solo con fuerza de voluntad', desc: 'línea irregular, sube y cae en ciclos de motivación', cls: 'bad' },
+                    { label: 'Con Brainy', desc: 'curva sostenida, tu mascota creciendo de forma constante', cls: 'good' }
+                ]
+            },
+            {
+                id: 'p9',
+                type: 'question',
+                questionIndex: 9,
+                key: 'q9_listo',
+                headline: '¿Listo para dejar de empezar de cero cada vez?',
+                sub: 'Esta vez tenés un sistema y una mascota que no te va a dejar solo/a.',
+                doubtOption: 'Aún tengo dudas',
+                doubtCopy: 'Está bien dudar. Por eso Brainy hace el trabajo pesado por vos: desglosa, recuerda y te muestra el progreso aunque tu cabeza esté en otro lado.',
+                options: [
+                    'Sí, estoy listo/a',
+                    'Aún tengo dudas'
+                ]
+            },
+            {
+                id: 'p10',
+                type: 'question',
+                questionIndex: 10,
+                key: 'q10_cuando_empezar',
+                hasAge: true,
+                headline: 'Última pregunta. ¿Cuándo querés empezar a ordenar tu mente?',
+                options: [
+                    'Hoy mismo',
+                    'Esta semana',
+                    'Todavía no estoy seguro/a'
+                ]
+            },
+            {
+                id: 'task_select',
+                type: 'task_select',
+                headline: 'Elegí 1 a 3 tareas que te están frenando',
+                sub: 'Podés elegir una sola o hasta 3: las que más te aquejan. Tocá cada una para ver sus pasos antes de elegir.',
+                source: 'tasks',
+                key: 'selectedTasks',
+                min: 1,
+                max: 3
+            },
+            {
+                id: 'routine_select',
+                type: 'routine_select',
+                headline: 'Ahora elegí de 1 a 5 rutinas diarias',
+                sub: 'Acciones chicas que vas a repetir cada día sin tener que decidir nada. Elegí la mínima o hasta 5. Tocá cada una para ver sus pasos.',
+                source: 'routines',
+                key: 'selectedRoutines',
+                min: 1,
+                max: 5
+            },
+            {
+                id: 'plan_summary',
+                type: 'plan_summary',
+                headline: 'Tu plan Brainy está listo',
+                sub: '',
+                cta: 'Ver mi Brainy →'
+            },
+            {
+                id: 'loading',
+                type: 'loading',
+                headline: 'Preparando tu plan...',
+                subFinal: 'Todo listo. Un último vistazo a tu primer día.'
+            },
+            {
+                id: 'product_preview',
+                type: 'product_preview',
+                headline: 'Así se verá tu primer día en Brainy',
+                sub: 'Un adelanto real de tu plan, con tu compañero y tu primera misión. Tocá un paso para probar cómo avanzás.',
+                cta: 'Guardar mi plan →'
+            },
+            {
+                id: 'contact',
+                type: 'contact',
+                headline: 'Guarda tu plan',
+                body: 'Así tus tareas, rutinas y compañeros estarán listos cuando abras Brainy.',
+                cta: 'Guardar mi plan →'
+            },
+            {
+                id: 'prepaywall',
+                type: 'presell',
+                headline: 'Tu Brainy está preparado',
+                sub: 'Todo lo que elegiste está listo: tareas, rutinas y compañeros.',
+                cta: 'Continuar con mi plan →'
+            },
+            {
+                id: 'paywall',
+                type: 'paywall',
+                headline: 'Activa tu plan Brainy',
+                sub: 'Continúa con tus tareas, rutinas y compañeros en Brainy.'
+            },
+            {
+                id: 'success',
+                type: 'success',
+                headline: 'Tu plan Brainy está activado 🎉',
+                sub: 'Ahora llévalo a Brainy para empezar sin configurar todo de nuevo.'
+            },
+            {
+                id: 'handoff',
+                type: 'handoff',
+                headline: 'Te esperamos en la app',
+                sub: 'Abrí Brainy en tu teléfono y tu plan va a estar ahí esperándote.',
+                cta: 'Abrir Brainy'
+            }
+        ];
+
+        let funnelState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+        let currentStepIndex = 0;
+        let stepTimers = [];
+        let advancing = false;
+
+        function funnelWebCheckout() {
+            if (!FUNNEL_EXPERIMENTS.webCheckout) {
+                return false;
+            }
+            const key = FUNNEL_CONFIG.revenuecatWebApiKey;
+            if (!key) {
+                return false;
+            }
+            const rcSvc = window.BrainyRevenueCat;
+            if (rcSvc && typeof rcSvc.isSafePublicKey === 'function') {
+                return rcSvc.isSafePublicKey(key);
+            }
+            return !/^(sk|rk|rp|whsec|tok|req)_/i.test(key) && !/(secret|restricted)/i.test(key);
+        }
+
+        function stepList() {
+            const checkout = funnelWebCheckout();
+            return FUNNEL_STEPS.filter((step) => {
+                if (!checkout) {
+                    return step.type !== 'paywall' && step.type !== 'success';
+                }
+                if (FUNNEL_EXPERIMENTS.showPrePaywall === false && step.type === 'presell') {
+                    return false;
+                }
+                return true;
+            });
+        }
+
+        function mergeLoadedState(raw) {
+            const safe = raw && typeof raw === 'object' ? raw : {};
+            const merged = JSON.parse(JSON.stringify(DEFAULT_STATE));
+            for (const key of Object.keys(merged)) {
+                if (Object.prototype.hasOwnProperty.call(safe, key)) {
+                    merged[key] = safe[key];
+                }
+            }
+            if (!Array.isArray(merged.q2_dolor)) {
+                merged.q2_dolor = [];
+            }
+            if (!Array.isArray(merged.selectedTasks)) {
+                merged.selectedTasks = [];
+            }
+            if (!Array.isArray(merged.selectedRoutines)) {
+                merged.selectedRoutines = [];
+            }
+            if (!Array.isArray(merged.assignedRoutines)) {
+                merged.assignedRoutines = [];
+            }
+            return merged;
+        }
+
+        function loadState() {
+            try {
+                return mergeLoadedState(JSON.parse(localStorage.getItem(STORAGE_STATE_KEY) || 'null'));
+            } catch {
+                return JSON.parse(JSON.stringify(DEFAULT_STATE));
+            }
+        }
+
+        function persistState() {
+            localStorage.setItem(STORAGE_STATE_KEY, JSON.stringify(funnelState));
+            window.brainyFunnelState = funnelState;
+        }
+
+        function loadStep() {
+            const raw = parseInt(localStorage.getItem(STORAGE_STEP_KEY), 10);
+            if (!Number.isFinite(raw) || raw < 0 || raw >= stepList().length) {
+                return 0;
+            }
+            return raw;
+        }
+
+        function persistStep() {
+            localStorage.setItem(STORAGE_STEP_KEY, String(currentStepIndex));
+        }
+
+        function clearTimers() {
+            stepTimers.forEach((timer) => {
+                clearTimeout(timer);
+                clearInterval(timer);
+            });
+            stepTimers = [];
+        }
+
+        function answeredCount() {
+            return QUESTION_KEYS.filter((key) => {
+                const value = funnelState[key];
+                if (key === 'q2_dolor') {
+                    return Array.isArray(value) && value.length > 0;
+                }
+                return value !== null && value !== undefined;
+            }).length;
+        }
+
+        function updateProgress() {
+            const step = stepList()[currentStepIndex];
+            if (step.type === 'begin') {
+                document.getElementById('funnelProgress').hidden = true;
+                return;
+            }
+            const progress = document.getElementById('funnelProgress');
+            const fill = document.getElementById('funnelProgressFill');
+            const label = document.getElementById('funnelProgressLabel');
+            progress.hidden = false;
+            const pct = answeredCount() * 10;
+            fill.style.width = `${pct}%`;
+            if (step.questionIndex) {
+                label.textContent = `Pregunta ${step.questionIndex} de 10`;
+                label.hidden = false;
+            } else {
+                label.textContent = '';
+                label.hidden = true;
+            }
+        }
+
+        function scrollTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showToast(text, ms) {
+            const toast = document.getElementById('toast');
+            toast.textContent = text;
+            toast.classList.add('show');
+            clearTimeout(toast._t);
+            toast._t = setTimeout(() => toast.classList.remove('show'), ms || 2600);
+        }
+
+        function goNext() {
+            if (advancing) {
+                return;
+            }
+            clearTimers();
+            currentStepIndex = Math.min(stepList().length - 1, currentStepIndex + 1);
+            persistStep();
+            renderStep();
+        }
+
+        function goBack() {
+            if (advancing) {
+                return;
+            }
+            clearTimers();
+            currentStepIndex = Math.max(0, currentStepIndex - 1);
+            persistStep();
+            renderStep();
+        }
+
+        function resetFunnel() {
+            localStorage.removeItem(STORAGE_STATE_KEY);
+            localStorage.removeItem(STORAGE_STEP_KEY);
+            funnelState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+            currentStepIndex = 0;
+            persistState();
+            persistStep();
+            renderStep();
+        }
+
+        function setState(key, value) {
+            funnelState[key] = value;
+            persistState();
+        }
+
+        function track(event, metadata) {
+            const data = { event: event, metadata: metadata || {} };
+            if (window.brainyAnalyticsQueue) {
+                window.brainyAnalyticsQueue.push(data);
+            }
+            try {
+                if (FUNNEL_CONFIG.analyticsEndpoint) {
+                    navigator.sendBeacon(FUNNEL_CONFIG.analyticsEndpoint, JSON.stringify(data));
+                }
+            } catch {
+                // analytics es best-effort: nunca debe bloquear el funnel
+            }
+            if (window.console && console.debug) {
+                console.debug('[funnel-analytics]', event, data.metadata);
+            }
+        }
+
+        function taskCategoryFor(templateId) {
+            const cats = tasksData && tasksData.categories ? tasksData.categories : [];
+            for (const cat of cats) {
+                if ((cat.tasks || []).some((t) => t.templateId === templateId)) {
+                    return cat;
+                }
+            }
+            return null;
+        }
+
+        function makeSelectedTask(task, category) {
+            const cat = category || { id: null, label: 'Otros' };
+            return {
+                templateId: task.templateId,
+                id: task.templateId,
+                title: task.title,
+                emoji: task.emoji || '',
+                metric: task.metric || null,
+                difficulty: task.difficulty || 'medium',
+                subtasks: (task.subtasks || []).map((s) => ({
+                    title: s.title,
+                    duration: s.duration || null
+                })),
+                category: cat.id,
+                categoryLabel: cat.label
+            };
+        }
+
+        function makeSelectedRoutine(routine, category) {
+            const cat = category || { id: null, label: 'Otros' };
+            return {
+                templateId: routine.templateId,
+                id: routine.templateId,
+                name: routine.name,
+                title: routine.name,
+                icon: routine.icon || '',
+                days: routine.days || ['daily'],
+                tasks: (routine.tasks || []).map((t) => ({
+                    title: t.title,
+                    position: t.position
+                })),
+                subtasks: (routine.tasks || []).map((t) => ({
+                    title: t.title,
+                    duration: null
+                })),
+                category: cat.id,
+                categoryLabel: cat.label
+            };
+        }
+
+        function hydrateSelections() {
+            const taskCats = tasksData && tasksData.categories ? tasksData.categories : [];
+            const allTaskCats = taskCats.map((cat) => ({
+                category: cat,
+                items: cat.tasks || []
+            }));
+            const routines = routinesData && routinesData.daily_routines ? routinesData.daily_routines : [];
+            let changed = false;
+
+            funnelState.selectedTasks = funnelState.selectedTasks.map((old) => {
+                const tplId = old.templateId || old.id;
+                if (tplId && old.subtasks && old.name === undefined) {
+                    let found = null;
+                    let catObj = null;
+                    for (const group of allTaskCats) {
+                        const t = group.items.find((item) => item.templateId === tplId);
+                        if (t) {
+                            found = t;
+                            catObj = group.category;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        changed = true;
+                        return makeSelectedTask(found, catObj);
+                    }
+                }
+                return old;
+            });
+
+            funnelState.selectedRoutines = funnelState.selectedRoutines.map((old) => {
+                const tplId = old.templateId || old.id;
+                if (tplId && old.tasks === undefined) {
+                    const r = routines.find((item) => item.templateId === tplId);
+                    if (r) {
+                        const catObj = CATEGORIES.find((c) => c.id === r.category) || null;
+                        changed = true;
+                        return makeSelectedRoutine(r, catObj);
+                    }
+                }
+                return old;
+            });
+
+            if (changed) {
+                persistState();
+            }
+        }
+
+        function shuffledEggOrder() {
+            const seedStr = (funnelState.selectedRoutines[0] && funnelState.selectedRoutines[0].templateId) || 'brainy';
+            let seed = 0;
+            for (let i = 0; i < seedStr.length; i++) {
+                seed = (seed * 31 + seedStr.charCodeAt(i)) >>> 0;
+            }
+            const order = EGGS.slice();
+            for (let i = order.length - 1; i > 0; i--) {
+                seed = (seed * 1103515245 + 12345) >>> 0;
+                const j = seed % (i + 1);
+                const tmp = order[i];
+                order[i] = order[j];
+                order[j] = tmp;
+            }
+            return order;
+        }
+
+        function ensureEggAssignment() {
+            const count = funnelState.selectedRoutines.length;
+            const current = funnelState.assignedRoutines || [];
+            if (count === 0) {
+                if (current.length > 0) {
+                    setState('assignedRoutines', []);
+                }
+                return;
+            }
+            if (current.length === count) {
+                return;
+            }
+            const order = shuffledEggOrder();
+            const assigned = funnelState.selectedRoutines.map((_, i) => {
+                const egg = order[i % order.length];
+                return {
+                    catalogId: egg.catalogId,
+                    name: egg.name,
+                    emoji: egg.emoji,
+                    color: egg.color,
+                    imageUrl: egg.imageUrl || null
+                };
+            });
+            setState('assignedRoutines', assigned);
+        }
+
+        function assignedRoutines() {
+            ensureEggAssignment();
+            return funnelState.assignedRoutines || [];
+        }
+
+        function eggForRoutine(index) {
+            return assignedRoutines()[index] || EGGS[index % EGGS.length];
+        }
+
+        function answerValue(qkey) {
+            return funnelState[qkey] !== undefined ? funnelState[qkey] : null;
+        }
+
+        function buildUserPlanPayload() {
+            const now = new Date().toISOString();
+            const tasks = funnelState.selectedTasks.map((t) => ({
+                templateId: t.templateId || t.id,
+                title: t.title,
+                emoji: t.emoji || '',
+                metric: t.metric || null,
+                difficulty: t.difficulty || 'medium',
+                subtasks: (t.subtasks || []).map((s) => ({
+                    title: s.title,
+                    duration: typeof s.duration === 'number' ? s.duration : null
+                }))
+            }));
+            const routines = funnelState.selectedRoutines.map((r, i) => {
+                const egg = eggForRoutine(i);
+                const eggPayload = { catalogId: egg.catalogId || egg.id };
+                if (egg.name) {
+                    eggPayload.name = egg.name;
+                }
+                if (egg.imageUrl) {
+                    eggPayload.imageUrl = egg.imageUrl;
+                }
+                return {
+                    templateId: r.templateId || r.id,
+                    name: r.name || r.title,
+                    days: r.days || ['daily'],
+                    icon: r.icon || '',
+                    tasks: (r.tasks || []).map((t) => ({
+                        title: t.title,
+                        position: t.position
+                    })),
+                    egg: eggPayload
+                };
+            });
+            return {
+                version: 1,
+                answers: {
+                    p1: answerValue('q1_estado_actual'),
+                    p2: answerValue('q2_dolor'),
+                    p3: answerValue('q3_intentos_previos'),
+                    p4: answerValue('q4_causa_fracaso'),
+                    p5: answerValue('q5_identidad_futura'),
+                    p6: answerValue('q6_area_prioritaria'),
+                    p7: answerValue('q7_compromiso'),
+                    p8: answerValue('q8_tiempo_disponible'),
+                    p9: answerValue('q9_listo'),
+                    p10: answerValue('q10_cuando_empezar')
+                },
+                tasks: tasks,
+                routines: routines,
+                preview: {
+                    interacted: !!funnelState.previewInteracted
+                },
+                metadata: {
+                    createdAt: now,
+                    source: 'website',
+                    campaign: 'brainy_onboarding_v1',
+                    locale: 'es-AR'
+                }
+            };
+        }
+
+        function getObjectionCopy(p4Answer) {
+            const map = {
+                'La tarea se sentía enorme e inabarcable': 'Esta vez todo empieza por un paso chico: tu tarea ya está desglosada y solo tenés que completar la que ves adelante.',
+                'Perdí la motivación a los pocos días': 'El hábito deja de depender de tus ganas: la rutina y tu compañero lo sostienen solos, incluso en los días planos.',
+                'Nada me daba feedback ni recordaba por mí': 'Cada paso se registra solo y Brainy te recuerda por vos: el progreso nunca vuelve a depender de tu memoria.',
+                'Nadie sabía que lo estaba intentando': 'Tu compañero crece con cada paso que das y te espera al otro lado: hay alguien que sí está mirando que avances.'
+            };
+            return map[p4Answer] || 'Todo lo que armaste quedó guardado para que arranques sin depender de la motivación del día.';
+        }
+
+        function buildClaimLink(redeemUrl) {
+            const token = funnelState.claimToken && !String(funnelState.claimToken).startsWith('pending')
+                ? funnelState.claimToken
+                : 'demo-' + (funnelState.planId || Date.now());
+            let link = `${FUNNEL_CONFIG.appDeepLinkScheme}://claim?token=${encodeURIComponent(token)}`;
+            if (redeemUrl) {
+                link += `&redeem_url=${encodeURIComponent(redeemUrl)}`;
+            }
+            return link;
+        }
+
+        function revenuecatConfig() {
+            return {
+                apiKey: FUNNEL_CONFIG.revenuecatWebApiKey || '',
+                offeringId: FUNNEL_CONFIG.revenuecatOfferingId || 'web_default',
+                entitlementId: FUNNEL_CONFIG.revenuecatEntitlementId || 'brainy Pro',
+                termsUrl: FUNNEL_CONFIG.revenuecatTermsUrl || ''
+            };
+        }
+
+        function storeButtonsHtml() {
+            const buttons = [];
+            if (FUNNEL_CONFIG.iosStoreUrl) {
+                buttons.push(`<a class="store-btn" href="${FUNNEL_CONFIG.iosStoreUrl}" target="_blank" rel="noopener" data-action="store" data-store="ios">App Store</a>`);
+            }
+            if (FUNNEL_CONFIG.androidStoreUrl) {
+                buttons.push(`<a class="store-btn" href="${FUNNEL_CONFIG.androidStoreUrl}" target="_blank" rel="noopener" data-action="store" data-store="android">Google Play</a>`);
+            }
+            return buttons.join('');
+        }
+
+        function qrSvgHtml(content) {
+            if (!window.qrcode || !content) {
+                return '';
+            }
+            try {
+                const qr = window.qrcode(0, 'M');
+                qr.addData(content);
+                qr.make();
+                return `<div class="handoff-qr">${qr.createSvgTag({ cellSize: 4, margin: 2 })}</div>`;
+            } catch (e) {
+                return '';
+            }
+        }
+
+        async function ensurePlan() {
+            if (funnelState.planId && funnelState.claimToken) {
+                return { planId: funnelState.planId, claimToken: funnelState.claimToken };
+            }
+            const plan = buildUserPlanPayload();
+
+            if (!FUNNEL_CONFIG.enableBackend || !FUNNEL_CONFIG.createPlanUrl) {
+                const demo = {
+                    planId: 'demo-' + Date.now().toString(36),
+                    claimToken: 'demo-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
+                };
+                setState('planId', demo.planId);
+                setState('claimToken', demo.claimToken);
+                track('create_plan_success', { planId: demo.planId, mode: 'demo' });
+                return demo;
+            }
+
+            track('plan_generation_start', { tasksCount: plan.tasks.length, routinesCount: plan.routines.length });
+            try {
+                const headers = { 'Content-Type': 'application/json' };
+                if (FUNNEL_CONFIG.anonKey) {
+                    headers['apikey'] = FUNNEL_CONFIG.anonKey;
+                    headers['Authorization'] = `Bearer ${FUNNEL_CONFIG.anonKey}`;
+                }
+                const res = await fetch(FUNNEL_CONFIG.createPlanUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({
+                        plan: plan,
+                        email: funnelState.email || null,
+                        marketing_opt_in: !!funnelState.marketing_optin,
+                        source: 'website',
+                        campaign: plan.metadata.campaign
+                    })
+                });
+                if (!res.ok) {
+                    throw new Error('create-funnel-plan HTTP ' + res.status);
+                }
+                const data = await res.json();
+                if (!data.planId || !data.claimToken) {
+                    throw new Error('create-funnel-plan response inválido');
+                }
+                setState('planId', data.planId);
+                setState('claimToken', data.claimToken);
+                track('create_plan_success', { planId: data.planId });
+                return { planId: data.planId, claimToken: data.claimToken };
+            } catch (err) {
+                track('create_plan_failed', { reason: (err && err.message) || 'unknown' });
+                return null;
+            }
+        }
+
+        function backButtonHtml() {
+            return `<div class="step-top"><button class="back-btn" type="button" data-action="back" aria-label="Volver">‹ Volver</button></div>`;
+        }
+
+        function cardOpen() {
+            return `<article class="panel step">`;
+        }
+
+        function headHtml(step) {
+            return `
+                ${step.eyebrow ? `<span class="eyebrow">${step.eyebrow}</span>` : ''}
+                <div class="card-head">
+                    <h1>${step.headline}</h1>
+                    ${step.sub ? `<p class="sub">${step.sub}</p>` : ''}
+                </div>`;
+        }
+
+        function renderBegin(step) {
+            const hasProgress = answeredCount() > 0;
+            track('funnel_begin', { resumed: hasProgress });
+            document.getElementById('funnelRoot').innerHTML = `
+                ${cardOpen()}
+                    <div class="brand-row">
+                        <svg viewBox="0 0 64 64" role="img" aria-label="Brainy">
+                            <rect x="8" y="8" width="48" height="48" rx="14" fill="#C9FD5A"></rect>
+                            <path d="M30 20C26 18 21 21 21 26C18 27 17 31 19 34C18 37 19 42 24 43C25 46 30 48 33 45" stroke="#280D8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M34 20C38 18 43 21 43 26C46 27 47 31 45 34C46 37 45 42 40 43C39 46 34 48 31 45" stroke="#280D8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M32 23V42M27 27H30M34 35H37" stroke="#280D8C" stroke-width="3" stroke-linecap="round"></path>
+                        </svg>
+                        <div class="brand-name">Brain<span>y</span></div>
+                    </div>
+                    <div class="mascot-hero">${petStageHtml(4, true).replace('width:128px;height:128px', 'width:150px;height:150px').replace('<span class="sparkle">✨</span>', '')}</div>
+                    ${headHtml(step)}
+                    <div class="actions">
+                        <button class="btn btn-dopamine" type="button" data-action="start" id="startBtn">Comenzar →</button>
+                        ${hasProgress ? `<button class="btn btn-ghost" type="button" data-action="reset">Empezar de nuevo</button>` : ''}
+                    </div>
+                    <p class="footer-note">Tu progreso se guarda automáticamente en este dispositivo.</p>
+                </article>`;
+            document.addEventListener('click', handleBeginClick);
+        }
+
+        function handleBeginClick(event) {
+            const el = event.target.closest('[data-action]');
+            if (el && el.dataset.action === 'start') {
+                document.removeEventListener('click', handleBeginClick);
+                goNext();
+            }
+            if (el && el.dataset.action === 'reset') {
+                document.removeEventListener('click', handleBeginClick);
+                resetFunnel();
+            }
+        }
+
+        function renderQuestion(step) {
+            const key = step.key;
+            const multi = !!step.multi;
+            const current = multi ? funnelState[key] : funnelState[key];
+            const selected = (value) => multi ? current.includes(value) : current === value;
+            const optionsHtml = step.options.map((opt, index) => {
+                const label = typeof opt === 'string' ? opt : opt.label;
+                const desc = typeof opt === 'string' ? '' : (opt.desc || '');
+                const emoji = typeof opt === 'string' ? '' : (opt.emoji || '');
+                return `
+                    <button class="opt ${selected(label) ? 'selected' : ''}" type="button" data-opt="${index}">
+                        ${emoji ? `<span class="opt-emoji">${emoji}</span>` : ''}
+                        <span class="opt-body">
+                            <span class="opt-label">${label}</span>
+                            ${desc ? `<span class="opt-desc">${desc}</span>` : ''}
+                        </span>
+                        <span class="opt-check">✓</span>
+                    </button>`;
+            }).join('');
+
+            const ageHtml = step.hasAge ? `
+                <div class="field">
+                    <label for="ageInput">¿Qué edad tenés?</label>
+                    <input id="ageInput" type="number" inputmode="numeric" min="1" max="120" placeholder="Ej: 25" value="${funnelState.edad ?? ''}">
+                    <div class="field-error" id="ageError">Necesitamos saber la edad para personalizar los ejemplos.</div>
+                </div>` : '';
+
+            const doubtHtml = step.doubtOption && funnelState[key] === step.doubtOption
+                ? `<div class="note">${step.doubtCopy}</div>` : '';
+
+            const canGo = multi ? current.length > 0 : current !== null && current !== undefined;
+
+            document.getElementById('funnelRoot').innerHTML = `
+                ${backButtonHtml()}
+                ${cardOpen()}
+                    ${headHtml(step)}
+                    <div class="options">${optionsHtml}</div>
+                    ${ageHtml}
+                    ${doubtHtml}
+                    <div class="actions">
+                        <button class="btn btn-dopamine" type="button" id="nextBtn" ${canGo ? '' : 'disabled'}>Siguiente →</button>
+                    </div>
+                </article>`;
+
+            const optionEls = document.querySelectorAll('.opt');
+            optionEls.forEach((el, index) => {
+                const label = typeof step.options[index] === 'string' ? step.options[index] : step.options[index].label;
+                el.addEventListener('click', () => {
+                    if (multi) {
+                        const arr = funnelState[key];
+                        const pos = arr.indexOf(label);
+                        if (pos > -1) {
+                            arr.splice(pos, 1);
+                        } else {
+                            arr.push(label);
+                        }
+                        funnelState[key] = arr;
+                        el.classList.toggle('selected');
+                        nextBtn.disabled = arr.length === 0;
+                    } else {
+                        funnelState[key] = label;
+                        optionEls.forEach((other) => other.classList.toggle('selected', other === el));
+                        nextBtn.disabled = false;
+                        if (step.doubtOption) {
+                            const existing = document.getElementById('funnelRoot').querySelector('.note');
+                            if (label === step.doubtOption && !existing) {
+                                const note = document.createElement('div');
+                                note.className = 'note';
+                                note.textContent = step.doubtCopy;
+                                document.getElementById('funnelRoot').querySelector('.actions').insertAdjacentElement('beforebegin', note);
+                            } else if (label !== step.doubtOption && existing) {
+                                existing.remove();
+                            }
+                        }
+                    }
+                    persistState();
+                    updateProgress();
+                });
+            });
+
+            if (step.hasAge) {
+                const ageInput = document.getElementById('ageInput');
+                const ageError = document.getElementById('ageError');
+                ageInput.addEventListener('input', () => {
+                    ageError.style.display = 'none';
+                });
+            }
+
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.addEventListener('click', () => {
+                if (advancing) {
+                    return;
+                }
+                if (step.hasAge) {
+                    const ageInput = document.getElementById('ageInput');
+                    const ageError = document.getElementById('ageError');
+                    const edad = parseInt(ageInput.value, 10);
+                    if (!Number.isFinite(edad) || edad < 1 || edad > 120) {
+                        ageError.style.display = 'block';
+                        ageInput.focus();
+                        return;
+                    }
+                    setState('edad', edad);
+                }
+                clearTimers();
+                if (step.reassure) {
+                    showToast(step.reassure, 1900);
+                    advancing = true;
+                    stepTimers.push(setTimeout(() => {
+                        advancing = false;
+                        goNext();
+                    }, 1650));
+                } else {
+                    goNext();
+                }
+            });
+        }
+
+        function renderInterstitial(step) {
+            const isMethod = step.id === 'interstitial_2';
+            const isCurves = step.id === 'interstitial_3';
+            const backHtml = backButtonHtml();
+
+            let extra = '';
+            if (isMethod) {
+                const microSteps = step.breakdown.steps.map((s, i) => `
+                    <button class="micro" type="button" data-micro="${i}">
+                        <span class="micro-num">${i + 1}</span>
+                        <span class="micro-label">${s}</span>
+                        <span class="opt-check">✓</span>
+                    </button>`).join('');
+                extra = `
+                    <div class="pet-stage" data-stage="0" id="demoPet">${eggHtml()}<span class="sparkle">✨</span><div class="pet">${PET_SVG}</div></div>
+                    <p class="step-caption">${step.breakdown.title}</p>
+                    <div class="micro-list">${microSteps}</div>
+                    <p class="step-caption">${step.breakdown.caption}</p>
+                    <div id="methodNote" style="display:none"></div>`;
+            }
+
+            if (isCurves) {
+                const legend = step.curves.map((c) => `
+                    <li>
+                        <span class="legend-dot ${c.cls}"></span>
+                        <div><strong>${c.label}</strong><p>${c.desc}</p></div>
+                    </li>`).join('');
+                extra = `<div class="curves"><div class="curves-card">${CURVES_SVG}</div><ul class="legend">${legend}</ul></div>`;
+            }
+
+            document.getElementById('funnelRoot').innerHTML = `
+                ${backHtml}
+                ${cardOpen()}
+                    ${headHtml(step)}
+                    ${extra}
+                    <div class="actions">
+                        <button class="btn btn-dopamine" type="button" data-action="next" id="nextBtn">${step.cta}</button>
+                    </div>
+                </article>`;
+
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.addEventListener('click', goNext);
+
+            if (isMethod) {
+                setupMethodDemo(step.breakdown.steps.length);
+            }
+        }
+
+        function setupMethodDemo(total) {
+            const pet = document.getElementById('demoPet');
+            const microEls = Array.from(document.querySelectorAll('.micro'));
+            const doneSet = new Set();
+            let autoplay = true;
+
+            function sync() {
+                const stage = Math.min(total, doneSet.size);
+                pet.setAttribute('data-stage', String(stage));
+                microEls.forEach((el, i) => {
+                    el.classList.toggle('done', doneSet.has(i));
+                });
+                if (doneSet.size >= total) {
+                    clearTimers();
+                }
+            }
+
+            const timer = setInterval(() => {
+                if (!autoplay) {
+                    return;
+                }
+                for (let i = 0; i < total; i++) {
+                    if (!doneSet.has(i)) {
+                        doneSet.add(i);
+                        sync();
+                        return;
+                    }
+                }
+            }, 1000);
+            stepTimers.push(timer);
+
+            microEls.forEach((el, i) => {
+                el.addEventListener('click', () => {
+                    autoplay = false;
+                    clearInterval(timer);
+                    doneSet.add(i);
+                    sync();
+                });
+            });
+
+            sync();
+        }
+
+        function renderContact(step) {
+            track('email_view', { resumed: !!funnelState.email });
+            document.getElementById('funnelRoot').innerHTML = `
+                ${backButtonHtml()}
+                ${cardOpen()}
+                    ${headHtml(step)}
+                    <p class="body-copy">${step.body}</p>
+                    <div class="field" style="margin-top:22px">
+                        <label for="emailInput">Email</label>
+                        <input id="emailInput" type="email" inputmode="email" autocomplete="email" placeholder="tu@email.com" value="${funnelState.email || ''}">
+                        <div class="field-error" id="emailError">Ingresá un email válido para guardar tu plan.</div>
+                        <p class="field-note">Usaremos este correo para vincular tu plan con Brainy.</p>
+                    </div>
+                    <div class="field">
+                        <label class="check">
+                            <input type="checkbox" id="optinCheck" ${funnelState.marketing_optin ? 'checked' : ''}>
+                            <span>Quiero recibir novedades, consejos y ofertas de Brainy.</span>
+                        </label>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-dopamine" type="button" id="nextBtn">${step.cta}</button>
+                    </div>
+                </article>`;
+
+            const emailInput = document.getElementById('emailInput');
+            emailInput.addEventListener('input', () => {
+                document.getElementById('emailError').style.display = 'none';
+            });
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                if (advancing) {
+                    return;
+                }
+                const value = emailInput.value.trim();
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                    document.getElementById('emailError').style.display = 'block';
+                    emailInput.focus();
+                    return;
+                }
+                setState('email', value);
+                setState('marketing_optin', document.getElementById('optinCheck').checked);
+                setState('emailSubmitted', true);
+                setState('completedAt', new Date().toISOString());
+                window.brainyUserPlanPayload = buildUserPlanPayload();
+                track('email_submit', { marketingOptIn: !!funnelState.marketing_optin, emailSubmitted: !!funnelState.emailSubmitted });
+                goNext();
+            });
+        }
+
+        function renderLoading(step) {
+            const areaLabel = funnelState.q6_area_prioritaria || 'tu área';
+            const timeLabel = funnelState.q8_tiempo_disponible || 'tu ritmo';
+            const tasksCount = funnelState.selectedTasks.length;
+            const routinesCount = funnelState.selectedRoutines.length;
+            const items = [
+                'Analizando tus respuestas',
+                `Enfocando tu área: ${areaLabel}`,
+                `Ajustando el ritmo a tu tiempo: ${timeLabel}`,
+                `Preparando ${tasksCount} ${tasksCount === 1 ? 'tarea' : 'tareas'} desglosadas en pasos chicos`,
+                `Agregando ${routinesCount} ${routinesCount === 1 ? 'rutina' : 'rutinas'} diarias`,
+                'Ligando un huevo a cada rutina'
+            ];
+            const itemsHtml = items.map((item) => `
+                <li class="loading-item">
+                    <span class="loading-pill"><span class="loading-spin"></span></span>
+                    <span class="loading-label">${item}</span>
+                </li>`).join('');
+
+            document.getElementById('funnelRoot').innerHTML = `
+                ${cardOpen()}
+                    ${headHtml(step)}
+                    <ul class="loading-list">${itemsHtml}</ul>
+                    <p class="loading-final" id="loadingFinal">${step.subFinal}</p>
+                </article>`;
+
+            track('plan_generation_start', { tasksCount, routinesCount });
+
+            const listEls = Array.from(document.querySelectorAll('.loading-item'));
+            const stagger = 380;
+            listEls.forEach((el, i) => {
+                const t = setTimeout(() => {
+                    el.classList.add('active');
+                    const done = setTimeout(() => {
+                        el.classList.add('done');
+                        const pill = el.querySelector('.loading-pill');
+                        pill.textContent = '✓';
+                    }, 300);
+                    stepTimers.push(done);
+                }, i * stagger);
+                stepTimers.push(t);
+            });
+
+            const finalT = setTimeout(() => {
+                document.getElementById('loadingFinal').classList.add('visible');
+                track('plan_generation_complete', { tasksCount, routinesCount });
+            }, listEls.length * stagger + 300);
+            stepTimers.push(finalT);
+
+            const goT = setTimeout(() => {
+                clearTimers();
+                goNext();
+            }, listEls.length * stagger + 1100);
+            stepTimers.push(goT);
+        }
+
+        function renderProductPreview(step) {
+            track('preview_view', { tasksCount: funnelState.selectedTasks.length, routinesCount: funnelState.selectedRoutines.length });
+            const task = funnelState.selectedTasks[0];
+            const routine = funnelState.selectedRoutines[0];
+            const egg = eggForRoutine(0);
+
+            const fallbackTask = { title: 'Ordenar mi habitación', subtasks: [{ title: 'Llevar la ropa al cesto', duration: 5 }, { title: 'Recoger 5 objetos', duration: 5 }, { title: 'Ordenar una superficie', duration: 5 }] };
+            const fallbackRoutine = { name: 'Prepararme para dormir' };
+            const mission = task || fallbackTask;
+            const companionName = (routine && (routine.name || routine.title)) || fallbackRoutine.name;
+
+            const eggBg = `radial-gradient(circle at 35% 28%, #ffffff 12%, ${egg.color} 58%, rgba(36,18,63,0.18) 135%)`;
+            const subSteps = mission.subtasks || [];
+            const stepsHtml = subSteps.map((s, i) => `
+                    <button class="pv-step" type="button" data-step="${i}">
+                        <span class="pv-circle">○</span>
+                        <span class="pv-label">${s.title}</span>
+                        <span class="pv-check">✓</span>
+                    </button>`).join('');
+
+            document.getElementById('funnelRoot').innerHTML = `
+                ${backButtonHtml()}
+                ${cardOpen()}
+                    ${headHtml(step)}
+                    <div class="app-mock preview-mock" id="previewMock">
+                        <div class="app-head">
+                            <h3>Hola 👋</h3>
+                            <span id="appDate">Hoy</span>
+                        </div>
+                        <div class="app-body">
+                            <div class="pv-label-row">TU COMPAÑERO</div>
+                            <div class="pv-companion">
+                                <span class="pv-egg" id="pvEgg" style="background:${eggBg}">${egg.emoji}</span>
+                                <div class="pv-companion-info">
+                                    <span class="pv-egg-name" id="pvEggName">${egg.name}</span>
+                                    <span class="pv-routine">${companionName}</span>
+                                </div>
+                                <span class="pv-count" id="pvCount">0 / ${subSteps.length}</span>
+                            </div>
+                            <div class="pv-label-row">TU MISIÓN</div>
+                            <div class="pv-mission">
+                                <div class="pv-task"><span class="pv-task-icon">🎯</span>${mission.title}</div>
+                                <p class="pv-hint">Brainy la divide en:</p>
+                                <div class="pv-steps">${stepsHtml}</div>
+                            </div>
+                            <div class="pv-feedback" id="pvFeedback" hidden>Pequeños pasos también cuentan.</div>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-dopamine" type="button" id="nextBtn">${step.cta}</button>
+                    </div>
+                </article>`;
+
+            document.getElementById('appDate').textContent = `Hoy, ${todayLabel()}`;
+
+            if (FUNNEL_EXPERIMENTS.interactivePreview) {
+                let completed = false;
+                document.querySelectorAll('.pv-step').forEach((el) => {
+                    el.addEventListener('click', () => {
+                        if (completed) {
+                            return;
+                        }
+                        completed = true;
+                        el.classList.add('done');
+                        el.querySelector('.pv-circle').textContent = '';
+                        const eggEl = document.getElementById('pvEgg');
+                        eggEl.classList.add('pulse');
+                        document.getElementById('pvFeedback').hidden = false;
+                        setTimeout(() => eggEl.classList.remove('pulse'), 900);
+                        if (!funnelState.previewInteracted) {
+                            setState('previewInteracted', true);
+                        }
+                        track('preview_interaction', { previewInteracted: true });
+                    });
+                });
+            }
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                if (advancing) {
+                    return;
+                }
+                goNext();
+            });
+        }
+
+        function renderPresell(step) {
+            track('presell_view', {
+                tasksCount: funnelState.selectedTasks.length,
+                routinesCount: funnelState.selectedRoutines.length,
+                previewInteracted: !!funnelState.previewInteracted
+            });
+            window.brainyUserPlanPayload = buildUserPlanPayload();
+
+            const objectionCopy = getObjectionCopy(funnelState.q4_causa_fracaso);
+            const taskCount = funnelState.selectedTasks.length;
+            const routineCount = funnelState.selectedRoutines.length;
+            const eggCount = assignedRoutines().length;
+
+            const benefits = [
+                { icon: '🎯', title: 'Tareas desglosadas en pasos chicos', desc: taskCount > 1 ? `Tus ${taskCount} pendientes se convierten en micro-pasos que podés arrancar sin abrumarte.` : 'Tu pendiente se convierte en micro-pasos que podés arrancar sin abrumarte.' },
+                { icon: '🔁', title: 'Rutinas adaptadas a tu vida', desc: routineCount > 1 ? `${routineCount} rutinas diarias que repetís sin decidir nada cada día.` : 'Tu rutina diaria se repite solo: no tenés que decidir nada cada día.' },
+                { icon: '🐣', title: 'Compañeros que evolucionan con vos', desc: eggCount === 1 ? 'Tu huevo crece con cada paso y te espera al otro lado cada día.' : `Cada rutina tiene su huevo (${eggCount}) que crece con cada paso que das.` }
+            ];
+            const benefitsHtml = benefits.map((b) => `
+                <div class="presell-benefit">
+                    <span class="presell-icon">${b.icon}</span>
+                    <div class="presell-body">
+                        <strong>${b.title}</strong>
+                        <p>${b.desc}</p>
+                    </div>
+                </div>`).join('');
+
+            document.getElementById('funnelRoot').innerHTML = `
+                ${backButtonHtml()}
+                ${cardOpen()}
+                    ${headHtml(step)}
+                    <div class="presell-box">
+                        <div class="presell-personalized">
+                            <span>Basado en tus respuestas</span>
+                            <p>${objectionCopy}</p>
+                        </div>
+                        ${benefitsHtml}
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-dopamine" type="button" id="nextBtn">${step.cta}</button>
+                        <p class="field-note">Sin cargos ocultos. Podés usarlo y decidir después.</p>
+                    </div>
+                </article>`;
+
+            document.getElementById('nextBtn').addEventListener('click', function openPresell() {
+                if (advancing) {
+                    return;
+                }
+                this.disabled = true;
+                this.textContent = 'Preparando tu plan…';
+                ensurePlan().then((result) => {
+                    if (result || !FUNNEL_CONFIG.enableBackend) {
+                        goNext();
+                    } else {
+                        this.disabled = false;
+                        this.textContent = step.cta;
+                        showToast('No pudimos crear tu plan por ahora. Probá de nuevo.', 3200);
+                        track('create_plan_failed', { reason: 'user_retry_available' });
+                    }
+                });
+            });
+        }
+
+        function renderPaywall(step) {
+            const rcConfig = revenuecatConfig();
+            const svc = window.BrainyRevenueCat || null;
+            const root = document.getElementById('funnelRoot');
+            let paywallData = null;
+            let purchaseLock = false;
+
+            track('paywall_view', {
+                offeringId: rcConfig.offeringId,
+                tasksCount: funnelState.selectedTasks.length,
+                routinesCount: funnelState.selectedRoutines.length,
+                platform: isMobileDevice() ? 'mobile' : 'desktop',
+                configured: !!rcConfig.apiKey && !!svc && svc.isAvailable()
+            });
+
+            function renderStatus(text) {
+                root.innerHTML = `
+                    ${backButtonHtml()}
+                    ${cardOpen()}
+                        ${headHtml(step)}
+                        <div class="paywall-status"><span class="spinner"></span>${text}</div>
+                    </article>`;
+            }
+
+            function renderRecovery(copy) {
+                root.innerHTML = `
+                    ${backButtonHtml()}
+                    ${cardOpen()}
+                        ${headHtml(step)}
+                        <div class="paywall-recovery">
+                            <p>${copy}</p>
+                            <div class="actions">
+                                <button class="btn btn-dopamine" type="button" id="retryPaywallBtn">Intentar nuevamente</button>
+                            </div>
+                        </div>
+                    </article>`;
+                document.getElementById('retryPaywallBtn').addEventListener('click', () => {
+                    initPaywall();
+                });
+            }
+
+            async function initPaywall() {
+                if (funnelState.purchaseCompleted) {
+                    goNext();
+                    return;
+                }
+                if (!funnelState.planId || !funnelState.claimToken) {
+                    renderStatus('Preparando tu plan…');
+                    const plan = await ensurePlan();
+                    if (!plan) {
+                        track('purchase_failed', { reason: 'no_plan' });
+                        renderRecovery('No pudimos preparar tu plan por ahora. Probá de nuevo.');
+                        return;
+                    }
+                }
+                if (!svc || !svc.isAvailable() || !rcConfig.apiKey) {
+                    track('purchase_failed', { reason: 'rc_not_configured' });
+                    renderRecovery('El pago web no está disponible en este momento. Probá de nuevo en unos minutos.');
+                    return;
+                }
+                renderStatus('Buscando tu plan de pago…');
+                let offering = null;
+                try {
+                    svc.configure({ apiKey: rcConfig.apiKey });
+                    offering = await svc.getOfferings(rcConfig.offeringId);
+                } catch (e) {
+                    track('purchase_failed', { reason: 'offerings_error' });
+                    renderRecovery('Hubo un problema al cargar tu plan de pago. Probá de nuevo.');
+                    return;
+                }
+                if (!offering) {
+                    track('purchase_failed', { reason: 'no_offering' });
+                    renderRecovery('Todavía no hay planes disponibles. Probá de nuevo en unos minutos.');
+                    return;
+                }
+                const packages = [];
+                if (offering.annual) {
+                    packages.push({ pkg: offering.annual, kind: 'annual' });
+                }
+                if (offering.monthly) {
+                    packages.push({ pkg: offering.monthly, kind: 'monthly' });
+                }
+                if (packages.length === 0) {
+                    track('purchase_failed', { reason: 'no_packages' });
+                    renderRecovery('Todavía no hay planes disponibles. Probá de nuevo en unos minutos.');
+                    return;
+                }
+                let selectedId = funnelState.selectedPackageId;
+                if (!packages.some((entry) => entry.pkg.identifier === selectedId)) {
+                    const preferred = packages.find((entry) => entry.kind === 'annual') || packages[0];
+                    selectedId = preferred.pkg.identifier;
+                }
+                const currency = (packages[0].pkg.webBillingProduct &&
+                    packages[0].pkg.webBillingProduct.price) ? packages[0].pkg.webBillingProduct.price.currency : null;
+
+                paywallData = { offering: offering, packages: packages, selectedId: selectedId, currency: currency };
+                renderPaywallCards();
+            }
+
+            function periodLabel(pkg) {
+                const product = pkg.webBillingProduct || {};
+                if (product.period && product.period.unit) {
+                    if (product.period.unit === 'year') {
+                        return product.period.number > 1 ? `cada ${product.period.number} años` : 'por año';
+                    }
+                    if (product.period.unit === 'month') {
+                        return product.period.number > 1 ? `cada ${product.period.number} meses` : 'por mes';
+                    }
+                    if (product.period.unit === 'week') {
+                        return 'por semana';
+                    }
+                    if (product.period.unit === 'day') {
+                        return 'por día';
+                    }
+                }
+                return '';
+            }
+
+            function priceText(pkg) {
+                const price = pkg.webBillingProduct && pkg.webBillingProduct.price ? pkg.webBillingProduct.price : null;
+                if (!price) {
+                    return '';
+                }
+                if (price.formattedPrice) {
+                    return price.formattedPrice;
+                }
+                const amount = (price.amountMicros && price.amountMicros > 0) ? price.amountMicros / 1e6 : (price.amount || 0) / 100;
+                return `${amount} ${price.currency || ''}`.trim();
+            }
+
+            function renderPaywallCards() {
+                const data = paywallData;
+                const taskLabel = `${funnelState.selectedTasks.length} ${funnelState.selectedTasks.length === 1 ? 'tarea' : 'tareas'}`;
+                const routineLabel = `${funnelState.selectedRoutines.length} ${funnelState.selectedRoutines.length === 1 ? 'rutina' : 'rutinas'}`;
+                const eggLabel = `${assignedRoutines().length} ${assignedRoutines().length === 1 ? 'compañero' : 'compañeros'}`;
+                const chips = `<span class="paywall-chip">${taskLabel}</span><span class="paywall-chip">${routineLabel}</span><span class="paywall-chip">${eggLabel}</span>`;
+
+                const cardsHtml = data.packages.map((entry) => {
+                    const sel = entry.pkg.identifier === data.selectedId;
+                    const badge = entry.kind === 'annual' ? '<span class="plan-badge">Recomendado</span>' : '';
+                    const productTitle = entry.pkg.webBillingProduct && entry.pkg.webBillingProduct.title ? ` · ${entry.pkg.webBillingProduct.title}` : '';
+                    return `
+                        <button class="plan-card ${sel ? 'selected' : ''}" type="button" data-pkg="${entry.pkg.identifier}">
+                            <span class="plan-radio ${sel ? 'hl' : ''}"></span>
+                            <span class="plan-info">
+                                <strong>${entry.kind === 'annual' ? 'Plan anual' : 'Plan mensual'}${badge}</strong>
+                                <span>${periodLabel(entry.pkg)}${productTitle}</span>
+                            </span>
+                            <span class="plan-price">
+                                <strong>${priceText(entry.pkg)}</strong>
+                                <span>${periodLabel(entry.pkg)}</span>
+                            </span>
+                        </button>`;
+                }).join('');
+
+                root.innerHTML = `
+                    ${backButtonHtml()}
+                    ${cardOpen()}
+                        ${headHtml(step)}
+                        <div class="paywall-summary">${chips}</div>
+                        <div class="plan-cards">${cardsHtml}</div>
+                        <p class="paywall-note">${rcConfig.termsUrl ? 'Al continuar aceptás los términos de Brainy. Podés cancelar en cualquier momento.' : 'Podés cancelar en cualquier momento desde tu cuenta.'}</p>
+                        <div class="actions">
+                            <button class="btn btn-dopamine" type="button" id="purchaseBtn">Activar mi plan →</button>
+                        </div>
+                    </article>`;
+
+                document.querySelectorAll('.plan-card').forEach((card) => {
+                    card.addEventListener('click', () => {
+                        paywallData.selectedId = card.getAttribute('data-pkg');
+                        setState('selectedPackageId', paywallData.selectedId);
+                        const entry = data.packages.find((p) => p.pkg.identifier === paywallData.selectedId);
+                        if (entry) {
+                            track('package_selected', {
+                                packageId: entry.pkg.identifier,
+                                offeringId: data.offering.identifier,
+                                currency: data.currency,
+                                packageType: entry.kind
+                            });
+                        }
+                        renderPaywallCards();
+                    });
+                });
+
+                document.getElementById('purchaseBtn').addEventListener('click', startCheckout);
+            }
+
+            async function startCheckout() {
+                if (purchaseLock || !paywallData) {
+                    return;
+                }
+                const data = paywallData;
+                const entry = data.packages.find((p) => p.pkg.identifier === data.selectedId);
+                if (!entry) {
+                    return;
+                }
+                purchaseLock = true;
+                const btn = document.getElementById('purchaseBtn');
+                btn.disabled = true;
+                btn.textContent = 'Preparando pago…';
+                track('checkout_start', {
+                    packageId: entry.pkg.identifier,
+                    offeringId: data.offering.identifier,
+                    currency: data.currency,
+                    packageType: entry.kind,
+                    platform: isMobileDevice() ? 'mobile' : 'desktop'
+                });
+                let result = null;
+                let err = null;
+                let purchaseTimer = null;
+                try {
+                    result = await Promise.race([
+                        svc.purchase({
+                            rcPackage: entry.pkg,
+                            customerEmail: funnelState.email || undefined,
+                            selectedLocale: 'es',
+                            defaultLocale: 'es',
+                            termsAndConditionsUrl: rcConfig.termsUrl || undefined
+                        }),
+                        new Promise(function (resolve, reject) {
+                            purchaseTimer = setTimeout(function () {
+                                var t = new Error('purchase_timeout');
+                                t.isTimeout = true;
+                                reject(t);
+                            }, 120000);
+                        })
+                    ]);
+                } catch (e) {
+                    err = e;
+                } finally {
+                    if (purchaseTimer) {
+                        clearTimeout(purchaseTimer);
+                        purchaseTimer = null;
+                    }
+                }
+                if (err) {
+                    purchaseLock = false;
+                    if (err.isTimeout) {
+                        track('purchase_failed', { reason: 'timeout' });
+                        btn.disabled = false;
+                        btn.textContent = 'Activar mi plan →';
+                        try { var ovl = document.getElementById('rcb-ui-pw-root'); if (ovl && ovl.parentNode) { ovl.parentNode.removeChild(ovl); } } catch (e) {}
+                        renderRecovery('La confirmación del pago está tardando demasiado. No se te volvió a cobrar: revisá tu correo y probá de nuevo.');
+                        setTimeout(function () {
+                            var still = document.getElementById('rcb-ui-pw-root');
+                            if (still) { window.location.reload(); }
+                        }, 5000);
+                        return;
+                    }
+                    const cls = svc.classifyError(err);
+                    if (cls.isCancel) {
+                        track('checkout_cancelled', { packageId: entry.pkg.identifier });
+                        btn.disabled = false;
+                        btn.textContent = 'Activar mi plan →';
+                        return;
+                    }
+                    track('purchase_failed', { code: cls.code, reason: cls.kind });
+                    btn.disabled = false;
+                    btn.textContent = 'Activar mi plan →';
+                    showToast('Hubo un problema al iniciar el pago. Inténtalo nuevamente.', 3200);
+                    return;
+                }
+                const isEntitled = svc.isEntitledTo(result.customerInfo, rcConfig.entitlementId);
+                const redeemUrl = svc.redemptionUrlOf(result);
+                if (!isEntitled) {
+                    purchaseLock = false;
+                    track('purchase_failed', { reason: 'entitlement_inactive' });
+                    renderRecovery('No pudimos confirmar tu suscripción todavía. No se te volvió a cobrar: revisá tu correo y probá de nuevo.');
+                    return;
+                }
+                if (!redeemUrl) {
+                    console.error('[brainy] compra completada sin redemptionInfo');
+                }
+                setState('purchaseCompleted', true);
+                if (redeemUrl) {
+                    setState('pendingRedemptionUrl', redeemUrl);
+                }
+                track('purchase_success', {
+                    packageId: entry.pkg.identifier,
+                    offeringId: data.offering.identifier,
+                    currency: data.currency,
+                    packageType: entry.kind,
+                    entitlementActive: true,
+                    redemptionAvailable: !!redeemUrl
+                });
+                goNext();
+            }
+
+            initPaywall();
+        }
+
+        function renderSuccess(step) {
+            const platform = isMobileDevice() ? 'mobile' : 'desktop';
+            track('purchase_handoff_view', {
+                platform: platform,
+                tasksCount: funnelState.selectedTasks.length,
+                routinesCount: funnelState.selectedRoutines.length
+            });
+            ensurePlan();
+            window.brainyUserPlanPayload = buildUserPlanPayload();
+
+            const redeemUrl = funnelState.pendingRedemptionUrl || null;
+            const link = buildClaimLink(redeemUrl);
+            const storesHtml = storeButtonsHtml();
+            const recoveryNote = !redeemUrl && funnelState.planId
+                ? `<p class="handoff-hint">Tu plan quedó guardado. Si tenés problemas para recuperar tu suscripción, escribinos y lo resolvemos.</p>`
+                : '';
+            const checks = [
+                'Suscripción activada',
+                'Tu plan guardado',
+                'Tareas y rutinas preparadas'
+            ].map((c) => `<li><span class="ok">✓</span>${c}</li>`).join('');
+
+            let mainArea;
+            if (isMobileDevice()) {
+                mainArea = `
+                    <div class="handoff-main">
+                        <a class="btn btn-dopamine handoff-open" href="${link}" id="openAppBtn">Abrir Brainy →</a>
+                        <p class="handoff-hint">Si no abre automáticamente, tocá el botón de tu tienda.</p>
+                        <div class="handoff-stores">${storesHtml}</div>
+                        <div class="handoff-note" id="handoffNote" hidden>¿No se abrió? Instalá Brainy y volvé a tocar el botón.</div>
+                    </div>`;
+            } else {
+                mainArea = `
+                    <div class="handoff-main">
+                        <p class="handoff-desk-title">Continúa en tu teléfono</p>
+                        <ol class="handoff-steps">
+                            <li>Instalá Brainy (App Store o Google Play).</li>
+                            <li>Escaneá el código con la cámara del celular.</li>
+                            <li>Tu plan y tu suscripción te van a estar esperando.</li>
+                        </ol>
+                        ${qrSvgHtml(link)}
+                        <button class="btn btn-ghost handoff-copy" type="button" id="copyLinkBtn" data-link="${link}">Copiar enlace</button>
+                        <p class="handoff-hint">Abrilo en el navegador del celular y Brainy va a tomar tu plan.</p>
+                        <div class="handoff-stores">${storesHtml}</div>
+                    </div>`;
+            }
+
+            document.getElementById('funnelRoot').innerHTML = `
+                ${cardOpen()}
+                    ${headHtml(step)}
+                    <ul class="success-checks">${checks}</ul>
+                    ${recoveryNote}
+                    <div class="handoff-wrap">
+                        <div class="handoff-check">✓</div>
+                        ${mainArea}
+                    </div>
+                </article>`;
+
+            const openBtn = document.getElementById('openAppBtn');
+            if (openBtn) {
+                openBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    track('purchase_handoff_click', { platform: 'mobile', destination: 'app' });
+                    window.location.href = buildClaimLink(redeemUrl);
+                    const open = document.getElementById('handoffNote');
+                    setTimeout(() => {
+                        if (open) {
+                            open.hidden = false;
+                        }
+                    }, 1200);
+                });
+            }
+
+            const copyBtn = document.getElementById('copyLinkBtn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const target = buildClaimLink(redeemUrl);
+                    const done = () => {
+                        copyBtn.textContent = '¡Copiado!';
+                        setTimeout(() => { copyBtn.textContent = 'Copiar enlace'; }, 2200);
+                    };
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(target).then(done).catch(() => done());
+                    } else {
+                        done();
+                    }
+                    track('purchase_handoff_click', { platform: 'desktop', destination: 'copy_link' });
+                });
+            }
+        }
+
+        function renderHandoff(step) {
+            track('handoff_view', { platform: isMobileDevice() ? 'mobile' : 'desktop' });
+            ensurePlan();
+            const link = buildClaimLink();
+            const storesHtml = storeButtonsHtml();
+            window.brainyUserPlanPayload = buildUserPlanPayload();
+
+            let mainArea;
+            if (isMobileDevice()) {
+                mainArea = `
+                    <div class="handoff-main">
+                        <a class="btn btn-dopamine handoff-open" href="${link}" id="openAppBtn">${step.cta} →</a>
+                        <p class="handoff-hint">Si no abre automáticamente, tocá el botón de tu tienda.</p>
+                        <div class="handoff-stores">${storesHtml}</div>
+                        <div class="handoff-note" id="handoffNote" hidden>¿No se abrió? Instalá Brainy y volvé a tocar el botón.</div>
+                    </div>`;
+            } else {
+                const copyLink = funnelState.claimToken && FUNNEL_CONFIG.appDeepLinkScheme
+                    ? buildClaimLink()
+                    : null;
+                mainArea = `
+                    <div class="handoff-main">
+                        <p class="handoff-desk-title">Continúa en tu teléfono</p>
+                        <ol class="handoff-steps">
+                            <li>Instalá Brainy (App Store o Google Play).</li>
+                            <li>Tocá el botón «Abrir en el celular».</li>
+                            <li>Tu plan va a estar esperándote con tu token de activación.</li>
+                        </ol>
+                        ${copyLink ? `
+                            <button class="btn btn-ghost handoff-copy" type="button" id="copyLinkBtn" data-link="${copyLink}">Copiar enlace de activación</button>
+                            <p class="field-note">Abrilo en el navegador del celular y Brainy va a tomar tu plan.</p>` : ''}
+                        <div class="handoff-stores">${storesHtml}</div>
+                    </div>`;
+            }
+
+            document.getElementById('funnelRoot').innerHTML = `
+                ${cardOpen()}
+                    ${headHtml(step)}
+                    <div class="handoff-wrap">
+                        <div class="handoff-check">✓</div>
+                        ${mainArea}
+                    </div>
+                </article>`;
+
+            const openBtn = document.getElementById('openAppBtn');
+            if (openBtn) {
+                openBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    track('handoff_click', { platform: 'mobile', destination: 'app' });
+                    const open = document.getElementById('handoffNote');
+                    window.location.href = buildClaimLink();
+                    setTimeout(() => {
+                        open.hidden = false;
+                    }, 1200);
+                });
+            }
+
+            const copyBtn = document.getElementById('copyLinkBtn');
+            if (copyBtn) {
+                copyBtn.addEventListener('click', () => {
+                    const target = buildClaimLink();
+                    const done = () => {
+                        copyBtn.textContent = '¡Copiado!';
+                        setTimeout(() => { copyBtn.textContent = 'Copiar enlace de activación'; }, 2200);
+                    };
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(target).then(done).catch(() => done());
+                    } else {
+                        done();
+                    }
+                    track('handoff_click', { platform: 'desktop', destination: 'copy_link' });
+                });
+            }
+        }
+
+        function isMobileDevice() {
+            return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+        }
+
+        function todayLabel() {
+            const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+            const d = new Date();
+            return `${d.getDate()} ${months[d.getMonth()]}`;
+        }
+
+        function renderPicker(step) {
+            const data = step.source === 'tasks' ? tasksData : routinesData;
+            const key = step.key;
+            const min = step.min || 1;
+            const max = step.max;
+            const selected = funnelState[key];
+
+            let categories = [];
+            if (step.source === 'tasks') {
+                categories = (data && data.categories || []).map((cat) => ({
+                    ...cat,
+                    items: (cat.tasks || []).map((task) => makeSelectedTask(task, cat))
+                })).filter((cat) => cat.items.length > 0);
+            } else {
+                categories = routinesByCategory().map((cat) => ({
+                    ...cat,
+                    items: cat.items.map((routine) => makeSelectedRoutine(routine, cat))
+                }));
+            }
+
+            const cardsHtml = categories.map((cat) => `
+                    <section class="picker-cat">
+                        <div class="cat-head"><span class="cat-emoji">${cat.emoji}</span><span>${cat.label}</span></div>
+                        <div class="picker-list">
+                            ${cat.items.map((item) => {
+                                const isSel = selected.some((s) => s.id === item.id);
+                                return `
+                                    <article class="pick-card ${isSel ? 'selected' : ''}" data-id="${item.id}">
+                                        <div class="pick-head">
+                                            <button class="pick-expand" type="button" aria-expanded="false" data-expand="${item.id}">
+                                                ${item.emoji ? `<span class="pick-emoji">${item.emoji}</span>` : ''}
+                                                <span class="pick-body">
+                                                    <strong>${item.title}</strong>
+                                                    <span class="pick-meta">${item.subtasks.length} pasos · tocar para ver</span>
+                                                </span>
+                                                <span class="pick-chev">▾</span>
+                                            </button>
+                                            <button class="pick-check" type="button" data-select="${item.id}" aria-label="Seleccionar ${item.title}">✓</button>
+                                        </div>
+                                        <div class="pick-steps" hidden>
+                                            <ol>${item.subtasks.map((s) => `<li>${s.title}</li>`).join('')}</ol>
+                                        </div>
+                                    </article>`;
+                            }).join('')}
+                        </div>
+                    </section>`).join('');
+
+            const dataError = loadDataError || !data
+                ? `<div class="data-error">No se pudieron cargar los datos. Recargá la página o intentá de nuevo.</div>`
+                : '';
+
+            document.getElementById('funnelRoot').innerHTML = `
+                ${backButtonHtml()}
+                ${cardOpen()}
+                    ${headHtml(step)}
+                    ${dataError}
+                    <div class="picker-wrap">${cardsHtml}</div>
+                    <p class="pick-counter">Elegiste <strong id="pickCount">${selected.length}</strong> · mínimo ${min}, hasta ${max} ${step.source === 'tasks' ? 'tareas' : 'rutinas'}</p>
+                    <div class="actions">
+                        <button class="btn btn-dopamine" type="button" id="nextBtn" ${selected.length >= min ? '' : 'disabled'}>Siguiente →</button>
+                    </div>
+                </article>`;
+
+            const nextBtn = document.getElementById('nextBtn');
+            const counter = document.getElementById('pickCount');
+
+            function refreshUI() {
+                const sel = funnelState[key];
+                counter.textContent = String(sel.length);
+                document.querySelectorAll('.pick-card').forEach((card) => {
+                    const id = card.dataset.id;
+                    const isSel = sel.some((s) => s.id === id);
+                    card.classList.toggle('selected', isSel);
+                });
+                nextBtn.disabled = sel.length < min;
+            }
+
+            document.querySelectorAll('[data-expand]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const card = btn.closest('.pick-card');
+                    const steps = card.querySelector('.pick-steps');
+                    const open = steps.hidden;
+                    steps.hidden = !open;
+                    card.classList.toggle('open', open);
+                    btn.setAttribute('aria-expanded', String(open));
+                });
+            });
+
+            document.querySelectorAll('[data-select]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const id = btn.dataset.select;
+                    const item = categories.flatMap((c) => c.items).find((i) => (i.id || i.templateId) === id);
+                    if (!item) {
+                        return;
+                    }
+                    const pos = funnelState[key].findIndex((s) => (s.id || s.templateId) === id);
+                    if (pos > -1) {
+                        const fresh = funnelState[key].slice();
+                        fresh.splice(pos, 1);
+                        funnelState[key] = fresh;
+                        track(step.source === 'tasks' ? 'task_selected' : 'routine_selected', { count: fresh.length, templateId: id });
+                    } else {
+                        if (funnelState[key].length >= max) {
+                            showToast(`Solo ${max}. Tocá una elegida para cambiarla.`, 2600);
+                            return;
+                        }
+                        funnelState[key] = funnelState[key].concat([item]);
+                        track(step.source === 'tasks' ? 'task_selected' : 'routine_selected', { count: funnelState[key].length, templateId: id });
+                    }
+                    persistState();
+                    refreshUI();
+                    updateProgress();
+                });
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (advancing) {
+                    return;
+                }
+                track(step.source === 'tasks' ? 'tasks_complete' : 'routines_complete', {
+                    count: funnelState[key].length
+                });
+                goNext();
+            });
+        }
+
+        function renderPlanSummary(step) {
+            track('plan_summary_view', { tasksCount: funnelState.selectedTasks.length, routinesCount: funnelState.selectedRoutines.length });
+            const tasks = funnelState.selectedTasks;
+            const routines = funnelState.selectedRoutines;
+
+            const taskRows = tasks.map((item) => `
+                    <div class="plan-row">
+                        <span class="plan-emoji">${item.emoji || categoryMeta(item.category).emoji}</span>
+                        <span class="plan-name">${item.title}</span>
+                        <span class="plan-meta">${(item.subtasks || []).length} pasos</span>
+                    </div>`).join('') || `<div class="data-error">No hay tareas seleccionadas.</div>`;
+
+            const routineRows = routines.map((item, i) => {
+                const egg = eggForRoutine(i);
+                return `
+                    <div class="plan-row">
+                        <span class="plan-egg" style="background: radial-gradient(circle at 35% 28%, #ffffff 12%, ${egg.color} 58%, rgba(36,18,63,0.18) 135%);">${egg.emoji}</span>
+                        <span class="plan-name">${egg.name} <span class="plan-sep">—</span> ${item.name || item.title}</span>
+                    </div>`;
+            }).join('') || `<div class="data-error">No hay rutinas seleccionadas.</div>`;
+
+            document.getElementById('funnelRoot').innerHTML = `
+                ${backButtonHtml()}
+                ${cardOpen()}
+                    ${headHtml(step)}
+                    <div class="plan-block">
+                        <h4>🎯 Tus tareas</h4>
+                        <p class="plan-note">1–3 tareas seleccionadas.</p>
+                        <div class="plan-rows">${taskRows}</div>
+                    </div>
+                    <div class="plan-block">
+                        <h4>🐣 Tus rutinas</h4>
+                        <div class="plan-rows">${routineRows}</div>
+                    </div>
+                    <p class="plan-copy">Cada rutina tiene un compañero. Complétala para ayudarlo a crecer.</p>
+                    <div class="actions">
+                        <button class="btn btn-dopamine" type="button" id="nextBtn">${step.cta}</button>
+                    </div>
+                </article>`;
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                if (advancing) {
+                    return;
+                }
+                goNext();
+            });
+        }
+
+        function renderStep() {
+            clearTimers();
+            advancing = false;
+            const step = stepList()[currentStepIndex];
+            document.title = step.questionIndex ? `Brainy — Pregunta ${step.questionIndex} de 10` : 'Brainy — Tu sistema + tu mascota';
+
+            if (step.type === 'begin') {
+                renderBegin(step);
+            } else if (step.type === 'question') {
+                renderQuestion(step);
+            } else if (step.type === 'interstitial') {
+                renderInterstitial(step);
+            } else if (step.type === 'task_select' || step.type === 'routine_select') {
+                renderPicker(step);
+            } else if (step.type === 'plan_summary') {
+                renderPlanSummary(step);
+            } else if (step.type === 'contact') {
+                renderContact(step);
+            } else if (step.type === 'loading') {
+                renderLoading(step);
+            } else if (step.type === 'product_preview') {
+                renderProductPreview(step);
+            } else if (step.type === 'presell') {
+                renderPresell(step);
+            } else if (step.type === 'paywall') {
+                renderPaywall(step);
+            } else if (step.type === 'success') {
+                renderSuccess(step);
+            } else if (step.type === 'handoff') {
+                renderHandoff(step);
+            }
+
+            updateProgress();
+            scrollTop();
+        }
+
+        if (new URLSearchParams(window.location.search).get('reset') !== null) {
+            localStorage.removeItem(STORAGE_STATE_KEY);
+            localStorage.removeItem(STORAGE_STEP_KEY);
+            history.replaceState(null, '', window.location.pathname);
+        }
+
+        currentStepIndex = loadStep();
+        funnelState = mergeLoadedState(loadState());
+        persistState();
+
+        document.addEventListener('click', (event) => {
+            const el = event.target.closest ? event.target.closest('[data-action="back"]') : null;
+            if (el) {
+                goBack();
+            }
+        });
+
+        loadFunnelData().then(() => {
+            hydrateSelections();
+            ensureEggAssignment();
+            renderStep();
+        });
+    </script>
+</body>
+</html>

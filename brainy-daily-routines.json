@@ -1,0 +1,154 @@
+{
+  "daily_routines": [
+    {
+      "templateId": "hidratacion_anclaje",
+      "name": "Hidratación y anclaje matutino",
+      "days": ["daily"],
+      "icon": "💧",
+      "category": "rutinas_organizacion",
+      "why": "El agua y la medicación (si aplica) a la misma hora crean un punto fijo desde donde arranca el resto del día.",
+      "tasks": [
+        { "title": "Dejar el vaso de agua listo la noche anterior", "position": 1 },
+        { "title": "Tomar el vaso de agua completo antes de mirar el celular", "position": 2 },
+        { "title": "Tomar tu medicación a la misma hora, si corresponde", "position": 3 },
+        { "title": "Abrir la cortina o salir a la luz un momento", "position": 4 },
+        { "title": "Marcar el hábito como cumplido", "position": 5 }
+      ]
+    },
+    {
+      "templateId": "luz_solar",
+      "name": "Salir a la luz temprano",
+      "days": ["daily"],
+      "icon": "☀️",
+      "category": "salud_energia",
+      "why": "La luz natural en los primeros minutos del día ayuda a regular el ritmo circadiano, que suele estar más alterado en TDAH.",
+      "tasks": [
+        { "title": "Elegir el momento del día en que vas a salir o abrir una ventana grande", "position": 1 },
+        { "title": "Salir afuera o pararte junto a la ventana", "position": 2 },
+        { "title": "Quedarte ahí al menos 5 minutos", "position": 3 },
+        { "title": "Estirar o respirar mientras estás en la luz", "position": 4 },
+        { "title": "Marcar el hábito como cumplido", "position": 5 }
+      ]
+    },
+    {
+      "templateId": "desayuno_energia",
+      "name": "Desayuno con energía estable",
+      "days": ["daily"],
+      "icon": "🥚",
+      "category": "salud_energia",
+      "why": "Un desayuno con proteína evita el pico y caída de azúcar que empeora la falta de foco y la irritabilidad.",
+      "tasks": [
+        { "title": "Elegir la noche anterior una opción simple con proteína", "position": 1 },
+        { "title": "Prepararla apenas te levantás", "position": 2 },
+        { "title": "Comerla, sin pantalla si podés", "position": 3 },
+        { "title": "Marcar el hábito como cumplido", "position": 4 }
+      ]
+    },
+    {
+      "templateId": "movimiento_corto",
+      "name": "Movimiento diario corto",
+      "days": ["daily"],
+      "icon": "🏃",
+      "category": "salud_energia",
+      "why": "No hace falta una rutina larga: activar el cuerpo unos minutos ya ayuda a regular energía y foco.",
+      "tasks": [
+        { "title": "Elegir el tipo de movimiento (caminar, estirar, bailar)", "position": 1 },
+        { "title": "Poner un timer de 5 a 10 minutos", "position": 2 },
+        { "title": "Moverte sin parar hasta que suene el timer", "position": 3 },
+        { "title": "Marcar el hábito como cumplido", "position": 4 }
+      ]
+    },
+    {
+      "templateId": "top_3_dia",
+      "name": "Elegir mis 3 tareas del día",
+      "days": ["daily"],
+      "icon": "🎯",
+      "category": "foco_productividad",
+      "why": "Limitar la lista a 3 evita la parálisis de \"todo es urgente\" y fuerza a priorizar en vez de improvisar.",
+      "tasks": [
+        { "title": "Abrir tu lista de tareas en Brainy", "position": 1 },
+        { "title": "Elegir solo 3 tareas para hoy", "position": 2 },
+        { "title": "Ordenarlas de la más importante a la menos", "position": 3 },
+        { "title": "Empezar por la primera antes de revisar el celular", "position": 4 },
+        { "title": "Marcar el hábito como cumplido al final del día", "position": 5 }
+      ]
+    },
+    {
+      "templateId": "pausa_pantallas",
+      "name": "Pausa de pantallas a media tarde",
+      "days": ["daily"],
+      "icon": "🧘",
+      "category": "foco_productividad",
+      "why": "Una pausa sensorial corta previene el hiperfoco agotador y baja la sobreestimulación acumulada.",
+      "tasks": [
+        { "title": "Poner una alarma a mitad de la tarde", "position": 1 },
+        { "title": "Al sonar, soltar el celular o la pantalla", "position": 2 },
+        { "title": "Hacer algo sin pantalla por 5 a 10 minutos", "position": 3 },
+        { "title": "Volver a tu tarea después de la pausa", "position": 4 },
+        { "title": "Marcar el hábito como cumplido", "position": 5 }
+      ]
+    },
+    {
+      "templateId": "cuidado_personal",
+      "name": "Cuidado personal diario",
+      "days": ["daily"],
+      "icon": "🧴",
+      "category": "salud_energia",
+      "why": "Encadenar los pasos de higiene (habit stacking) reduce la carga de decisión: uno lleva al otro sin pensar cada vez.",
+      "note": "El paso 4 es configurable: el usuario elige qué variante quiere al armar este hábito, no se asigna automáticamente.",
+      "tasks": [
+        { "title": "Lavarte la cara o ducharte", "position": 1 },
+        { "title": "Cepillarte los dientes", "position": 2 },
+        { "title": "Aplicar hidratante o protector solar", "position": 3 },
+        { "title": "Paso configurable: rutina facial extendida (sérum/tónico) o cuidado de vello facial (afeitar/recortar barba)", "position": 4 },
+        { "title": "Marcar el hábito como cumplido", "position": 5 }
+      ]
+    },
+    {
+      "templateId": "orden_5_min",
+      "name": "Orden rápido de 5 minutos",
+      "days": ["daily"],
+      "icon": "🧹",
+      "category": "rutinas_organizacion",
+      "why": "Limitar el orden a una sola superficie y un timer corto evita que \"ordenar\" se sienta como un proyecto gigante.",
+      "tasks": [
+        { "title": "Poner un timer de 5 minutos", "position": 1 },
+        { "title": "Elegir una sola superficie (mesa, cama, escritorio)", "position": 2 },
+        { "title": "Guardar todo lo que no pertenece ahí", "position": 3 },
+        { "title": "Tirar la basura visible", "position": 4 },
+        { "title": "Marcar el hábito como cumplido cuando suene el timer", "position": 5 }
+      ]
+    },
+    {
+      "templateId": "brain_dump_nocturno",
+      "name": "Brain dump nocturno",
+      "days": ["daily"],
+      "icon": "📝",
+      "category": "calma_regulacion",
+      "why": "Sacar los pensamientos de la cabeza antes de dormir reduce la rumiación que retrasa el sueño en TDAH.",
+      "tasks": [
+        { "title": "Agarrar papel o abrir notas", "position": 1 },
+        { "title": "Escribir todo lo que ronda la cabeza durante 5 minutos", "position": 2 },
+        { "title": "Marcar con una estrella lo más urgente", "position": 3 },
+        { "title": "Pasar eso a la lista de mañana", "position": 4 },
+        { "title": "Marcar el hábito como cumplido", "position": 5 }
+      ]
+    },
+    {
+      "templateId": "rutina_cierre_sueno",
+      "name": "Rutina de cierre para dormir",
+      "days": ["daily"],
+      "icon": "🌙",
+      "category": "calma_regulacion",
+      "why": "La higiene del sueño es el área con más evidencia de impacto directo en los síntomas de TDAH.",
+      "tasks": [
+        { "title": "Dejar el celular cargando fuera del cuarto o lejos de la cama", "position": 1 },
+        { "title": "Bajar la luz principal del espacio", "position": 2 },
+        { "title": "Preparar ropa o agenda para mañana", "position": 3 },
+        { "title": "Hacer una acción de cierre (leer, respirar, estirar)", "position": 4 },
+        { "title": "Acostarte a la misma hora todos los días", "position": 5 },
+        { "title": "Marcar el hábito como cumplido", "position": 6 }
+      ]
+    }
+  ]
+}

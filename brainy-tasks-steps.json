@@ -1,0 +1,230 @@
+{
+  "categories": [
+    {
+      "id": "foco_productividad",
+      "emoji": "🧠",
+      "label": "Foco & Productividad",
+      "tasks": [
+        {
+          "templateId": "escribir_informe",
+          "title": "Escribir ese informe/ensayo que vengo postergando",
+          "emoji": "📝",
+          "metric": "words_written",
+          "difficulty": "high",
+          "subtasks": [
+            { "title": "Abrir el documento (o crear uno nuevo) y escribir solo el título", "duration": 5 },
+            { "title": "Anotar 3 ideas sueltas que ya tenés en la cabeza, sin ordenarlas", "duration": 10 },
+            { "title": "Poner un timer de 10 minutos y escribir sin corregir nada", "duration": 10 },
+            { "title": "Ordenar esas ideas en el orden en que van a aparecer", "duration": 10 },
+            { "title": "Convertir cada idea en un párrafo, una a la vez", "duration": 20 },
+            { "title": "Escribir la introducción al final, no al principio", "duration": 10 },
+            { "title": "Leerlo una vez en voz alta para revisar", "duration": 5 },
+            { "title": "Guardar o enviar el documento", "duration": 5 }
+          ]
+        },
+        {
+          "templateId": "armar_cv_postular",
+          "title": "Armar mi CV/portafolio y postularme a algo pendiente",
+          "emoji": "📄",
+          "metric": "applications_sent",
+          "difficulty": "medium",
+          "subtasks": [
+            { "title": "Crear una carpeta nueva llamada \"Postulación\"", "duration": 5 },
+            { "title": "Abrir tu último CV o una plantilla y guardarlo con la fecha de hoy", "duration": 5 },
+            { "title": "Actualizar solo el dato más reciente (último trabajo o estudio)", "duration": 10 },
+            { "title": "Elegir 3 postulaciones para hoy, no busques todas las opciones que existen", "duration": 10 },
+            { "title": "Adjuntar el CV actualizado a la primera postulación", "duration": 10 },
+            { "title": "Escribir 2 líneas de mensaje genérico (podés reusarlo)", "duration": 5 },
+            { "title": "Enviar la primera postulación", "duration": 5 },
+            { "title": "Enviar las otras 2 usando el mismo mensaje", "duration": 10 }
+          ]
+        },
+        {
+          "templateId": "estudiar_examen",
+          "title": "Empezar a estudiar para un examen o certificación",
+          "emoji": "📚",
+          "metric": "minutes_studied",
+          "difficulty": "medium",
+          "subtasks": [
+            { "title": "Abrir el temario o índice del curso", "duration": 5 },
+            { "title": "Marcar los 3 temas que menos manejás", "duration": 5 },
+            { "title": "Poner un timer de 25 minutos para un solo tema", "duration": 25 },
+            { "title": "Cerrar el resto de pestañas y abrir solo el material de ese tema", "duration": 5 },
+            { "title": "Leer o ver una sección y anotar 3 ideas clave", "duration": 20 },
+            { "title": "Escribir un mini-resumen de 5 líneas de lo que leíste", "duration": 10 },
+            { "title": "Descansar 5 minutos", "duration": 5 },
+            { "title": "Repetir con el siguiente tema marcado", "duration": 25 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rutinas_organizacion",
+      "emoji": "🏠",
+      "label": "Rutinas & Organización personal",
+      "tasks": [
+        {
+          "templateId": "ordenar_closet",
+          "title": "Ordenar mi clóset/pieza",
+          "emoji": "👕",
+          "metric": null,
+          "difficulty": "medium",
+          "subtasks": [
+            { "title": "Poner música o un podcast (opcional, ayuda a arrancar)", "duration": 5 },
+            { "title": "Sacar solo un cajón o un estante, no todo el clóset de una vez", "duration": 5 },
+            { "title": "Vaciarlo completo sobre la cama", "duration": 10 },
+            { "title": "Hacer 3 pilas: me queda / no me queda / dudas", "duration": 10 },
+            { "title": "Doblar y guardar solo la pila \"me queda\"", "duration": 15 },
+            { "title": "Meter la pila \"no me queda\" en una bolsa y cerrarla ya", "duration": 5 },
+            { "title": "Guardar la pila \"dudas\" en una caja aparte por una semana", "duration": 5 },
+            { "title": "Repetir con el siguiente cajón o estante otro día", "duration": 10 }
+          ]
+        },
+        {
+          "templateId": "poner_al_dia_finanzas",
+          "title": "Poner al día mis finanzas",
+          "emoji": "💸",
+          "metric": null,
+          "difficulty": "medium",
+          "subtasks": [
+            { "title": "Abrir la app del banco o tu cuenta principal", "duration": 5 },
+            { "title": "Anotar el saldo actual, nada más", "duration": 5 },
+            { "title": "Listar las cuentas pendientes que recordás de memoria", "duration": 5 },
+            { "title": "Revisar el correo buscando la palabra \"factura\" o \"pago\"", "duration": 10 },
+            { "title": "Ordenar esa lista de menor a mayor monto", "duration": 5 },
+            { "title": "Pagar la más chica primero", "duration": 10 },
+            { "title": "Pagar las siguientes una por una", "duration": 15 },
+            { "title": "Anotar en el calendario la fecha del próximo corte", "duration": 5 }
+          ]
+        },
+        {
+          "templateId": "resolver_tramite",
+          "title": "Resolver ese trámite pendiente",
+          "emoji": "📑",
+          "metric": null,
+          "difficulty": "medium",
+          "subtasks": [
+            { "title": "Escribir en una nota qué trámite es, en una sola frase", "duration": 5 },
+            { "title": "Buscar en internet \"requisitos para [ese trámite]\"", "duration": 10 },
+            { "title": "Hacer una lista de los documentos que pide", "duration": 5 },
+            { "title": "Juntar los documentos que ya tenés a mano", "duration": 10 },
+            { "title": "Marcar cuáles te faltan y dónde conseguirlos", "duration": 10 },
+            { "title": "Sacar el turno/cita o completar el primer formulario", "duration": 15 },
+            { "title": "Poner un recordatorio con fecha y hora en el calendario", "duration": 5 },
+            { "title": "Dejar la carpeta lista el día anterior", "duration": 5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "salud_energia",
+      "emoji": "💪",
+      "label": "Salud & Energía",
+      "tasks": [
+        {
+          "templateId": "empezar_rutina_ejercicio",
+          "title": "Armar y empezar una rutina de ejercicio",
+          "emoji": "💪",
+          "metric": "workouts_completed",
+          "difficulty": "medium",
+          "subtasks": [
+            { "title": "Elegir un solo tipo de ejercicio para empezar (por ejemplo caminar)", "duration": 5 },
+            { "title": "Dejar la ropa de ejercicio a la vista la noche anterior", "duration": 2 },
+            { "title": "Ponerte la ropa de ejercicio, nada más por ahora", "duration": 5 },
+            { "title": "Salir por la puerta o pararte frente al espacio de entrenamiento", "duration": 2 },
+            { "title": "Hacer solo 5 minutos, sin pensar en más", "duration": 5 },
+            { "title": "Si querés seguir, seguí; si no, ya cumpliste", "duration": 2 },
+            { "title": "Registrar en la app que lo hiciste", "duration": 2 }
+          ]
+        },
+        {
+          "templateId": "meal_prep",
+          "title": "Preparar comidas para la semana (meal prep)",
+          "emoji": "🍱",
+          "metric": null,
+          "difficulty": "medium",
+          "subtasks": [
+            { "title": "Elegir solo 2 recetas simples para toda la semana", "duration": 10 },
+            { "title": "Hacer una lista de ingredientes de esas 2 recetas", "duration": 10 },
+            { "title": "Comprar o pedir solo esos ingredientes", "duration": 20 },
+            { "title": "Sacar todos los ingredientes y ponerlos en la mesada", "duration": 10 },
+            { "title": "Cocinar la primera receta completa", "duration": 30 },
+            { "title": "Guardar en porciones individuales", "duration": 10 },
+            { "title": "Cocinar la segunda receta", "duration": 30 },
+            { "title": "Guardar y etiquetar con el día", "duration": 10 }
+          ]
+        },
+        {
+          "templateId": "rutina_matutina",
+          "title": "Armar una rutina matutina para levantarme y arrancar el día",
+          "emoji": "🌅",
+          "metric": null,
+          "difficulty": "medium",
+          "subtasks": [
+            { "title": "Poner el despertador lejos de la cama", "duration": 5 },
+            { "title": "Dejar un vaso de agua al lado de donde te vas a levantar", "duration": 2 },
+            { "title": "Al sonar, pararte y tomar el agua antes de mirar el celular", "duration": 3 },
+            { "title": "Abrir una cortina o prender una luz", "duration": 2 },
+            { "title": "Hacer una sola acción física (estirar o lavarte la cara)", "duration": 5 },
+            { "title": "Vestirte con la ropa que dejaste elegida la noche anterior", "duration": 5 },
+            { "title": "Recién ahí empezar la primera tarea del día", "duration": 2 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "calma_regulacion",
+      "emoji": "😌",
+      "label": "Calma & Regulación emocional",
+      "tasks": [
+        {
+          "templateId": "vaciar_cabeza",
+          "title": "Vaciar la cabeza cuando hay demasiados pensamientos (brain dump)",
+          "emoji": "🧠",
+          "metric": null,
+          "difficulty": "low",
+          "subtasks": [
+            { "title": "Agarrar papel o abrir notas, sin pensar en el formato", "duration": 5 },
+            { "title": "Poner un timer de 5 minutos", "duration": 2 },
+            { "title": "Escribir todo lo que ronda la cabeza, sin ordenar ni juzgar", "duration": 5 },
+            { "title": "Cuando termine el timer, parar aunque no hayas terminado", "duration": 1 },
+            { "title": "Marcar las 3 cosas que más pesan", "duration": 3 },
+            { "title": "Elegir 1 de esas 3 para convertirla en una tarea concreta", "duration": 5 },
+            { "title": "Guardar o tirar la hoja, lo que te sirva más", "duration": 2 }
+          ]
+        },
+        {
+          "templateId": "rutina_noche",
+          "title": "Armar una rutina de noche para dormir mejor",
+          "emoji": "🌙",
+          "metric": null,
+          "difficulty": "low",
+          "subtasks": [
+            { "title": "Poner una alarma 30 minutos antes de la hora de dormir", "duration": 2 },
+            { "title": "Dejar el celular cargando fuera del cuarto o lejos de la cama", "duration": 3 },
+            { "title": "Bajar la luz principal del espacio", "duration": 2 },
+            { "title": "Anotar una cosa buena del día (cierre simbólico del día)", "duration": 5 },
+            { "title": "Preparar algo para mañana (ropa, agenda) para bajar la carga mental", "duration": 5 },
+            { "title": "Acostarte aunque no tengas sueño todavía", "duration": 2 }
+          ]
+        },
+        {
+          "templateId": "tomar_decision",
+          "title": "Tomar una decisión que vengo posponiendo",
+          "emoji": "⚖️",
+          "metric": null,
+          "difficulty": "medium",
+          "subtasks": [
+            { "title": "Escribir la decisión en una frase clara", "duration": 5 },
+            { "title": "Listar máximo 3 opciones, no más", "duration": 5 },
+            { "title": "Escribir 1 pro y 1 contra de cada opción", "duration": 10 },
+            { "title": "Ponerte un plazo límite (por ejemplo, hoy antes de dormir)", "duration": 2 },
+            { "title": "Preguntarte qué elegirías si tuvieras que decidir en 10 segundos", "duration": 3 },
+            { "title": "Elegir esa opción", "duration": 2 },
+            { "title": "Dar el primer paso concreto de esa decisión ya mismo", "duration": 5 }
+          ]
+        }
+      ]
+    }
+  ]
+}
