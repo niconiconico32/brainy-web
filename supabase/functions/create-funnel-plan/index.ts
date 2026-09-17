@@ -18,6 +18,23 @@ interface FunnelPlanRequest {
   marketing_opt_in?: boolean
   source?: string
   campaign?: string
+  client_plan_key?: string
+}
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+// Token criptográficamente seguro (32 bytes -> 64 hex). Nunca se persiste:
+// en la base solo queda su SHA-256.
+function generateClaimToken(): string {
+  const bytes = new Uint8Array(32)
+  crypto.getRandomValues(bytes)
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
+}
+
+async function sha256Hex(input: string): Promise<string> {
+  const data = new TextEncoder().encode(input)
+  const digest = await crypto.subtle.digest('SHA-256', data)
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join('')
 }
 
 Deno.serve(async (req: Request) => {
@@ -49,6 +66,17 @@ Deno.serve(async (req: Request) => {
       return json({ error: 'plan_too_large' }, 413)
     }
 
+    // Idempotencia por client_plan_key (NO por email): el front genera la clave
+    // una vez y la reutiliza en reintentos.
+    let clientPlanKey: string
+    if (body.client_plan_key === undefined || body.client_plan_key === null) {
+      clientPlanKey = crypto.randomUUID()
+    } else if (typeof body.client_plan_key === 'string' && UUID_RE.test(body.client_plan_key)) {
+      clientPlanKey = body.client_plan_key.toLowerCase()
+    } else {
+      return json({ error: 'invalid_client_plan_key' }, 400)
+    }
+
     const email = body.email && typeof body.email === 'string'
       ? body.email.trim().toLowerCase()
       : null
@@ -56,24 +84,46 @@ Deno.serve(async (req: Request) => {
     const source = typeof body.source === 'string' && body.source ? body.source : 'website'
     const campaign = typeof body.campaign === 'string' && body.campaign ? body.campaign : 'brainy_onboarding_v1'
 
-    // Idempotencia: si ya existe un plan pendiente reciente con el mismo email,
-    // reutilizamos su planId + claimToken en vez de crear un duplicado.
-    if (email) {
-      const { data: existing } = await sb
-        .from('funnel_plans')
-        .select('id, claim_token')
-        .eq('email', email)
-        .eq('status', 'pending')
-        .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
-        .order('created_at', { ascending: false })
-        .limit(1)
-      if (existing && existing.length > 0) {
-        return json({ planId: existing[0].id, claimToken: existing[0].claim_token })
+    const { data: existing, error: selectError } = await sb
+      .from('funnel_plans')
+      .select('id, status, claim_expires_at')
+      .eq('client_plan_key', clientPlanKey)
+      .maybeSingle()
+
+    if (selectError) {
+      console.error('select error', selectError.message)
+      return json({ error: 'lookup_failed' }, 500)
+    }
+
+    if (existing) {
+      const expired = existing.claim_expires_at
+        ? new Date(existing.claim_expires_at).getTime() < Date.now()
+        : false
+
+      if (existing.status !== 'pending' || expired) {
+        // El plan ya fue reclamado/en proceso o venció: no se reemite token.
+        return json({ error: 'plan_not_pending', status: existing.status }, 409)
       }
+
+      // Retry seguro: misma fila pending, NUEVO claimToken que invalida el anterior.
+      const newToken = generateClaimToken()
+      const newHash = await sha256Hex(newToken)
+      const { error: updateError } = await sb
+        .from('funnel_plans')
+        .update({ claim_token_hash: newHash })
+        .eq('id', existing.id)
+        .eq('status', 'pending')
+
+      if (updateError) {
+        console.error('update error', updateError.message)
+        return json({ error: 'update_failed' }, 500)
+      }
+      return json({ planId: existing.id, claimToken: newToken })
     }
 
     const planId = crypto.randomUUID()
-    const claimToken = crypto.randomUUID().replaceAll('-', '') + crypto.randomUUID().replaceAll('-', '')
+    const claimToken = generateClaimToken()
+    const claimTokenHash = await sha256Hex(claimToken)
 
     const { error } = await sb.from('funnel_plans').insert({
       id: planId,
@@ -82,7 +132,8 @@ Deno.serve(async (req: Request) => {
       marketing_opt_in: marketingOptIn,
       source,
       campaign,
-      claim_token: claimToken,
+      client_plan_key: clientPlanKey,
+      claim_token_hash: claimTokenHash,
       status: 'pending',
     })
 

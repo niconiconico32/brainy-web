@@ -1662,6 +1662,9 @@
     <script>
         const STORAGE_STATE_KEY = 'brainy_funnel_state';
         const STORAGE_STEP_KEY = 'brainy_funnel_step';
+        const STORAGE_CLIENT_PLAN_KEY = 'brainy_funnel_client_plan_key';
+        // Default de duración de subtarea cuando el dato no viene en el JSON.
+        const DEFAULT_SUBTASK_DURATION_MINUTES = 5;
         const QUESTION_KEYS = ['q1_estado_actual', 'q2_dolor', 'q3_intentos_previos', 'q4_causa_fracaso', 'q5_identidad_futura', 'q6_area_prioritaria', 'q7_compromiso', 'q8_tiempo_disponible', 'q9_listo', 'q10_cuando_empezar'];
 
         const CATEGORIES = [
@@ -1671,6 +1674,11 @@
             { id: 'calma_regulacion', emoji: '😌', label: 'Calma & Regulación emocional' }
         ];
 
+        // NOTA (bloqueante web->app): la app móvil usa egg_catalog.id NUMÉRICO.
+        // En este repo no existe ningún catálogo/mapping de egg_catalog, así que
+        // NO se inventan IDs: hoy `id`/`catalogId` son slugs (`huevo_*`) y la app
+        // resuelve el asset local. Pendiente coordinar con la app para congelar el
+        // mapping real (slug -> egg_catalog.id) antes de enviar catalogId numérico.
         const EGGS = [
             { catalogId: 'huevo_nebulosa', id: 'huevo_nebulosa', name: 'Nebulosa', emoji: '🌌', color: '#a99bff', imageUrl: null },
             { catalogId: 'huevo_solar', id: 'huevo_solar', name: 'Solar', emoji: '☀️', color: '#f2c94c', imageUrl: null },
@@ -1771,7 +1779,9 @@
             completedAt: null,
             planId: null,
             claimToken: null,
+            clientPlanKey: null,
             purchaseCompleted: false,
+            handoffReady: false,
             selectedPackageId: null,
             pendingRedemptionUrl: null
         };
@@ -2236,6 +2246,7 @@
         function resetFunnel() {
             localStorage.removeItem(STORAGE_STATE_KEY);
             localStorage.removeItem(STORAGE_STEP_KEY);
+            localStorage.removeItem(STORAGE_CLIENT_PLAN_KEY);
             funnelState = JSON.parse(JSON.stringify(DEFAULT_STATE));
             currentStepIndex = 0;
             persistState();
@@ -2248,8 +2259,22 @@
             persistState();
         }
 
+        const FORBIDDEN_ANALYTICS_KEYS = /^(email|mail|claim_?token|claim_?token_?hash|redemption_?url|redemption_?token|token|jwt|authorization|redeem_?url)$/i;
+
+        function safeAnalyticsMetadata(metadata) {
+            const out = {};
+            if (metadata && typeof metadata === 'object') {
+                Object.keys(metadata).forEach((key) => {
+                    if (!FORBIDDEN_ANALYTICS_KEYS.test(key)) {
+                        out[key] = metadata[key];
+                    }
+                });
+            }
+            return out;
+        }
+
         function track(event, metadata) {
-            const data = { event: event, metadata: metadata || {} };
+            const data = { event: event, metadata: safeAnalyticsMetadata(metadata) };
             if (window.brainyAnalyticsQueue) {
                 window.brainyAnalyticsQueue.push(data);
             }
@@ -2419,6 +2444,23 @@
             return funnelState[qkey] !== undefined ? funnelState[qkey] : null;
         }
 
+        // La app móvil consume: easy | moderate | hard. Nunca "medium".
+        const DIFFICULTY_MAP = {
+            easy: 'easy', low: 'easy',
+            moderate: 'moderate', medium: 'moderate',
+            hard: 'hard', high: 'hard'
+        };
+
+        function normalizeDifficulty(value) {
+            const key = String(value || '').trim().toLowerCase();
+            return DIFFICULTY_MAP[key] || 'moderate';
+        }
+
+        function normalizeDuration(value) {
+            const num = typeof value === 'number' ? value : parseFloat(value);
+            return Number.isFinite(num) && num > 0 ? num : DEFAULT_SUBTASK_DURATION_MINUTES;
+        }
+
         function buildUserPlanPayload() {
             const now = new Date().toISOString();
             const tasks = funnelState.selectedTasks.map((t) => ({
@@ -2426,10 +2468,10 @@
                 title: t.title,
                 emoji: t.emoji || '',
                 metric: t.metric || null,
-                difficulty: t.difficulty || 'medium',
+                difficulty: normalizeDifficulty(t.difficulty),
                 subtasks: (t.subtasks || []).map((s) => ({
                     title: s.title,
-                    duration: typeof s.duration === 'number' ? s.duration : null
+                    duration: normalizeDuration(s.duration)
                 }))
             }));
             const routines = funnelState.selectedRoutines.map((r, i) => {
@@ -2476,7 +2518,10 @@
                     createdAt: now,
                     source: 'website',
                     campaign: 'brainy_onboarding_v1',
-                    locale: 'es-AR'
+                    locale: 'es-AR',
+                    tasksCount: tasks.length,
+                    routinesCount: routines.length,
+                    totalSelectedCount: tasks.length + routines.length
                 }
             };
         }
@@ -2491,13 +2536,62 @@
             return map[p4Answer] || 'Todo lo que armaste quedó guardado para que arranques sin depender de la motivación del día.';
         }
 
+        function isDemoId(value) {
+            const str = value === null || value === undefined ? '' : String(value);
+            return !str || str.startsWith('demo-') || str.startsWith('pending');
+        }
+
+        // NO REAL PLAN = NO REAL CHECKOUT. Un plan solo es real si el backend
+        // confirmó su creación y el token no es demo.
+        function hasRealPlan() {
+            return !!(
+                FUNNEL_CONFIG.enableBackend &&
+                funnelState.planId &&
+                funnelState.claimToken &&
+                !isDemoId(funnelState.planId) &&
+                !isDemoId(funnelState.claimToken)
+            );
+        }
+
+        function ensureClientPlanKey() {
+            if (funnelState.clientPlanKey) {
+                return funnelState.clientPlanKey;
+            }
+            let key = null;
+            try {
+                key = localStorage.getItem(STORAGE_CLIENT_PLAN_KEY);
+            } catch (e) {
+                key = null;
+            }
+            if (!key) {
+                key = (window.crypto && typeof window.crypto.randomUUID === 'function')
+                    ? window.crypto.randomUUID()
+                    : 'cpk-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+                try {
+                    localStorage.setItem(STORAGE_CLIENT_PLAN_KEY, key);
+                } catch (e) {
+                    // sin localStorage: seguimos con la key en memoria
+                }
+            }
+            setState('clientPlanKey', key);
+            return key;
+        }
+
+        // Deep link web -> app. El email es una solución TEMPORAL para la
+        // implementación móvil actual (prellenar login + enviar OTP).
+        // TODO: reemplazar email en URL por resolución server-side del handoff
+        // para evitar PII dentro del deep link/QR.
         function buildClaimLink(redeemUrl) {
-            const token = funnelState.claimToken && !String(funnelState.claimToken).startsWith('pending')
+            const token = hasRealPlan()
                 ? funnelState.claimToken
                 : 'demo-' + (funnelState.planId || Date.now());
             let link = `${FUNNEL_CONFIG.appDeepLinkScheme}://claim?token=${encodeURIComponent(token)}`;
             if (redeemUrl) {
                 link += `&redeem_url=${encodeURIComponent(redeemUrl)}`;
+            }
+            const email = funnelState.email ? String(funnelState.email).trim() : '';
+            if (email) {
+                link += `&email=${encodeURIComponent(email)}`;
             }
             return link;
         }
@@ -2541,19 +2635,27 @@
                 return { planId: funnelState.planId, claimToken: funnelState.claimToken };
             }
             const plan = buildUserPlanPayload();
+            const counts = {
+                tasksCount: plan.metadata.tasksCount,
+                routinesCount: plan.metadata.routinesCount,
+                totalSelectedCount: plan.metadata.totalSelectedCount,
+                campaign: plan.metadata.campaign
+            };
 
             if (!FUNNEL_CONFIG.enableBackend || !FUNNEL_CONFIG.createPlanUrl) {
+                ensureClientPlanKey();
                 const demo = {
                     planId: 'demo-' + Date.now().toString(36),
                     claimToken: 'demo-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
                 };
                 setState('planId', demo.planId);
                 setState('claimToken', demo.claimToken);
-                track('create_plan_success', { planId: demo.planId, mode: 'demo' });
+                track('plan_created', Object.assign({ mode: 'demo' }, counts));
                 return demo;
             }
 
-            track('plan_generation_start', { tasksCount: plan.tasks.length, routinesCount: plan.routines.length });
+            const clientPlanKey = ensureClientPlanKey();
+            track('plan_generation_start', counts);
             try {
                 const headers = { 'Content-Type': 'application/json' };
                 if (FUNNEL_CONFIG.anonKey) {
@@ -2568,7 +2670,8 @@
                         email: funnelState.email || null,
                         marketing_opt_in: !!funnelState.marketing_optin,
                         source: 'website',
-                        campaign: plan.metadata.campaign
+                        campaign: plan.metadata.campaign,
+                        client_plan_key: clientPlanKey
                     })
                 });
                 if (!res.ok) {
@@ -2580,10 +2683,11 @@
                 }
                 setState('planId', data.planId);
                 setState('claimToken', data.claimToken);
-                track('create_plan_success', { planId: data.planId });
+                setState('handoffReady', false);
+                track('plan_created', counts);
                 return { planId: data.planId, claimToken: data.claimToken };
             } catch (err) {
-                track('create_plan_failed', { reason: (err && err.message) || 'unknown' });
+                track('plan_creation_failed', { reason: (err && err.message) || 'unknown' });
                 return null;
             }
         }
@@ -3127,7 +3231,7 @@
                     </article>`;
             }
 
-            function renderRecovery(copy) {
+            function renderRecovery(copy, onRetry) {
                 root.innerHTML = `
                     ${backButtonHtml()}
                     ${cardOpen()}
@@ -3139,14 +3243,19 @@
                             </div>
                         </div>
                     </article>`;
-                document.getElementById('retryPaywallBtn').addEventListener('click', () => {
-                    initPaywall();
-                });
+                document.getElementById('retryPaywallBtn').addEventListener('click', onRetry || (() => initPaywall()));
             }
 
             async function initPaywall() {
                 if (funnelState.purchaseCompleted) {
-                    goNext();
+                    if (funnelState.handoffReady) {
+                        goNext();
+                    } else {
+                        renderRecovery(
+                            'Tu suscripción fue activada, pero no pudimos preparar el enlace para Brainy. Escribinos y lo resolvemos.',
+                            () => window.location.reload()
+                        );
+                    }
                     return;
                 }
                 if (!funnelState.planId || !funnelState.claimToken) {
@@ -3157,6 +3266,13 @@
                         renderRecovery('No pudimos preparar tu plan por ahora. Probá de nuevo.');
                         return;
                     }
+                }
+                if (!hasRealPlan()) {
+                    track('checkout_blocked_no_plan', {
+                        reason: !FUNNEL_CONFIG.enableBackend ? 'backend_disabled' : 'no_real_plan',
+                        tasksCount: funnelState.selectedTasks.length,
+                        routinesCount: funnelState.selectedRoutines.length
+                    });
                 }
                 if (!svc || !svc.isAvailable() || !rcConfig.apiKey) {
                     track('purchase_failed', { reason: 'rc_not_configured' });
@@ -3235,6 +3351,7 @@
 
             function renderPaywallCards() {
                 const data = paywallData;
+                const checkoutAllowed = hasRealPlan();
                 const taskLabel = `${funnelState.selectedTasks.length} ${funnelState.selectedTasks.length === 1 ? 'tarea' : 'tareas'}`;
                 const routineLabel = `${funnelState.selectedRoutines.length} ${funnelState.selectedRoutines.length === 1 ? 'rutina' : 'rutinas'}`;
                 const eggLabel = `${assignedRoutines().length} ${assignedRoutines().length === 1 ? 'compañero' : 'compañeros'}`;
@@ -3266,7 +3383,9 @@
                         <div class="plan-cards">${cardsHtml}</div>
                         <p class="paywall-note">${rcConfig.termsUrl ? 'Al continuar aceptás los términos de Brainy. Podés cancelar en cualquier momento.' : 'Podés cancelar en cualquier momento desde tu cuenta.'}</p>
                         <div class="actions">
-                            <button class="btn btn-dopamine" type="button" id="purchaseBtn">Activar mi plan →</button>
+                            ${checkoutAllowed
+                                ? '<button class="btn btn-dopamine" type="button" id="purchaseBtn">Activar mi plan →</button>'
+                                : '<button class="btn btn-dopamine" type="button" id="purchaseBtn" disabled>Checkout unavailable in demo mode</button><p class="field-note">Modo demo: no se puede cobrar sin un plan real en el backend.</p>'}
                         </div>
                     </article>`;
 
@@ -3287,7 +3406,9 @@
                     });
                 });
 
-                document.getElementById('purchaseBtn').addEventListener('click', startCheckout);
+                if (checkoutAllowed) {
+                    document.getElementById('purchaseBtn').addEventListener('click', startCheckout);
+                }
             }
 
             async function startCheckout() {
@@ -3297,6 +3418,12 @@
                 const data = paywallData;
                 const entry = data.packages.find((p) => p.pkg.identifier === data.selectedId);
                 if (!entry) {
+                    return;
+                }
+                if (!hasRealPlan()) {
+                    track('checkout_blocked_no_plan', {
+                        reason: !FUNNEL_CONFIG.enableBackend ? 'backend_disabled' : 'no_real_plan'
+                    });
                     return;
                 }
                 purchaseLock = true;
@@ -3373,20 +3500,38 @@
                     renderRecovery('No pudimos confirmar tu suscripción todavía. No se te volvió a cobrar: revisá tu correo y probá de nuevo.');
                     return;
                 }
-                if (!redeemUrl) {
-                    console.error('[brainy] compra completada sin redemptionInfo');
-                }
                 setState('purchaseCompleted', true);
-                if (redeemUrl) {
-                    setState('pendingRedemptionUrl', redeemUrl);
+                if (!redeemUrl) {
+                    // Suscripción activa pero sin enlace de redención: NO se vuelve
+                    // a cobrar ni se genera handoff normal. Queda en recovery.
+                    purchaseLock = false;
+                    setState('pendingRedemptionUrl', null);
+                    setState('handoffReady', false);
+                    track('handoff_recovery_required', {
+                        packageId: entry.pkg.identifier,
+                        offeringId: data.offering.identifier,
+                        platform: isMobileDevice() ? 'mobile' : 'desktop'
+                    });
+                    renderRecovery(
+                        'Tu suscripción fue activada, pero no pudimos preparar el enlace para Brainy. No se te volvió a cobrar. Escribinos y lo resolvemos.',
+                        () => window.location.reload()
+                    );
+                    return;
                 }
+                setState('pendingRedemptionUrl', redeemUrl);
+                setState('handoffReady', true);
                 track('purchase_success', {
                     packageId: entry.pkg.identifier,
                     offeringId: data.offering.identifier,
                     currency: data.currency,
                     packageType: entry.kind,
                     entitlementActive: true,
-                    redemptionAvailable: !!redeemUrl
+                    redemptionAvailable: true
+                });
+                track('handoff_ready', {
+                    packageId: entry.pkg.identifier,
+                    offeringId: data.offering.identifier,
+                    platform: isMobileDevice() ? 'mobile' : 'desktop'
                 });
                 goNext();
             }
@@ -3396,15 +3541,44 @@
 
         function renderSuccess(step) {
             const platform = isMobileDevice() ? 'mobile' : 'desktop';
+            const redeemUrl = funnelState.pendingRedemptionUrl || null;
+            const ready = !!funnelState.purchaseCompleted && !!funnelState.handoffReady && !!redeemUrl && hasRealPlan();
+
+            if (!ready) {
+                track('handoff_recovery_required', {
+                    platform: platform,
+                    entitlementActive: !!funnelState.purchaseCompleted,
+                    redemptionAvailable: !!redeemUrl
+                });
+                document.getElementById('funnelRoot').innerHTML = `
+                    ${cardOpen()}
+                        ${headHtml(step)}
+                        <div class="paywall-recovery">
+                            <p>Tu suscripción fue activada, pero no pudimos preparar el enlace para Brainy. No se te volvió a cobrar.</p>
+                            <div class="actions">
+                                <button class="btn btn-dopamine" type="button" id="retryHandoffBtn">Reintentar</button>
+                            </div>
+                        </div>
+                    </article>`;
+                const retryBtn = document.getElementById('retryHandoffBtn');
+                if (retryBtn) {
+                    retryBtn.addEventListener('click', () => window.location.reload());
+                }
+                return;
+            }
+
             track('purchase_handoff_view', {
                 platform: platform,
                 tasksCount: funnelState.selectedTasks.length,
                 routinesCount: funnelState.selectedRoutines.length
             });
+            track('handoff_ready', {
+                platform: platform,
+                campaign: 'brainy_onboarding_v1'
+            });
             ensurePlan();
             window.brainyUserPlanPayload = buildUserPlanPayload();
 
-            const redeemUrl = funnelState.pendingRedemptionUrl || null;
             const link = buildClaimLink(redeemUrl);
             const storesHtml = storeButtonsHtml();
             const recoveryNote = !redeemUrl && funnelState.planId
