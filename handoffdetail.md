@@ -62,7 +62,7 @@ hasta que la materialización terminó bien**.
       "days": ["daily"],
       "icon": "string",
       "tasks": [ { "title": "string", "position": 1 } ],
-      "egg": { "catalogId": "huevo_nebulosa", "name": "Nebulosa", "imageUrl": null }
+      "egg": { "catalogId": 6 }
     }
   ],
   "preview": { "interacted": true },
@@ -89,21 +89,33 @@ Reglas garantizadas por el funnel:
   `DEFAULT_SUBTASK_DURATION_MINUTES = 5` (nunca `null`).
 - `metric` puede ser `null` (así lo consume la app).
 
-### 2.2 `egg.catalogId` — PENDIENTE / BLOQUEANTE
+### 2.2 `egg.catalogId` — RESUELTO
 
-La app móvil usa `egg_catalog.id` **numérico**, pero **en este repositorio no
-existe ningún catálogo ni mapping de `egg_catalog`** (solo la lista local
-`EGGS` con slugs `huevo_*`). Por indicación del contrato:
+El backend confirmó los 8 huevos **common** canónicos; el funnel usa esa lista
+como fuente de verdad. `egg.catalogId` viaja siempre como **número 1–8** y la
+app resuelve el asset por ese id. No se crean slugs nuevos.
 
-> Si no existe mapping fiable: detener implementación de esa parte y reportarlo.
+| id | nombre  |
+| -- | ------- |
+| 1  | Terra   |
+| 2  | Aqua    |
+| 3  | Flame   |
+| 4  | Storm   |
+| 5  | Leaf    |
+| 6  | Stone   |
+| 7  | Crystal |
+| 8  | Shadow  |
 
-Por eso hoy `egg.catalogId` sigue viajando como **slug** (`"huevo_nebulosa"`) y
-la app resuelve el asset local. **No se inventaron IDs.**
+Reglas:
+- Solo se envían ids 1–8 (nunca `huevo_*`).
+- El slug viejo (`huevo_nebulosa`, …) queda **solo** como compatibilidad de
+  `localStorage`; `canonicalEgg()` lo normaliza a número antes de asignar/enviar.
+- 1 rutina = 1 huevo; hasta 5 rutinas usan huevos distintos.
+- Preview y resumen muestran el nombre canónico del mismo id que se envía.
 
-Acción requerida (coordinación web↔app): congelar el mapping real
-`slug → egg_catalog.id` (p. ej. `huevo_nebulosa → 4`) y recién entonces enviar
-`catalogId` numérico. Al hacerlo hay que actualizar el test `PAYLOAD` de la
-regresión (hoy verifica `typeof catalogId === 'string'` a propósito).
+La regresión cubre esto en `EGG catálogo canónico 1-8` y
+`EGG 1:1 + distintas + payload numérico + display` (el test `PAYLOAD` verifica
+`typeof catalogId === 'number'`).
 
 ### 2.3 Creación del plan (`create-funnel-plan`)
 
@@ -335,10 +347,9 @@ Escenarios:
 
 ## 7. Pendientes / coordinación con la app
 
-1. **BLOQUEANTE — `egg_catalog.id`**: congelar mapping real
-   `slug → egg_catalog.id` y cambiar `egg.catalogId` a número. `_shared/funnel.ts`
-   del backend hace `Number(catalogId)` y lo deja `null` si no es numérico, por lo
-   que hoy los slugs `huevo_*` **no** resuelven.
+1. **Verificar materialización de huevos**: `egg.catalogId` ya viaja numérico
+   (1–8) y `_shared/funnel.ts` lo resuelve con `Number(catalogId)`. Falta
+   confirmar de punta a punta que la app muestra el asset del id enviado.
 2. **Email server-side**: reemplazar `email` en el deep link por resolución
    server-side (hoy es temporal).
 3. `iosStoreUrl` / `androidStoreUrl` (`FUNNEL_CONFIG`, hoy vacíos → sin botones

@@ -26,18 +26,26 @@ POST {plan, client_plan_key, email, marketing_opt_in, source: "website", campaig
 
 ## 2. Huevos → contrato con la app
 
-Decisión: la app **necesita `egg_catalog.id` numérico**. El backend
-(`_shared/funnel.ts` → `buildRoutines`) hace `Number(catalogId)` y lo deja
-`null` si no es numérico, por lo que los slugs `huevo_*` **no** llegan a la app.
+Resuelto: el backend confirmó los 8 huevos **common** canónicos (`egg_catalog.id`
+numérico 1–8). El funnel usa esa lista como fuente de verdad y ya no envía slugs.
 
-Lo que ya viaja en el payload (por rutina):
 ```json
-"egg": { "catalogId": "huevo_nebulosa", "name": "Nebulosa" }
+"egg": { "catalogId": 6 }   // número, siempre 1–8
 ```
 
-- [ ] Confirmar si la app valida por `catalogId` o por `name` (define la lista que hay que congelar).
-- [ ] Congelar en el funnel la lista exacta que espera la app (hoy: Nebulosa, Solar, Océano, Bosque, Cielo, Lava, Flor, Estrella, con `catalogId` `huevo_*`).
-- [ ] Verificar de punta a punta que `funnel_plans.plan.routines[].egg` llega a la app y resuelve asset local.
+| id | nombre |
+| -- | ------ |
+| 1  | Terra  |
+| 2  | Aqua   |
+| 3  | Flame  |
+| 4  | Storm  |
+| 5  | Leaf   |
+| 6  | Stone  |
+| 7  | Crystal|
+| 8  | Shadow |
+
+- [x] Funnel alineado al catálogo canónico (1 rutina = 1 huevo; hasta 5 distintos; slug legacy `huevo_*` solo se normaliza en `localStorage`, nunca viaja).
+- [ ] Verificar de punta a punta que `funnel_plans.plan.routines[].egg.catalogId` llega a la app y resuelve el asset local.
 
 ## 3. App Store links
 

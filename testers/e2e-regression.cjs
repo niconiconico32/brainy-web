@@ -26,6 +26,7 @@
 //   REFRESH refresh post-compra -> success sin recomprar
 //   DEEPLINK deep link contiene token + redeem_url + email URL-encoded
 //   PAYLOAD difficulty nunca "medium" + counts + rangos 1-3 / 1-5
+//   EGG canónico 1-8 (numérico, sin slugs) + 1:1 + distintas + display
 //
 // Nota: en logs/consola, emails, tokens (claim/redeem), hashes y JWTs se
 // enmascaran siempre (nunca se imprime contenido sensible).
@@ -498,12 +499,106 @@ function stubCalls(page) {
             counts: !!p && p.metadata.tasksCount === p.tasks.length && p.metadata.routinesCount === p.routines.length && p.metadata.totalSelectedCount === (p.tasks.length + p.routines.length),
             tasksRange: !!p && p.tasks.length >= 1 && p.tasks.length <= 3,
             routinesRange: !!p && p.routines.length >= 1 && p.routines.length <= 5,
-            eggCatalogId: !!p && typeof p.routines[0].egg.catalogId === 'string'
+            eggCatalogId: !!p && p.routines.every((r) => typeof r.egg.catalogId === 'number' && r.egg.catalogId >= 1 && r.egg.catalogId <= 8),
+            eggNoSlug: !!p && !/huevo_/.test(JSON.stringify(p.routines.map((r) => r.egg)))
         };
         const ok = Object.keys(checks).every((k) => checks[k]) && errs.length === 0;
         rec('PAYLOAD difficulty + counts + rangos', ok, JSON.stringify({ checks, diffs, durations, errs }));
         await page.close();
     } catch (e) { rec('PAYLOAD difficulty + counts + rangos', false, e.message); }
+
+    // S14 EGG: catálogo canónico 1-8 (ids numéricos, nombres canónicos, sin slugs)
+    try {
+        const { page, errs } = await makePage(browser, { key: '' });
+        await page.goto(BASE + '/funnel.html');
+        await page.waitForTimeout(300);
+        const info = await page.evaluate(() => {
+            const cat = (typeof EGGS !== 'undefined') ? EGGS : [];
+            return {
+                ids: cat.map((e) => e.catalogId),
+                names: cat.map((e) => e.name),
+                types: cat.map((e) => typeof e.catalogId),
+                hasSlug: cat.some((e) => typeof e.catalogId !== 'number' || String(e.catalogId).indexOf('huevo') !== -1)
+            };
+        });
+        const canonical = ['Terra', 'Aqua', 'Flame', 'Storm', 'Leaf', 'Stone', 'Crystal', 'Shadow'];
+        const checks = {
+            eight: info.ids.length === 8,
+            ids1to8: JSON.stringify(info.ids) === JSON.stringify([1, 2, 3, 4, 5, 6, 7, 8]),
+            namesExact: JSON.stringify(info.names) === JSON.stringify(canonical),
+            allNumeric: info.types.every((t) => t === 'number'),
+            noSlug: !info.hasSlug
+        };
+        const ok = Object.keys(checks).every((k) => checks[k]) && errs.length === 0;
+        rec('EGG catálogo canónico 1-8', ok, JSON.stringify({ checks, errs }));
+        await page.close();
+    } catch (e) { rec('EGG catálogo canónico 1-8', false, e.message); }
+
+    // S15 EGG: 1 rutina = 1 huevo, hasta 5 distintas, payload numérico y display
+    try {
+        const { page, errs } = await makePage(browser, { key: '' });
+        await page.goto(BASE + '/funnel.html');
+        const mkRoutines = (n) => Array.from({ length: n }, (_, i) => ({
+            templateId: 'rt' + i, id: 'rt' + i, name: 'R' + i, title: 'R' + i, icon: '', days: ['daily'], tasks: [{ title: 't', position: 1 }]
+        }));
+
+        // 1 rutina -> 1 huevo
+        await seed(page, state({ selectedRoutines: mkRoutines(1), assignedRoutines: [] }), 21);
+        await page.reload();
+        await page.waitForTimeout(500);
+        const one = await page.evaluate(() => ({ assigned: assignedRoutines(), payload: buildUserPlanPayload() }));
+
+        // 5 rutinas -> 5 huevos distintos
+        await seed(page, state({ selectedRoutines: mkRoutines(5), assignedRoutines: [] }), 21);
+        await page.reload();
+        await page.waitForTimeout(500);
+        const five = await page.evaluate(() => ({ assigned: assignedRoutines(), payload: buildUserPlanPayload() }));
+
+        // display: el resumen muestra el mismo huevo asignado
+        const shownStep = await page.evaluate(() => {
+            const idx = stepList().findIndex((s) => s.type === 'plan_summary');
+            localStorage.setItem('brainy_funnel_step', String(idx));
+            return idx;
+        });
+        await page.reload();
+        await page.waitForTimeout(700);
+        const display = await page.evaluate(() => {
+            const rows = Array.from(document.querySelectorAll('.plan-row')).filter((r) => r.querySelector('.plan-egg'));
+            const names = rows.map((r) => (r.querySelector('.plan-name').textContent || '').split('—')[0].trim());
+            return { names, bodyHasInvented: /Nebulosa|Solar|Océano|Bosque|Cielo|Lava|Flor|Estrella/.test(document.body.innerText) };
+        });
+
+        // slugs legacy en localStorage -> se normalizan a ids numéricos
+        const legacySlugs = ['huevo_nebulosa', 'huevo_solar', 'huevo_oceano', 'huevo_bosque', 'huevo_cielo'];
+        await page.evaluate(([rs, slugs]) => {
+            const s = JSON.parse(localStorage.getItem('brainy_funnel_state') || '{}');
+            s.selectedRoutines = rs;
+            s.assignedRoutines = slugs.map((sl) => ({ catalogId: sl, name: sl, emoji: 'x', color: '#000' }));
+            localStorage.setItem('brainy_funnel_state', JSON.stringify(s));
+        }, [mkRoutines(5), legacySlugs]);
+        await page.reload();
+        await page.waitForTimeout(500);
+        const legacy = await page.evaluate(() => ({ assigned: assignedRoutines(), payload: buildUserPlanPayload() }));
+
+        const canonical = ['Terra', 'Aqua', 'Flame', 'Storm', 'Leaf', 'Stone', 'Crystal', 'Shadow'];
+        const payloadIds = five.payload.routines.map((r) => r.egg.catalogId);
+        const checks = {
+            oneRoutineOneEgg: one.assigned.length === 1 && one.payload.routines.length === 1,
+            oneNumeric: one.assigned.every((a) => typeof a.catalogId === 'number' && a.catalogId >= 1 && a.catalogId <= 8) && one.payload.routines.every((r) => typeof r.egg.catalogId === 'number'),
+            fiveCount: five.assigned.length === 5 && five.payload.routines.length === 5,
+            fiveDistinct: new Set(five.assigned.map((a) => a.catalogId)).size === 5,
+            payloadNumeric: payloadIds.length === 5 && payloadIds.every((x) => typeof x === 'number' && x >= 1 && x <= 8),
+            payloadNoSlug: !/huevo_/.test(JSON.stringify(five.payload)),
+            namesMatchIds: five.assigned.every((a) => canonical[a.catalogId - 1] === a.name),
+            displayMatches: display.names.length === 5 && display.names.every((n, i) => n === five.assigned[i].name),
+            noInventedDisplay: !display.bodyHasInvented,
+            legacyNormalized: legacy.assigned.length === 5 && legacy.assigned.every((a) => typeof a.catalogId === 'number') && legacy.assigned.every((a) => canonical.includes(a.name)),
+            legacyPayloadNumeric: legacy.payload.routines.every((r) => typeof r.egg.catalogId === 'number') && !/huevo_/.test(JSON.stringify(legacy.payload))
+        };
+        const ok = Object.keys(checks).every((k) => checks[k]) && errs.length === 0;
+        rec('EGG 1:1 + distintas + payload numérico + display', ok, JSON.stringify({ checks, shownStep, errs }));
+        await page.close();
+    } catch (e) { rec('EGG 1:1 + distintas + payload numérico + display', false, e.message); }
 
     await browser.close();
     const fails = results.filter((r) => !r.ok);

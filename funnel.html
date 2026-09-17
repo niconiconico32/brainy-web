@@ -1674,21 +1674,59 @@
             { id: 'calma_regulacion', emoji: '😌', label: 'Calma & Regulación emocional' }
         ];
 
-        // NOTA (bloqueante web->app): la app móvil usa egg_catalog.id NUMÉRICO.
-        // En este repo no existe ningún catálogo/mapping de egg_catalog, así que
-        // NO se inventan IDs: hoy `id`/`catalogId` son slugs (`huevo_*`) y la app
-        // resuelve el asset local. Pendiente coordinar con la app para congelar el
-        // mapping real (slug -> egg_catalog.id) antes de enviar catalogId numérico.
+        // Fuente de verdad (confirmada por backend): egg_catalog.id NUMÉRICO 1–8.
+        // El funnel SOLO asigna estos 8 huevos comunes; no se crean slugs nuevos.
+        // El nombre visible es el canónico del egg_catalog.id. `emoji`/`color` son
+        // solo presentación local (la app resuelve su propio asset por catalogId).
         const EGGS = [
-            { catalogId: 'huevo_nebulosa', id: 'huevo_nebulosa', name: 'Nebulosa', emoji: '🌌', color: '#a99bff', imageUrl: null },
-            { catalogId: 'huevo_solar', id: 'huevo_solar', name: 'Solar', emoji: '☀️', color: '#f2c94c', imageUrl: null },
-            { catalogId: 'huevo_oceano', id: 'huevo_oceano', name: 'Océano', emoji: '🌊', color: '#5bc0eb', imageUrl: null },
-            { catalogId: 'huevo_bosque', id: 'huevo_bosque', name: 'Bosque', emoji: '🌿', color: '#58d68d', imageUrl: null },
-            { catalogId: 'huevo_cielo', id: 'huevo_cielo', name: 'Cielo', emoji: '☁️', color: '#85c1e9', imageUrl: null },
-            { catalogId: 'huevo_lava', id: 'huevo_lava', name: 'Lava', emoji: '🌋', color: '#ec7063', imageUrl: null },
-            { catalogId: 'huevo_flor', id: 'huevo_flor', name: 'Flor', emoji: '🌸', color: '#f5b7c5', imageUrl: null },
-            { catalogId: 'huevo_estrella', id: 'huevo_estrella', name: 'Estrella', emoji: '⭐', color: '#f7dc6f', imageUrl: null }
+            { catalogId: 1, name: 'Terra', emoji: '🌍', color: '#7d9b76', imageUrl: null },
+            { catalogId: 2, name: 'Aqua', emoji: '💧', color: '#5bc0eb', imageUrl: null },
+            { catalogId: 3, name: 'Flame', emoji: '🔥', color: '#ec7063', imageUrl: null },
+            { catalogId: 4, name: 'Storm', emoji: '⚡', color: '#f2c94c', imageUrl: null },
+            { catalogId: 5, name: 'Leaf', emoji: '🍃', color: '#58d68d', imageUrl: null },
+            { catalogId: 6, name: 'Stone', emoji: '🪨', color: '#9aa0a6', imageUrl: null },
+            { catalogId: 7, name: 'Crystal', emoji: '💎', color: '#a99bff', imageUrl: null },
+            { catalogId: 8, name: 'Shadow', emoji: '🌑', color: '#5d5b7a', imageUrl: null }
         ];
+
+        // Slugs del funnel anterior: SOLO compatibilidad con localStorage/estado
+        // viejo. Nunca son identidad canónica ni se envían al backend.
+        const LEGACY_EGG_SLUG_TO_ID = {
+            huevo_nebulosa: 1,
+            huevo_solar: 2,
+            huevo_oceano: 3,
+            huevo_bosque: 4,
+            huevo_cielo: 5,
+            huevo_lava: 6,
+            huevo_flor: 7,
+            huevo_estrella: 8
+        };
+
+        // Normaliza cualquier representación (id numérico, string numérico o slug
+        // legacy) al huevo canónico. Devuelve null si no es reconocible.
+        function canonicalEgg(raw) {
+            if (raw === null || raw === undefined) {
+                return null;
+            }
+            let id = null;
+            if (typeof raw === 'number') {
+                id = raw;
+            } else if (typeof raw === 'object') {
+                const cid = raw.catalogId;
+                if (typeof cid === 'number') {
+                    id = cid;
+                } else if (typeof cid === 'string') {
+                    id = /^\d+$/.test(cid) ? Number(cid) : (LEGACY_EGG_SLUG_TO_ID[cid] || null);
+                }
+                if (id === null && typeof raw.id === 'string') {
+                    id = LEGACY_EGG_SLUG_TO_ID[raw.id] || null;
+                }
+            }
+            if (!Number.isInteger(id) || id < 1 || id > EGGS.length) {
+                return null;
+            }
+            return EGGS[id - 1];
+        }
 
         const TASKS_JSON_URL = 'brainy-tasks-steps.json';
         const ROUTINES_JSON_URL = 'brainy-daily-routines.json';
@@ -2405,6 +2443,16 @@
             return order;
         }
 
+        function eggToAssignment(egg) {
+            return {
+                catalogId: egg.catalogId,
+                name: egg.name,
+                emoji: egg.emoji,
+                color: egg.color,
+                imageUrl: egg.imageUrl || null
+            };
+        }
+
         function ensureEggAssignment() {
             const count = funnelState.selectedRoutines.length;
             const current = funnelState.assignedRoutines || [];
@@ -2414,20 +2462,20 @@
                 }
                 return;
             }
-            if (current.length === count) {
+            // Normaliza estado viejo (slugs `huevo_*`) a catalogId numérico.
+            const normalized = current
+                .map(canonicalEgg)
+                .filter(Boolean)
+                .map(eggToAssignment);
+            if (normalized.length === count) {
+                if (JSON.stringify(normalized) !== JSON.stringify(current)) {
+                    setState('assignedRoutines', normalized);
+                }
                 return;
             }
+            // Asignación determinista (1 rutina = 1 huevo; distintas mientras alcance).
             const order = shuffledEggOrder();
-            const assigned = funnelState.selectedRoutines.map((_, i) => {
-                const egg = order[i % order.length];
-                return {
-                    catalogId: egg.catalogId,
-                    name: egg.name,
-                    emoji: egg.emoji,
-                    color: egg.color,
-                    imageUrl: egg.imageUrl || null
-                };
-            });
+            const assigned = funnelState.selectedRoutines.map((_, i) => eggToAssignment(order[i % order.length]));
             setState('assignedRoutines', assigned);
         }
 
@@ -2475,14 +2523,8 @@
                 }))
             }));
             const routines = funnelState.selectedRoutines.map((r, i) => {
-                const egg = eggForRoutine(i);
-                const eggPayload = { catalogId: egg.catalogId || egg.id };
-                if (egg.name) {
-                    eggPayload.name = egg.name;
-                }
-                if (egg.imageUrl) {
-                    eggPayload.imageUrl = egg.imageUrl;
-                }
+                const egg = canonicalEgg(eggForRoutine(i)) || EGGS[i % EGGS.length];
+                const eggPayload = { catalogId: egg.catalogId };
                 return {
                     templateId: r.templateId || r.id,
                     name: r.name || r.title,
