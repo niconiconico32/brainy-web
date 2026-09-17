@@ -2577,6 +2577,15 @@
             return key;
         }
 
+        function resetClientPlanKey() {
+            setState('clientPlanKey', null);
+            try {
+                localStorage.removeItem(STORAGE_CLIENT_PLAN_KEY);
+            } catch (e) {
+                // sin localStorage: la key en memoria ya quedó limpia
+            }
+        }
+
         // Deep link web -> app. El email es una solución TEMPORAL para la
         // implementación móvil actual (prellenar login + enviar OTP).
         // TODO: reemplazar email en URL por resolución server-side del handoff
@@ -2662,23 +2671,40 @@
                     headers['apikey'] = FUNNEL_CONFIG.anonKey;
                     headers['Authorization'] = `Bearer ${FUNNEL_CONFIG.anonKey}`;
                 }
-                const res = await fetch(FUNNEL_CONFIG.createPlanUrl, {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify({
-                        plan: plan,
-                        email: funnelState.email || null,
-                        marketing_opt_in: !!funnelState.marketing_optin,
-                        source: 'website',
-                        campaign: plan.metadata.campaign,
-                        client_plan_key: clientPlanKey
-                    })
-                });
-                if (!res.ok) {
-                    throw new Error('create-funnel-plan HTTP ' + res.status);
+                const attempt = async (key) => {
+                    const res = await fetch(FUNNEL_CONFIG.createPlanUrl, {
+                        method: 'POST',
+                        headers: headers,
+                        body: JSON.stringify({
+                            plan: plan,
+                            email: funnelState.email || null,
+                            marketing_opt_in: !!funnelState.marketing_optin,
+                            source: 'website',
+                            campaign: plan.metadata.campaign,
+                            client_plan_key: key
+                        })
+                    });
+                    let data = null;
+                    try { data = await res.json(); } catch (e) { data = null; }
+                    return { res, data };
+                };
+
+                let { res, data } = await attempt(clientPlanKey);
+
+                // Plan vencido: la clave quedó quemada en una fila expired.
+                // Rotamos UNA vez (nueva fila) para no bloquear el funnel.
+                if (res.status === 409 && data && data.error === 'plan_expired') {
+                    resetClientPlanKey();
+                    const rotatedKey = ensureClientPlanKey();
+                    track('plan_key_rotated', { reason: 'plan_expired' });
+                    ({ res, data } = await attempt(rotatedKey));
                 }
-                const data = await res.json();
-                if (!data.planId || !data.claimToken) {
+
+                if (!res.ok) {
+                    const code = (data && data.error) || ('http_' + res.status);
+                    throw new Error('create-funnel-plan ' + code);
+                }
+                if (!data || !data.planId || !data.claimToken) {
                     throw new Error('create-funnel-plan response inválido');
                 }
                 setState('planId', data.planId);

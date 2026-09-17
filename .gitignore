@@ -2,3 +2,8 @@ node_modules/
 npm-debug.log*
 supabase/.temp/
 testers/.e2e-artifacts/
+
+# Edge Functions canónicas del backend/app (solo inspección temporal del contrato)
+supabase/functions/_shared/
+supabase/functions/claim-funnel-plan/
+supabase/functions/restore-funnel-plan/

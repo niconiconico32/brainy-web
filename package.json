@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "test:e2e:funnel": "node testers/e2e-regression.cjs"
+    "test:e2e:funnel": "node testers/e2e-regression.cjs",
+    "test:e2e:create-plan": "node testers/create-plan-regression.cjs",
+    "cleanup:funnel-plans": "node testers/cleanup-funnel-plans.cjs"
   },
   "dependencies": {
     "@revenuecat/purchases-js": "^1.60.1",

@@ -4,7 +4,7 @@ Documento del contrato **vigente** entre el funnel web (`funnel.html`) y la app
 móvil. La app ya está implementada: la web **termina en Success/Handoff** y no
 ejecuta login, OTP, Supabase Auth, redención ni materialización.
 
-Última actualización: 2026-09-16.
+Última actualización: 2026-09-17.
 
 ---
 
@@ -116,6 +116,17 @@ regresión (hoy verifica `typeof catalogId === 'string'` a propósito).
 - Guarda `planId` + `claimToken` en el estado (`brainy_funnel_state`).
 - **Idempotencia por `client_plan_key`**, no por email.
 
+Respuestas de `create-funnel-plan` que el front contempla:
+
+| HTTP | `error` | Acción del front |
+|---|---|---|
+| 200 | — | guarda `planId` + `claimToken` |
+| 409 | `plan_expired` | rota la clave (`resetClientPlanKey`) y reintenta **una** vez |
+| 409 | `plan_already_claiming` | no reintenta → `checkout_blocked_no_plan` |
+| 409 | `plan_already_claimed` | no reintenta → `checkout_blocked_no_plan` |
+| 400 | `invalid_client_plan_key` | bug de front: un UUID válido |
+| 5xx | varios | recovery (“No pudimos preparar tu plan”) |
+
 ### 2.4 Checkout gating y recovery
 
 - `hasRealPlan()` = `enableBackend && planId && claimToken` y ninguno es
@@ -175,58 +186,89 @@ vuelve a Success/Handoff y **no** inicia otra compra.
 
 ---
 
-## 3. Backend — `funnel_plans`
+## 3. Backend — `web_funnel_plans` (canónica)
 
-Nombre intacto: `funnel_plans`. Los cambios se aplican en una **nueva migración**
-(`20260916000000_secure_funnel_plans_claim.sql`), no editando la ya aplicada.
+> **La fuente de verdad es `public.web_funnel_plans`.** La tabla legacy
+> `public.funnel_plans` queda **intacta y fuera de uso**: la web no la lee ni la
+> escribe. Las migraciones de este repo pasaron a `supabase/superseded/` (este
+> repo web **no** crea ni aplica migraciones); la migración canónica ya fue
+> aplicada por el equipo de backend/app.
 
-Shape vigente:
+Shape vigente (introspección en vivo del proyecto `wdqwqgfisiteswbbdurg`):
 
 ```
-id                uuid PK
-client_plan_key   uuid UNIQUE NOT NULL
-plan              jsonb NOT NULL
-email             text
-marketing_opt_in  boolean
-source            text
-campaign          text
-claim_token_hash  text UNIQUE NOT NULL   -- SHA-256(claimToken)
-status            text NOT NULL          -- pending | claiming | claimed | expired
-claimed_by_user_id uuid NULL REFERENCES auth.users(id) ON DELETE SET NULL
-claimed_at        timestamptz NULL
-claim_expires_at  timestamptz NOT NULL   -- now() + 7 días
-created_at, updated_at
+id                         uuid PK DEFAULT gen_random_uuid()
+version                    integer NOT NULL DEFAULT 1
+status                     text NOT NULL DEFAULT 'pending'   -- pending | claiming | claimed | expired
+plan                       jsonb NOT NULL DEFAULT '{}'        -- CHECK jsonb_typeof = 'object'
+email                      text NULL
+marketing_opt_in           boolean NOT NULL DEFAULT false
+claim_token_hash           text NOT NULL UNIQUE              -- SHA-256(claimToken), CHECK ^[a-f0-9]{64}$
+source                     text NULL
+campaign                   text NULL
+expires_at                 timestamptz NULL                  -- NO existe claim_expires_at
+claimed_at                 timestamptz NULL
+created_at                 timestamptz NOT NULL DEFAULT now()
+updated_at                 timestamptz NOT NULL DEFAULT now() -- trigger set_web_funnel_plans_updated_at
+revenuecat_redemption_url  text NULL
+claimed_by_user_id         uuid NULL REFERENCES auth.users(id) ON DELETE SET NULL
+client_plan_key            uuid NOT NULL UNIQUE
 ```
 
-- **Nunca se guarda `claimToken` en texto plano** (se eliminó `claim_token`).
-- `claim_token_hash` = `SHA-256(claimToken)`.
-- `claimed_by_user_id` **nunca lo escribe la web**; sirve para saber quién
-  reclamó, idempotencia, impedir que otro usuario reclame el mismo plan y
-  permitir que el mismo usuario repita claim con éxito.
-- Estados:
-  - La **web solo crea `pending`**.
-  - La **app/backend** gestiona `claiming → claimed | expired`.
-- Secuencia móvil correcta: `pending → claiming → materializar OK → claimed`.
-  Si la materialización falla, **no** debe quedar `claimed`.
-- RLS: habilitada, **sin acceso anon/authenticated**; `service_role` solo desde
-  Edge Functions/backend. La web **no** hace UPDATE directo.
+Índices: `web_funnel_plans_client_plan_key_uq`, `web_funnel_plans_claim_token_hash_uq`,
+`idx_web_funnel_plans_email_status_created`, `idx_web_funnel_plans_status_created`,
+`idx_web_funnel_plans_claimed_by_user_id`.
+
+- **Nunca se guarda `claimToken` en texto plano.**
+  `claim_token_hash = SHA-256(claimToken)` (hex minúsculas, 64 chars).
+- **La columna de expiración es `expires_at`** (la web fija `now() + 7 días` al
+  crear). `claim_expires_at` era de la tabla legacy: **no usarla**.
+- `claimed_by_user_id`, `claimed_at` y `revenuecat_redemption_url` los escribe la
+  app/backend; la web los deja `NULL`. La web **nunca** hace UPDATE directo.
+- Estados: `pending → claiming → claimed | expired`.
+  - La **web solo crea `pending`** (`version = 1`).
+  - La **app/backend** gestiona `claiming → claimed | expired` y materializa vía
+    el RPC `public.claim_funnel_plan` (row lock + state machine + marcador
+    `__materialized`).
+- RLS habilitada. Única policy: `anon` INSERT con `with_check (status = 'pending')`;
+  no hay SELECT/UPDATE público. El acceso real es `service_role` desde Edge Functions.
 
 ### 3.1 `create-funnel-plan` (web)
 
-- Genera `claimToken` con `crypto.getRandomValues` (32 bytes → 64 hex) y
-  persiste **solo** `SHA-256(claimToken)` (`crypto.subtle.digest`).
-- Devuelve `{ planId, claimToken }` al navegador.
+Request: `{ plan, client_plan_key, email?, marketing_opt_in?, source?, campaign? }`.
+
+- `client_plan_key`: si falta se genera; si viene debe ser **UUID válido** (si no,
+  `400 invalid_client_plan_key`).
+- Genera `claimToken` con `crypto.getRandomValues` (32 bytes → 64 hex) y persiste
+  **solo** `SHA-256(claimToken)` (`crypto.subtle.digest`).
+- Inserta `{ id, version: 1, status: 'pending', plan, email, marketing_opt_in,
+  source, campaign, claim_token_hash, client_plan_key, expires_at }`.
+- Devuelve `{ planId, claimToken }` (texto plano **una sola vez**).
 - Idempotencia por `client_plan_key`:
-  - Primera llamada → crea fila `pending`, guarda hash, devuelve token.
-  - Retry con el mismo `client_plan_key` y `status = pending` → reutiliza la
-    fila, genera **NUEVO** `claimToken`, reemplaza el hash y devuelve el nuevo
-    token (el anterior queda invalidado).
-  - Si el plan ya no está `pending` (o venció) → `409 plan_not_pending`.
+  - **`pending` vigente** → reemite **NUEVO** `claimToken` (reemplaza el hash,
+    invalida el anterior) y actualiza `plan`/`email`/`marketing_opt_in`/`source`/
+    `campaign`. Mismo `planId`.
+  - **`claiming`** → `409 plan_already_claiming` (no se toca la fila).
+  - **`claimed`** → `409 plan_already_claimed` (no se toca la fila).
+  - **`expired` o TTL vencido** → `409 plan_expired` (no se recicla como `pending`).
+  - Carrera de inserción (`23505` en `client_plan_key`) → se re-resuelve con la
+    misma lógica idempotente.
 
-### 3.2 `claim-funnel-plan` (app/backend)
+### 3.2 `claim-funnel-plan` / `restore-funnel-plan` (app/backend)
 
-**No forma parte de este repo web.** Lo implementa la app/backend. La web no
-lo llama ni lo implementa.
+**No son parte de este repo web** (viven en el backend; descargadas solo como
+referencia local). La web no las llama ni las implementa.
+
+- `claim-funnel-plan`: requiere JWT; busca por `claim_token_hash`, valida estado y
+  delega la materialización al RPC.
+- `restore-funnel-plan`: resolución **server-side por email** verificado del JWT
+  (sin body); status `IN (pending, claiming, claimed)` y no vencido; top-1 por
+  `created_at DESC`.
+
+> Referencia usada para congelar el contrato (2026-09-17, proyecto
+> `wdqwqgfisiteswbbdurg`): `claim-funnel-plan` **v6** y `restore-funnel-plan`
+> **v4**, inspeccionadas con `supabase functions download`. No se copiaron al
+> repo web (ver `.gitignore`).
 
 ---
 
@@ -274,18 +316,37 @@ Escenarios (13):
 
 Resultado actual: **13/13 ok**.
 
+### 6.1 Regresión backend (`create-funnel-plan`, `testers/create-plan-regression.cjs`)
+
+Escenarios:
+
+| # | Escenario | Cubre |
+|---|-----------|-------|
+| A | creación nueva | fila `pending` en `web_funnel_plans`, `claim_token_hash` = hash, sin plaintext |
+| B | retry `pending` | mismo `planId`, **nuevo** `claimToken`, hash reemplazado |
+| C | `claiming` | `409 plan_already_claiming`, fila intacta |
+| D | `claimed` | `409 plan_already_claimed`, fila intacta |
+| E | demo | checkout bloqueado (`hasRealPlan() === false`) |
+| F | payload | difficulty sin `medium`, durations number, counts, rangos |
+| G | deep link | token + redeem_url + email URL-encoded |
+| H | tabla | la web solo consulta/escribe `web_funnel_plans`, nunca `funnel_plans` |
+
 ---
 
 ## 7. Pendientes / coordinación con la app
 
 1. **BLOQUEANTE — `egg_catalog.id`**: congelar mapping real
-   `slug → egg_catalog.id` y cambiar `egg.catalogId` a número.
+   `slug → egg_catalog.id` y cambiar `egg.catalogId` a número. `_shared/funnel.ts`
+   del backend hace `Number(catalogId)` y lo deja `null` si no es numérico, por lo
+   que hoy los slugs `huevo_*` **no** resuelven.
 2. **Email server-side**: reemplazar `email` en el deep link por resolución
    server-side (hoy es temporal).
 3. `iosStoreUrl` / `androidStoreUrl` (`FUNNEL_CONFIG`, hoy vacíos → sin botones
    de tienda).
 4. `revenuecatTermsUrl` (hoy vacío).
-5. App/backend: implementar `claim-funnel-plan` con
-   `pending → claiming → claimed` y `claimed_by_user_id`; nunca marcar `claimed`
-   antes de materializar.
-6. Confirmar el orden app: redeem → verificar `brainy Pro` → claim → materializar.
+5. `revenuecat_redemption_url` en `web_funnel_plans`: hoy queda `NULL` (la web lo
+   manda solo por deep link). Definir si algún endpoint debe persistirlo para que
+   `restore-funnel-plan` reporte `redemption.pending`.
+6. Confirmar el orden app: redeem → verificar `brainy Pro` → claim → materializar
+   (ya implementado: `claim-funnel-plan` + `restore-funnel-plan` + RPC
+   `claim_funnel_plan`).

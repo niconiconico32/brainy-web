@@ -8,21 +8,27 @@ Todo lo de abajo requiere decisiones/información del equipo o la app.
 
 - [x] Project-ref: `wdqwqgfisiteswbbdurg` (smartlist-backend).
 - [x] Anon key y URL pegadas en `FUNNEL_CONFIG` (funnel.html).
-- [x] Edge Function `create-funnel-plan` deployada.
-- [x] Migración aplicada (tabla `funnel_plans` + trigger `brainy_set_updated_at` + RLS). Aplicada manualmente en el SQL Editor.
-- [x] Endpoint probado en vivo: crea `{ planId, claimToken }` y es idempotente por email (<24h) — testeado con curl (HTTP 200).
+- [x] **Tabla canónica `public.web_funnel_plans`** aplicada por el equipo de backend/app (source of truth). La legacy `public.funnel_plans` queda intacta y fuera de uso.
+- [x] Migraciones locales retiradas a `supabase/superseded/` (este repo web **no** crea ni aplica migraciones).
+- [x] `create-funnel-plan/index.ts` reescrito para `web_funnel_plans` (status `pending`, `version 1`, `claim_token_hash`, `client_plan_key`, `expires_at` +7d; idempotencia por `client_plan_key`).
+- [ ] **Deploy** de `create-funnel-plan` (la versión en producción todavía apunta a `funnel_plans` legacy / token en texto plano).
+- [ ] Prueba de creación real contra `web_funnel_plans` (script `testers/create-plan-regression.cjs`, escenarios A–H).
 - [x] `enableBackend: true` en `FUNNEL_CONFIG`.
-- [x] Tests con backend activo: 127/127 e2e, 15/15 backend-mode, 4/4 mobile.
+- [x] Tests front: 13/13 e2e.
 
 Contrato de la EF (ya se envía desde el front):
 ```json
-POST {plan, email, marketing_opt_in, source: "website", campaign: "brainy_onboarding_v1"}
-→ 200 { planId, claimToken }
+POST {plan, client_plan_key, email, marketing_opt_in, source: "website", campaign: "brainy_onboarding_v1"}
+→ 200 { planId, claimToken }             # claimToken solo una vez
+→ 409 plan_expired | plan_already_claiming | plan_already_claimed
+→ 400 invalid_client_plan_key
 ```
 
 ## 2. Huevos → contrato con la app
 
-Decisión: **no hace falta `egg_catalog` compartido.** El funnel pasa la identidad del huevo en el payload y la app valida contra su catálogo local/usando sus assets.
+Decisión: la app **necesita `egg_catalog.id` numérico**. El backend
+(`_shared/funnel.ts` → `buildRoutines`) hace `Number(catalogId)` y lo deja
+`null` si no es numérico, por lo que los slugs `huevo_*` **no** llegan a la app.
 
 Lo que ya viaja en el payload (por rutina):
 ```json
