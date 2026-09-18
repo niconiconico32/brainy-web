@@ -2,6 +2,7 @@
   "scripts": {
     "test:e2e:funnel": "node testers/e2e-regression.cjs",
     "test:e2e:create-plan": "node testers/create-plan-regression.cjs",
+    "test:e2e:sandbox": "node testers/sandbox-checkout.cjs",
     "cleanup:funnel-plans": "node testers/cleanup-funnel-plans.cjs"
   },
   "dependencies": {

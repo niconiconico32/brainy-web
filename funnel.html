@@ -1736,6 +1736,7 @@
             supabaseUrl: 'https://auth.brainyadhd.com',
             anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkcXdncWZpc2l0ZXN3YmJkdXJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDgxNTUsImV4cCI6MjA4MTA4NDE1NX0.oLadI1C5H89CWqGAz0NjDjbp_zwDGsl726YMVvlqIYg',
             createPlanUrl: 'https://auth.brainyadhd.com/functions/v1/create-funnel-plan',
+            setRedemptionUrl: 'https://auth.brainyadhd.com/functions/v1/set-funnel-redemption',
             eggCatalogUrl: '',
             iosStoreUrl: '',
             androidStoreUrl: '',
@@ -1819,6 +1820,7 @@
             claimToken: null,
             clientPlanKey: null,
             purchaseCompleted: false,
+            redemptionPersisted: false,
             handoffReady: false,
             selectedPackageId: null,
             pendingRedemptionUrl: null
@@ -2530,9 +2532,9 @@
                     name: r.name || r.title,
                     days: r.days || ['daily'],
                     icon: r.icon || '',
-                    tasks: (r.tasks || []).map((t) => ({
+                    steps: (r.steps || r.tasks || []).map((t) => ({
                         title: t.title,
-                        position: t.position
+                        duration: normalizeDuration(t.duration)
                     })),
                     egg: eggPayload
                 };
@@ -2626,6 +2628,69 @@
             } catch (e) {
                 // sin localStorage: la key en memoria ya quedó limpia
             }
+        }
+
+        // Persiste el redemption URL server-side vía set-funnel-redemption.
+        // Usa SOLO la config pública/anon del funnel (nunca service_role) y
+        // SOLO `redemptionInfo.redeemUrl` (nunca redeemUrlRedirect).
+        // Devuelve { ok, status, reason }.
+        async function persistRedemptionUrl(planId, claimToken, redemptionUrl) {
+            if (!redemptionUrl || !hasRealPlan() || !FUNNEL_CONFIG.enableBackend || !FUNNEL_CONFIG.setRedemptionUrl) {
+                return { ok: false, reason: 'not_configurable' };
+            }
+            const headers = { 'Content-Type': 'application/json' };
+            if (FUNNEL_CONFIG.anonKey) {
+                headers['apikey'] = FUNNEL_CONFIG.anonKey;
+                headers['Authorization'] = 'Bearer ' + FUNNEL_CONFIG.anonKey;
+            }
+            try {
+                const res = await fetch(FUNNEL_CONFIG.setRedemptionUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({
+                        planId: funnelState.planId,
+                        claimToken: funnelState.claimToken,
+                        redemptionUrl: redemptionUrl
+                    })
+                });
+                let data = null;
+                try { data = await res.json(); } catch (e) { data = null; }
+                if (!res.ok) {
+                    return { ok: false, reason: (data && data.error) || ('http_' + res.status) };
+                }
+                const status = data && data.status;
+                if (status === 'set' || status === 'unchanged') {
+                    return { ok: true, status: status };
+                }
+                return { ok: false, reason: 'unexpected_status' };
+            } catch (err) {
+                return { ok: false, reason: (err && err.message) || 'network_error' };
+            }
+        }
+
+        // Recovery de persistencia: reintenta SOLO set-funnel-redemption.
+        // NUNCA vuelve a ejecutar purchase().
+        async function retryPendingRedemption() {
+            const url = funnelState.pendingRedemptionUrl;
+            if (!url || !hasRealPlan()) {
+                window.location.reload();
+                return;
+            }
+            const result = await persistRedemptionUrl(funnelState.planId, funnelState.claimToken, url);
+            if (result.ok) {
+                setState('redemptionPersisted', true);
+                setState('handoffReady', true);
+                track('redemption_persisted', { status: result.status, retry: true });
+                track('handoff_ready', {
+                    platform: isMobileDevice() ? 'mobile' : 'desktop',
+                    retry: true
+                });
+            } else {
+                setState('redemptionPersisted', false);
+                setState('handoffReady', false);
+                track('redemption_persist_failed', { reason: result.reason, retry: true });
+            }
+            renderStep();
         }
 
         // Deep link web -> app. El email es una solución TEMPORAL para la
@@ -3318,6 +3383,13 @@
                 if (funnelState.purchaseCompleted) {
                     if (funnelState.handoffReady) {
                         goNext();
+                    } else if (funnelState.pendingRedemptionUrl) {
+                        // Ya se cobró pero faltó persistir: reintentar SOLO
+                        // set-funnel-redemption (nunca purchase()).
+                        renderRecovery(
+                            'Tu suscripción fue activada, pero no pudimos confirmar el guardado de tu plan. No se te volvió a cobrar: tocá para reintentar.',
+                            () => retryPendingRedemption()
+                        );
                     } else {
                         renderRecovery(
                             'Tu suscripción fue activada, pero no pudimos preparar el enlace para Brainy. Escribinos y lo resolvemos.',
@@ -3561,20 +3633,33 @@
                     return;
                 }
                 const isEntitled = svc.isEntitledTo(result.customerInfo, rcConfig.entitlementId);
-                const redeemUrl = svc.redemptionUrlOf(result);
+                const redeemUrl = svc.primaryRedemptionUrlOf(result);
                 if (!isEntitled) {
                     purchaseLock = false;
                     track('purchase_failed', { reason: 'entitlement_inactive' });
                     renderRecovery('No pudimos confirmar tu suscripción todavía. No se te volvió a cobrar: revisá tu correo y probá de nuevo.');
                     return;
                 }
+                // REVENUECAT CONFIRMÓ LA COMPRA. La persistencia server-side del
+                // redemption URL es un paso aparte: la compra y el guardado del
+                // plan quedan registrados de forma independiente.
                 setState('purchaseCompleted', true);
+                setState('redemptionPersisted', false);
+                setState('handoffReady', false);
+                track('purchase_success', {
+                    packageId: entry.pkg.identifier,
+                    offeringId: data.offering.identifier,
+                    currency: data.currency,
+                    packageType: entry.kind,
+                    entitlementActive: true,
+                    redemptionAvailable: !!redeemUrl
+                });
                 if (!redeemUrl) {
-                    // Suscripción activa pero sin enlace de redención: NO se vuelve
-                    // a cobrar ni se genera handoff normal. Queda en recovery.
+                    // Suscripción activa pero sin enlace de redención canónico:
+                    // NO se vuelve a cobrar. El plan ya quedó creado server-side:
+                    // el usuario puede cerrar y restaurar desde Brainy con su email.
                     purchaseLock = false;
                     setState('pendingRedemptionUrl', null);
-                    setState('handoffReady', false);
                     track('handoff_recovery_required', {
                         packageId: entry.pkg.identifier,
                         offeringId: data.offering.identifier,
@@ -3587,21 +3672,34 @@
                     return;
                 }
                 setState('pendingRedemptionUrl', redeemUrl);
-                setState('handoffReady', true);
-                track('purchase_success', {
-                    packageId: entry.pkg.identifier,
-                    offeringId: data.offering.identifier,
-                    currency: data.currency,
-                    packageType: entry.kind,
-                    entitlementActive: true,
-                    redemptionAvailable: true
-                });
-                track('handoff_ready', {
+                btn.disabled = true;
+                btn.textContent = 'Guardando tu plan…';
+                const persisted = await persistRedemptionUrl(funnelState.planId, funnelState.claimToken, redeemUrl);
+                if (persisted.ok) {
+                    setState('redemptionPersisted', true);
+                    setState('handoffReady', true);
+                    track('redemption_persisted', { status: persisted.status });
+                    track('handoff_ready', {
+                        packageId: entry.pkg.identifier,
+                        offeringId: data.offering.identifier,
+                        platform: isMobileDevice() ? 'mobile' : 'desktop'
+                    });
+                    goNext();
+                    return;
+                }
+                // Compra OK pero persistencia falló: recovery que reintenta SOLO
+                // set-funnel-redemption. NUNCA se vuelve a ejecutar purchase().
+                purchaseLock = false;
+                track('redemption_persist_failed', { reason: persisted.reason });
+                track('handoff_recovery_required', {
                     packageId: entry.pkg.identifier,
                     offeringId: data.offering.identifier,
                     platform: isMobileDevice() ? 'mobile' : 'desktop'
                 });
-                goNext();
+                renderRecovery(
+                    'Tu suscripción fue activada, pero no pudimos guardar tu plan en el servidor. No se te volvió a cobrar: tocá para reintentarlo.',
+                    () => retryPendingRedemption()
+                );
             }
 
             initPaywall();
@@ -3610,19 +3708,26 @@
         function renderSuccess(step) {
             const platform = isMobileDevice() ? 'mobile' : 'desktop';
             const redeemUrl = funnelState.pendingRedemptionUrl || null;
-            const ready = !!funnelState.purchaseCompleted && !!funnelState.handoffReady && !!redeemUrl && hasRealPlan();
+            const ready = !!funnelState.purchaseCompleted && !!funnelState.redemptionPersisted && !!funnelState.handoffReady && !!redeemUrl && hasRealPlan();
 
             if (!ready) {
                 track('handoff_recovery_required', {
                     platform: platform,
                     entitlementActive: !!funnelState.purchaseCompleted,
-                    redemptionAvailable: !!redeemUrl
+                    redemptionAvailable: !!redeemUrl,
+                    persisted: !!funnelState.redemptionPersisted
                 });
+                // Recovery que reintenta SOLO la persistencia (nunca purchase()).
+                const retry = (!!redeemUrl && hasRealPlan())
+                    ? () => retryPendingRedemption()
+                    : () => window.location.reload();
                 document.getElementById('funnelRoot').innerHTML = `
                     ${cardOpen()}
                         ${headHtml(step)}
                         <div class="paywall-recovery">
-                            <p>Tu suscripción fue activada, pero no pudimos preparar el enlace para Brainy. No se te volvió a cobrar.</p>
+                            <p>${redeemUrl
+                                ? 'Tu suscripción fue activada, pero no pudimos confirmar el guardado de tu plan. No se te volvió a cobrar: tocá para reintentar.'
+                                : 'Tu suscripción fue activada, pero no pudimos preparar el enlace para Brainy. No se te volvió a cobrar.'}</p>
                             <div class="actions">
                                 <button class="btn btn-dopamine" type="button" id="retryHandoffBtn">Reintentar</button>
                             </div>
@@ -3630,7 +3735,7 @@
                     </article>`;
                 const retryBtn = document.getElementById('retryHandoffBtn');
                 if (retryBtn) {
-                    retryBtn.addEventListener('click', () => window.location.reload());
+                    retryBtn.addEventListener('click', retry);
                 }
                 return;
             }

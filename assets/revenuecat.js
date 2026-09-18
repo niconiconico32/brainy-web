@@ -135,11 +135,41 @@
         };
     }
 
+    // Extrae el Redemption URL de PurchaseResult.redemptionInfo.
+    // Estructura real de purchases-js 1.60.1:
+    //   RedemptionInfo { redeemUrl: string | null; redeemUrlRedirect?: string | null }
+    // Defensivo: acepta solo strings no vacíos con esquema (rc-...://, https://, …).
+    // No se inventan propiedades: solo `redeemUrl` y `redeemUrlRedirect`.
+    function firstValidRedemptionUrl(candidates) {
+        for (var i = 0; i < candidates.length; i++) {
+            var value = candidates[i];
+            if (typeof value === 'string') {
+                var trimmed = value.trim();
+                if (trimmed && /^[a-z][a-z0-9+.\-]*:\/\//i.test(trimmed)) {
+                    return trimmed;
+                }
+            }
+        }
+        return null;
+    }
+
     function redemptionUrlOf(result) {
-        if (!result || !result.redemptionInfo) {
+        var info = result && result.redemptionInfo;
+        if (!info || typeof info !== 'object') {
             return null;
         }
-        return result.redemptionInfo.redeemUrl || result.redemptionInfo.redeemUrlRedirect || null;
+        return firstValidRedemptionUrl([info.redeemUrl, info.redeemUrlRedirect]);
+    }
+
+    // Persistencia server-side: usa SOLO `redeemUrl` (el backend ignora
+    // redeemUrlRedirect). Si el único enlace disponible es el redirect,
+    // devuelve null para NO persistir una URL no canónica.
+    function primaryRedemptionUrlOf(result) {
+        var info = result && result.redemptionInfo;
+        if (!info || typeof info !== 'object') {
+            return null;
+        }
+        return firstValidRedemptionUrl([info.redeemUrl]);
     }
 
     window.BrainyRevenueCat = {
@@ -151,6 +181,7 @@
         isEntitledTo: isEntitledTo,
         purchase: purchase,
         classifyError: classifyError,
-        redemptionUrlOf: redemptionUrlOf
+        redemptionUrlOf: redemptionUrlOf,
+        primaryRedemptionUrlOf: primaryRedemptionUrlOf
     };
 })();

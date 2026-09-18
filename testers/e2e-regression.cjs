@@ -27,6 +27,7 @@
 //   DEEPLINK deep link contiene token + redeem_url + email URL-encoded
 //   PAYLOAD difficulty nunca "medium" + counts + rangos 1-3 / 1-5
 //   EGG canónico 1-8 (numérico, sin slugs) + 1:1 + distintas + display
+//   RC redemptionInfo extracción defensiva + sin secretos en analytics/logs
 //
 // Nota: en logs/consola, emails, tokens (claim/redeem), hashes y JWTs se
 // enmascaran siempre (nunca se imprime contenido sensible).
@@ -43,6 +44,11 @@ const PLAN_ID = 'sb-plan-test';
 const CLAIM_TOKEN = 'sbtok1234567890abcdef';
 const EMAIL = 'sb+checkout@brainyadhd.com';
 
+// La compra sandbox real crea un REDEMPTION por email en RevenueCat: si se
+// reutiliza el mismo email en pedidos seguidos, set-funnel-redemption devuelve
+// redemption_conflict. Por eso el pago real usa un email único por corrida.
+const uniqueCheckoutEmail = () => 'sb+checkout-' + Date.now() + '@brainyadhd.com';
+
 const STATE = {
     q1_estado_actual: 'a', q2_dolor: ['b'], q3_intentos_previos: 'c', q4_causa_fracaso: 'd', q5_identidad_futura: 'e',
     q6_area_prioritaria: 'f', q7_compromiso: 'g', q8_tiempo_disponible: 'h', q9_listo: 'i', q10_cuando_empezar: 'j',
@@ -51,7 +57,7 @@ const STATE = {
     selectedRoutines: [{ templateId: 'r', id: 'r1', name: 'R', title: 'R', icon: '', tasks: [{ title: 'T', position: 1 }], subtasks: [{ title: 'T', duration: null }] }],
     assignedRoutines: [{ catalogId: 'h', name: 'H', emoji: 'x', color: '#fff' }], emailSubmitted: true,
     planId: PLAN_ID, claimToken: CLAIM_TOKEN, clientPlanKey: '11111111-1111-4111-8111-111111111111',
-    purchaseCompleted: false, handoffReady: false, selectedPackageId: null, pendingRedemptionUrl: null
+    purchaseCompleted: false, redemptionPersisted: false, handoffReady: false, selectedPackageId: null, pendingRedemptionUrl: null
 };
 
 function state(overrides) {
@@ -59,7 +65,7 @@ function state(overrides) {
 }
 
 const SUCCESS_STATE = state({
-    purchaseCompleted: true, handoffReady: true,
+    purchaseCompleted: true, redemptionPersisted: true, handoffReady: true,
     pendingRedemptionUrl: 'rc-stub://redeem_web_purchase?redemption_token=stubsecret'
 });
 
@@ -150,12 +156,29 @@ async function makePage(browser, opts = {}) {
                     return Promise.resolve({ customerInfo: { entitlements: { active: { 'brainy Pro': { isActive: true } } } }, redemptionInfo: { redeemUrl: 'rc-stub://redeem_web_purchase?redemption_token=stubsecret' } });
                 },
                 classifyError: (err) => { const code = err && typeof err.errorCode === 'number' ? err.errorCode : null; return { kind: code === 1 ? 'cancel' : 'other', code, isCancel: code === 1 }; },
-                redemptionUrlOf: (r) => (r && r.redemptionInfo ? (r.redemptionInfo.redeemUrl || r.redemptionInfo.redeemUrlRedirect || null) : null)
+                redemptionUrlOf: (r) => (r && r.redemptionInfo ? (r.redemptionInfo.redeemUrl || r.redemptionInfo.redeemUrlRedirect || null) : null),
+                primaryRedemptionUrlOf: (r) => { const i = r && r.redemptionInfo; const u = i && i.redeemUrl; return (typeof u === 'string' && u.trim() && /^[a-z][a-z0-9+.\-]*:\/\//i.test(u.trim())) ? u.trim() : null; }
             };
             Object.defineProperty(window, 'BrainyRevenueCat', { configurable: true, get: () => svc, set: () => {} });
         }
     }, [key, extra, stub]);
-    return { page, ctx, errs, analytics };
+    const redemption = { total: 0, ok: 0, lastStatus: null };
+    let failOnceUsed = false;
+    if (opts.redemptionRoute) {
+        await page.route('**/*set-funnel-redemption*', async (route) => {
+            redemption.total++;
+            const mode = opts.redemptionRoute;
+            if (mode === 'fail' || (mode === 'fail_once' && !failOnceUsed)) {
+                if (mode === 'fail_once') failOnceUsed = true;
+                await route.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ error: 'forced_failure' }) });
+                return;
+            }
+            redemption.ok++;
+            redemption.lastStatus = mode === 'unchanged' ? 'unchanged' : 'set';
+            await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ status: redemption.lastStatus }) });
+        });
+    }
+    return { page, ctx, errs, analytics, redemption };
 }
 
 async function seed(page, st = STATE, step = 21) {
@@ -271,13 +294,21 @@ function stubCalls(page) {
         await page.close();
     } catch (e) { rec('WALK onboarding desktop -> paywall', false, e.message); }
 
-    // S2 PAY: pago completo sandbox real (backend real)
+    // S2 PAY: pago completo sandbox real (backend real + persistencia real)
     try {
         const { page, errs, analytics } = await makePage(browser, { ctx: { locale: 'es-AR' } });
         await page.goto(BASE + '/funnel.html');
-        await seed(page);
+        await seed(page, state({ planId: null, claimToken: null, email: uniqueCheckoutEmail(), clientPlanKey: crypto.randomUUID() }));
         await page.reload();
-        await page.waitForTimeout(1800);
+        await page.waitForTimeout(1200);
+        await page.waitForFunction(() => {
+            const b = document.getElementById('purchaseBtn');
+            return !!b && !b.disabled;
+        }, null, { timeout: 45000 }).catch(() => {});
+        const planReal = await page.evaluate(() => {
+            const s = JSON.parse(localStorage.getItem('brainy_funnel_state') || '{}');
+            return { planId: !!s.planId, claimToken: !!s.claimToken };
+        });
         await page.click('#purchaseBtn');
         const inner = await payModalFlow(page);
         if (!inner) { rec('PAY flujo completo', false, 'modal checkout no abrió'); await page.close(); }
@@ -285,17 +316,23 @@ function stubCalls(page) {
             const payRes = await payWithCard(page, inner);
             if (!payRes.ok) { log('\nANALYTICS:\n' + maskText(analytics.join('\n'))); rec('PAY flujo completo', false, 'pago no completó: ' + payRes.after); await page.close(); }
             else {
-                await page.waitForTimeout(1500);
+                await page.waitForFunction(() => {
+                    const s = JSON.parse(localStorage.getItem('brainy_funnel_state') || '{}');
+                    return !!s.redemptionPersisted || !!s.handoffReady || !!document.querySelector('.paywall-recovery');
+                }, null, { timeout: 15000 }).catch(() => {});
+                await page.waitForTimeout(500);
                 const st = await page.evaluate(() => {
                     const s = JSON.parse(localStorage.getItem('brainy_funnel_state') || '{}');
                     const mask = (u) => !u ? null : u.replace(/([?&](?!redemption_)[a-zA-Z0-9_]+=)[^&#]+/g, '$1[redacted]').replace(/redemption_token=.[^&]*/, 'redemption_token=[redacted]');
-                    return { step: parseInt(localStorage.getItem('brainy_funnel_step'), 10), purchaseCompleted: !!s.purchaseCompleted, handoffReady: !!s.handoffReady, pendingRedemptionUrl: mask(s.pendingRedemptionUrl),
+                    return { step: parseInt(localStorage.getItem('brainy_funnel_step'), 10), purchaseCompleted: !!s.purchaseCompleted, redemptionPersisted: !!s.redemptionPersisted, handoffReady: !!s.handoffReady, pendingRedemptionUrl: mask(s.pendingRedemptionUrl),
                              headline: document.querySelector('.card-head h1') ? document.querySelector('.card-head h1').textContent : null, hasSuccess: !!document.querySelector('.success-checks'), hasHandoff: !!(document.getElementById('openAppBtn') || document.getElementById('copyLinkBtn')) };
                 });
                 await page.screenshot({ path: path.join(ARTIFACTS, 'reg_pay.png'), fullPage: true }).catch(() => {});
                 const aOk = analytics.some((l) => /purchase_success/.test(l) && /entitlementActive: true/.test(l));
-                const ok = st.step === 22 && st.purchaseCompleted && st.handoffReady && st.hasSuccess && st.hasHandoff && errs.length === 0 && aOk;
-                rec('PAY flujo completo', ok, JSON.stringify({ st, aOk, errs }));
+                const aPersisted = analytics.some((l) => /redemption_persisted/.test(l));
+                if (!st.redemptionPersisted) { log('PERSIST FAIL ANALYTICS:\n' + maskText(analytics.join('\n'))); }
+                const ok = planReal.planId && planReal.claimToken && st.step === 22 && st.purchaseCompleted && st.redemptionPersisted && st.handoffReady && st.hasSuccess && st.hasHandoff && errs.length === 0 && aOk && aPersisted;
+                rec('PAY flujo completo', ok, JSON.stringify({ st, planReal, aOk, aPersisted, errs }));
                 await page.close();
             }
         }
@@ -500,12 +537,77 @@ function stubCalls(page) {
             tasksRange: !!p && p.tasks.length >= 1 && p.tasks.length <= 3,
             routinesRange: !!p && p.routines.length >= 1 && p.routines.length <= 5,
             eggCatalogId: !!p && p.routines.every((r) => typeof r.egg.catalogId === 'number' && r.egg.catalogId >= 1 && r.egg.catalogId <= 8),
-            eggNoSlug: !!p && !/huevo_/.test(JSON.stringify(p.routines.map((r) => r.egg)))
+            eggNoSlug: !!p && !/huevo_/.test(JSON.stringify(p.routines.map((r) => r.egg))),
+            routineSteps: !!p && p.routines.every((r) => Array.isArray(r.steps) && r.steps.length > 0),
+            routinesNoTasks: !!p && p.routines.every((r) => !('tasks' in r)),
+            stepsShape: !!p && p.routines.every((r) => r.steps.every((s) => typeof s.title === 'string' && s.title.length > 0 && typeof s.duration === 'number' && s.duration > 0))
         };
         const ok = Object.keys(checks).every((k) => checks[k]) && errs.length === 0;
         rec('PAYLOAD difficulty + counts + rangos', ok, JSON.stringify({ checks, diffs, durations, errs }));
         await page.close();
     } catch (e) { rec('PAYLOAD difficulty + counts + rangos', false, e.message); }
+
+    // S16 RC: extracción defensiva del redemption URL (redeemUrl / redeemUrlRedirect)
+    try {
+        const { page, errs } = await makePage(browser, { key: '' });
+        await page.goto(BASE + '/funnel.html');
+        await page.waitForTimeout(300);
+        const out = await page.evaluate(() => {
+            const s = window.BrainyRevenueCat;
+            const GOOD = 'rc-abc://redeem_web_purchase?redemption_token=stubsecret';
+            return {
+                primary: s.redemptionUrlOf({ redemptionInfo: { redeemUrl: GOOD, redeemUrlRedirect: 'https://x.example' } }),
+                fallback: s.redemptionUrlOf({ redemptionInfo: { redeemUrl: null, redeemUrlRedirect: GOOD } }),
+                empty: s.redemptionUrlOf({ redemptionInfo: { redeemUrl: '', redeemUrlRedirect: '' } }),
+                spaces: s.redemptionUrlOf({ redemptionInfo: { redeemUrl: '   ' } }),
+                noScheme: s.redemptionUrlOf({ redemptionInfo: { redeemUrl: 'not-a-url', redeemUrlRedirect: 'x' } }),
+                nullInfo: s.redemptionUrlOf({ redemptionInfo: null }),
+                noInfo: s.redemptionUrlOf({}),
+                noResult: s.redemptionUrlOf(null)
+            };
+        });
+        const GOOD = 'rc-abc://redeem_web_purchase?redemption_token=stubsecret';
+        const checks = {
+            primary: out.primary === GOOD,
+            fallback: out.fallback === GOOD,
+            empty: out.empty === null,
+            spaces: out.spaces === null,
+            noScheme: out.noScheme === null,
+            nullInfo: out.nullInfo === null,
+            noInfo: out.noInfo === null,
+            noResult: out.noResult === null
+        };
+        const ok = Object.keys(checks).every((k) => checks[k]) && errs.length === 0;
+        rec('RC redemptionInfo extracción defensiva', ok, JSON.stringify({ checks, errs }));
+        await page.close();
+    } catch (e) { rec('RC redemptionInfo extracción defensiva', false, e.message); }
+
+    // S17 RC: sin secretos en analytics ni logs tras compra real (stub)
+    try {
+        const { page, errs, analytics } = await makePage(browser, { stub: 'entitled_ok', redemptionRoute: 'set' });
+        await page.goto(BASE + '/funnel.html');
+        await seed(page);
+        await page.reload();
+        await page.waitForTimeout(1000);
+        await page.click('#purchaseBtn');
+        await page.waitForTimeout(1500);
+        const st = await page.evaluate(() => {
+            const s = JSON.parse(localStorage.getItem('brainy_funnel_state') || '{}');
+            const q = window.brainyAnalyticsQueue || [];
+            return { purchaseCompleted: !!s.purchaseCompleted, redemptionPersisted: !!s.redemptionPersisted, handoffReady: !!s.handoffReady, events: q.length, queue: JSON.stringify(q) };
+        });
+        const blob = st.queue + '\n' + analytics.join('\n');
+        const checks = {
+            purchaseOk: st.purchaseCompleted && st.redemptionPersisted && st.handoffReady,
+            noClaimToken: !blob.includes(CLAIM_TOKEN),
+            noEmail: !blob.includes(EMAIL),
+            noRedemptionToken: !blob.includes('stubsecret'),
+            noRedeemUrl: !blob.includes('redeem_web_purchase')
+        };
+        const ok = Object.keys(checks).every((k) => checks[k]) && errs.length === 0;
+        rec('RC sin secretos en analytics/logs', ok, JSON.stringify({ checks, events: st.events, errs }));
+        await page.close();
+    } catch (e) { rec('RC sin secretos en analytics/logs', false, e.message); }
 
     // S14 EGG: catálogo canónico 1-8 (ids numéricos, nombres canónicos, sin slugs)
     try {
@@ -599,6 +701,115 @@ function stubCalls(page) {
         rec('EGG 1:1 + distintas + payload numérico + display', ok, JSON.stringify({ checks, shownStep, errs }));
         await page.close();
     } catch (e) { rec('EGG 1:1 + distintas + payload numérico + display', false, e.message); }
+
+    // S18 REDEEM_SET: purchase OK + persist 200 set -> handoffReady=true
+    try {
+        const { page, errs, analytics, redemption } = await makePage(browser, { stub: 'entitled_ok', redemptionRoute: 'set' });
+        await page.goto(BASE + '/funnel.html');
+        await seed(page);
+        await page.reload();
+        await page.waitForTimeout(1000);
+        await page.click('#purchaseBtn');
+        await page.waitForTimeout(1500);
+        const st = await page.evaluate(() => {
+            const s = JSON.parse(localStorage.getItem('brainy_funnel_state') || '{}');
+            const q = window.brainyAnalyticsQueue || [];
+            return { step: parseInt(localStorage.getItem('brainy_funnel_step'), 10), purchaseCompleted: !!s.purchaseCompleted, redemptionPersisted: !!s.redemptionPersisted, handoffReady: !!s.handoffReady, hasSuccess: !!document.querySelector('.success-checks'), persistedEvents: q.filter((e) => e.event === 'redemption_persisted') };
+        });
+        const ok = st.step === 22 && st.purchaseCompleted && st.redemptionPersisted && st.handoffReady && st.hasSuccess
+            && redemption.total === 1 && redemption.lastStatus === 'set'
+            && st.persistedEvents.length === 1 && st.persistedEvents.every((e) => e.metadata.status === 'set')
+            && errs.length === 0;
+        rec('REDEEM persist 200 set -> handoff', ok, JSON.stringify({ st, redemption, errs }));
+        await page.close();
+    } catch (e) { rec('REDEEM persist 200 set -> handoff', false, e.message); }
+
+    // S19 REDEEM_UNCHANGED: persist 200 unchanged -> handoffReady=true
+    try {
+        const { page, errs, analytics, redemption } = await makePage(browser, { stub: 'entitled_ok', redemptionRoute: 'unchanged' });
+        await page.goto(BASE + '/funnel.html');
+        await seed(page);
+        await page.reload();
+        await page.waitForTimeout(1000);
+        await page.click('#purchaseBtn');
+        await page.waitForTimeout(1500);
+        const st = await page.evaluate(() => {
+            const s = JSON.parse(localStorage.getItem('brainy_funnel_state') || '{}');
+            return { step: parseInt(localStorage.getItem('brainy_funnel_step'), 10), purchaseCompleted: !!s.purchaseCompleted, redemptionPersisted: !!s.redemptionPersisted, handoffReady: !!s.handoffReady, hasSuccess: !!document.querySelector('.success-checks') };
+        });
+        const ok = st.step === 22 && st.purchaseCompleted && st.redemptionPersisted && st.handoffReady && st.hasSuccess
+            && redemption.total === 1 && redemption.lastStatus === 'unchanged'
+            && errs.length === 0;
+        rec('REDEEM persist 200 unchanged -> handoff', ok, JSON.stringify({ st, redemption, errs }));
+        await page.close();
+    } catch (e) { rec('REDEEM persist 200 unchanged -> handoff', false, e.message); }
+
+    // S20 REDEEM_FAIL_RETRY: persist falla -> recovery que NO vuelve a cobrar
+    try {
+        const { page, errs, analytics, redemption } = await makePage(browser, { stub: 'entitled_ok', redemptionRoute: 'fail_once' });
+        await page.goto(BASE + '/funnel.html');
+        await seed(page);
+        await page.reload();
+        await page.waitForTimeout(1000);
+        await page.click('#purchaseBtn');
+        await page.waitForTimeout(1500);
+        const st1 = await page.evaluate(() => {
+            const s = JSON.parse(localStorage.getItem('brainy_funnel_state') || '{}');
+            return { purchaseCompleted: !!s.purchaseCompleted, redemptionPersisted: !!s.redemptionPersisted, handoffReady: !!s.handoffReady, hasRecovery: !!document.querySelector('.paywall-recovery'), text: (document.body.innerText || '').slice(0, 300), step: parseInt(localStorage.getItem('brainy_funnel_step'), 10) };
+        });
+        const calls1 = await stubCalls(page);
+
+        const retryClick = await page.evaluate(() => {
+            const b = document.getElementById('retryPaywallBtn') || document.getElementById('retryHandoffBtn');
+            if (b) { b.click(); return true; }
+            return false;
+        });
+        await page.waitForTimeout(1600);
+        const st2 = await page.evaluate(() => {
+            const s = JSON.parse(localStorage.getItem('brainy_funnel_state') || '{}');
+            const q = window.brainyAnalyticsQueue || [];
+            return { step: parseInt(localStorage.getItem('brainy_funnel_step'), 10), purchaseCompleted: !!s.purchaseCompleted, redemptionPersisted: !!s.redemptionPersisted, handoffReady: !!s.handoffReady, hasSuccess: !!document.querySelector('.success-checks'), retryPersisted: q.some((e) => e.event === 'redemption_persisted' && e.metadata.retry === true) };
+        });
+        const calls2 = await stubCalls(page);
+        const checks = {
+            firstPurchase: st1.purchaseCompleted === true,
+            firstNotPersisted: st1.redemptionPersisted === false,
+            firstNotReady: st1.handoffReady === false,
+            recoveryShown: st1.hasRecovery && /guardar tu plan|guardado/.test(st1.text) === true,
+            retryClicked: retryClick === true,
+            retryPersisted: st2.redemptionPersisted === true,
+            retryReady: st2.handoffReady === true,
+            retrySuccess: st2.hasSuccess === true && st2.step === 22,
+            retryTracked: st2.retryPersisted === true,
+            persistedCallsTwo: redemption.total === 2,
+            noSecondPurchase: calls1.purchase === 1 && calls2.purchase === 1
+        };
+        const ok = Object.keys(checks).every((k) => checks[k]) && errs.length === 0;
+        rec('REDEEM falla -> retry solo persist, sin 2º cobro', ok, JSON.stringify({ st1, st2, checks, errs }));
+        await page.close();
+    } catch (e) { rec('REDEEM falla -> retry solo persist, sin 2º cobro', false, e.message); }
+
+    // S21 PAYLOAD-STEPS: 1 rutina con 2 pasos -> steps, nunca tasks
+    try {
+        const { page, errs } = await makePage(browser, { key: '' });
+        await page.goto(BASE + '/funnel.html');
+        const routine = { templateId: 'r1', id: 'r1', name: 'R1', title: 'R1', icon: '', days: ['daily'], steps: [{ title: 'P1', duration: 3 }, { title: 'P2', duration: 7 }] };
+        await seed(page, state({ selectedRoutines: [routine], assignedRoutines: [] }), 21);
+        await page.reload();
+        await page.waitForTimeout(600);
+        const p = await page.evaluate(() => (typeof window.buildUserPlanPayload === 'function' ? buildUserPlanPayload() : null));
+        const checks = {
+            oneRoutine: !!p && p.routines.length === 1,
+            steps2: !!p && p.routines[0].steps.length === 2,
+            noTasks: !!p && !('tasks' in p.routines[0]),
+            titles: !!p && p.routines[0].steps.map((s) => s.title).join(',') === 'P1,P2',
+            durations: !!p && p.routines[0].steps.map((s) => s.duration).join(',') === '3,7',
+            eggNumeric: !!p && typeof p.routines[0].egg.catalogId === 'number' && p.routines[0].egg.catalogId >= 1 && p.routines[0].egg.catalogId <= 8
+        };
+        const ok = Object.keys(checks).every((k) => checks[k]) && errs.length === 0;
+        rec('PAYLOAD rutina 2 pasos -> steps (sin tasks)', ok, JSON.stringify({ checks, errs }));
+        await page.close();
+    } catch (e) { rec('PAYLOAD rutina 2 pasos -> steps (sin tasks)', false, e.message); }
 
     await browser.close();
     const fails = results.filter((r) => !r.ok);

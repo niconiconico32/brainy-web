@@ -9,7 +9,14 @@
 //   SUPABASE_URL                default: https://auth.brainyadhd.com
 //   TEST_SOURCES                lista separada por comas
 //                               default: e2e-create-plan-regression,manual-claim-test
+//   TEST_EMAILS                 emails de test (el funnel crea con source=website)
+//                               default: sb+checkout@brainyadhd.com
+//   EMAIL_LIKE                  patrón LIKE (PostgREST) para emails únicos del
+//                               checkout sandbox (sb+checkout-<stamp>@...)
+//                               default: sb%2Bcheckout-%25%40brainyadhd.com
 //   INCLUDE_LEGACY=1            también borra la fila de test de `funnel_plans` legacy
+//   KEEP_PLAN_ID                planId a CONSERVAR (no se borra) — útil para no
+//                               limpiar la fila de la compra sandbox real del E2E móvil
 //   DRY_RUN=1                   solo lista, no borra
 //
 // Uso seguro (la key no queda en el historial):
@@ -24,6 +31,12 @@ const TEST_SOURCES = (process.env.TEST_SOURCES ||
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean);
+const TEST_EMAILS = (process.env.TEST_EMAILS || 'sb+checkout@brainyadhd.com')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+const EMAIL_LIKE = process.env.EMAIL_LIKE || 'sb%2Bcheckout-%25%40brainyadhd.com';
+const KEEP_PLAN_ID = (process.env.KEEP_PLAN_ID || '').trim().toLowerCase();
 const INCLUDE_LEGACY = process.env.INCLUDE_LEGACY === '1';
 const DRY_RUN = process.env.DRY_RUN === '1';
 const LEGACY_TEST_EMAIL = process.env.LEGACY_TEST_EMAIL || 'e2e+create-plan@brainyadhd.com';
@@ -85,6 +98,50 @@ async function countBySource(inList) {
     const rows = Array.isArray(deleted) ? deleted : [];
     console.log('Borradas: ' + rows.length);
     for (const r of rows) console.log('  - ' + r.id + ' [' + r.source + '] ' + r.status);
+  }
+
+  if (TEST_EMAILS.length) {
+    const emailList = TEST_EMAILS.map((e) => '"' + encodeURIComponent(e) + '"').join(',');
+    console.log('Emails de test: ' + TEST_EMAILS.join(', '));
+    const filter = `web_funnel_plans?email=in.(${emailList})&select=id,status,source`;
+    const found = await rest(filter);
+    const rows = Array.isArray(found) ? found : [];
+    console.log('Filas con email de test: ' + rows.length);
+    if (!DRY_RUN && rows.length > 0) {
+      const deleted = await rest(filter, {
+        method: 'DELETE',
+        headers: { Prefer: 'return=representation' },
+      });
+      const del = Array.isArray(deleted) ? deleted : [];
+      console.log('Borradas por email: ' + del.length);
+      for (const r of del) console.log('  - ' + r.id + ' [' + r.source + '] ' + r.status);
+    }
+  }
+
+  // emails únicos del checkout sandbox (sb+checkout-<stamp>@...)
+  console.log('Email LIKE (sandbox): ' + decodeURIComponent(EMAIL_LIKE));
+  const likeList = `web_funnel_plans?email=like.${EMAIL_LIKE}&select=id,status,source&order=created_at.desc`;
+  const likeAll = await rest(likeList);
+  const likeRows = Array.isArray(likeAll) ? likeAll : [];
+  let likeFilter = `web_funnel_plans?email=like.${EMAIL_LIKE}&select=id,status,source`;
+  if (KEEP_PLAN_ID) {
+    likeFilter += `&id=neq.${KEEP_PLAN_ID}`;
+    console.log('Filas sandbox (email único): ' + likeRows.length + ' · CONSERVA planId ' + KEEP_PLAN_ID);
+  } else if (likeRows.length > 1) {
+    const kept = likeRows[0].id;
+    likeFilter += `&id=neq.${kept}`;
+    console.log('Filas sandbox (email único): ' + likeRows.length + ' · CONSERVA la más reciente: ' + kept + ' [' + (likeRows[0].status || '') + '] · KEEP_PLAN_ID para elegir otra');
+  } else {
+    console.log('Filas sandbox (email único): ' + likeRows.length);
+  }
+  if (!DRY_RUN && likeRows.length > 0) {
+    const deleted = await rest(likeFilter, {
+      method: 'DELETE',
+      headers: { Prefer: 'return=representation' },
+    });
+    const del = Array.isArray(deleted) ? deleted : [];
+    console.log('Borradas por LIKE: ' + del.length);
+    for (const r of del) console.log('  - ' + r.id + ' [' + r.source + '] ' + r.status);
   }
 
   if (INCLUDE_LEGACY) {
