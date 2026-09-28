@@ -1823,6 +1823,7 @@
             claimToken: null,
             clientPlanKey: null,
             purchaseCompleted: false,
+            entitlementConfirmed: false,
             redemptionPersisted: false,
             handoffReady: false,
             selectedPackageId: null,
@@ -3168,17 +3169,22 @@
                 }
                 setState('email', value);
                 setState('marketing_optin', document.getElementById('optinCheck').checked);
-                requestEmailOtp(value);
+                requestEmailOtp(value, document.getElementById('nextBtn'));
             });
 
-            async function requestEmailOtp(email) {
+            async function requestEmailOtp(email, triggerButton) {
                 const identity = window.BrainyFunnelIdentity;
                 const client = getSupabaseClient();
-                const button = document.getElementById('nextBtn');
+                const button = triggerButton || document.getElementById('nextBtn') || document.getElementById('resendOtpBtn');
                 if (!identity || !client) {
                     showToast('La verificación no está disponible. Probá nuevamente.', 3200);
                     return;
                 }
+                if (!button) {
+                    showToast('La verificación no está disponible. Probá nuevamente.', 3200);
+                    return;
+                }
+                const originalText = button.textContent;
                 button.disabled = true;
                 button.textContent = 'Enviando código…';
                 try {
@@ -3190,8 +3196,14 @@
                     track('email_otp_requested', { marketingOptIn: !!funnelState.marketing_optin });
                 } catch (error) {
                     button.disabled = false;
-                    button.textContent = step.cta;
-                    showToast('No pudimos enviar el código. Revisá tu email e intentá otra vez.', 3200);
+                    button.textContent = originalText;
+                    const otpError = document.getElementById('otpError');
+                    if (otpError) {
+                        otpError.textContent = 'No pudimos enviar otro código. Intentá nuevamente.';
+                        otpError.style.display = 'block';
+                    } else {
+                        showToast('No pudimos enviar el código. Revisá tu email e intentá otra vez.', 3200);
+                    }
                 }
             }
 
@@ -3233,7 +3245,9 @@
                         document.getElementById('otpError').style.display = 'block';
                     }
                 });
-                document.getElementById('resendOtpBtn').addEventListener('click', () => requestEmailOtp(email));
+                document.getElementById('resendOtpBtn').addEventListener('click', () => {
+                    requestEmailOtp(email, document.getElementById('resendOtpBtn'));
+                });
             }
         }
 
@@ -3480,6 +3494,38 @@
                 document.getElementById('retryPaywallBtn').addEventListener('click', onRetry || (() => initPaywall()));
             }
 
+            async function configureIdentifiedRevenueCat(identity, rcConfig) {
+                if (!svc || !svc.isAvailable() || !rcConfig.apiKey || !identity || !identity.userId) {
+                    throw new Error('revenuecat_identity_not_ready');
+                }
+                const configured = svc.configure({ apiKey: rcConfig.apiKey, appUserId: identity.userId });
+                if (!configured) {
+                    throw new Error('revenuecat_not_configured');
+                }
+                return configured;
+            }
+
+            async function currentEntitlementIsActive() {
+                if (!svc || typeof svc.getCustomerInfo !== 'function') {
+                    return false;
+                }
+                const customerInfo = await svc.getCustomerInfo();
+                return svc.isEntitledTo(customerInfo, rcConfig.entitlementId);
+            }
+
+            function completeIdentifiedHandoffWithoutPurchase() {
+                setState('purchaseCompleted', true);
+                setState('entitlementConfirmed', true);
+                setState('redemptionPersisted', false);
+                setState('pendingRedemptionUrl', null);
+                setState('handoffReady', true);
+                track('handoff_ready', {
+                    platform: isMobileDevice() ? 'mobile' : 'desktop',
+                    existingEntitlement: true
+                });
+                goNext();
+            }
+
             async function initPaywall() {
                 if (funnelState.purchaseCompleted) {
                     if (funnelState.handoffReady) {
@@ -3492,10 +3538,20 @@
                             () => retryPendingRedemption()
                         );
                     } else {
-                        renderRecovery(
-                            'Tu suscripción fue activada, pero no pudimos preparar el enlace para Brainy. Escribinos y lo resolvemos.',
-                            () => window.location.reload()
-                        );
+                        const existingIdentity = await prepareIdentifiedAccount();
+                        try {
+                            await configureIdentifiedRevenueCat(existingIdentity, rcConfig);
+                            if (!existingIdentity.ok || !(await currentEntitlementIsActive())) {
+                                throw new Error('existing_entitlement_not_confirmed');
+                            }
+                            completeIdentifiedHandoffWithoutPurchase();
+                        } catch (error) {
+                            track('handoff_recovery_required', { reason: 'entitlement_not_confirmed' });
+                            renderRecovery(
+                                'Tu suscripción no se volvió a cobrar. No pudimos confirmar el acceso de esta cuenta; intentá nuevamente.',
+                                () => initPaywall()
+                            );
+                        }
                     }
                     return;
                 }
@@ -3521,19 +3577,24 @@
                     renderRecovery('No pudimos verificar tu cuenta. Volvé a solicitar el código y probá nuevamente.');
                     return;
                 }
-                if (!svc || !svc.isAvailable() || !rcConfig.apiKey) {
-                    track('purchase_failed', { reason: 'rc_not_configured' });
-                    renderRecovery('El pago web no está disponible en este momento. Probá de nuevo en unos minutos.');
-                    return;
-                }
-                renderStatus('Buscando tu plan de pago…');
                 let offering = null;
                 try {
-                    svc.configure({ apiKey: rcConfig.apiKey, appUserId: identity.userId });
+                    await configureIdentifiedRevenueCat(identity, rcConfig);
+                    if (identity.alreadyPro) {
+                        if (!(await currentEntitlementIsActive())) {
+                            throw new Error('already_pro_entitlement_not_confirmed');
+                        }
+                        completeIdentifiedHandoffWithoutPurchase();
+                        return;
+                    }
+                    renderStatus('Buscando tu plan de pago…');
                     offering = await svc.getOfferings(rcConfig.offeringId);
                 } catch (e) {
-                    track('purchase_failed', { reason: 'offerings_error' });
-                    renderRecovery('Hubo un problema al cargar tu plan de pago. Probá de nuevo.');
+                    const reason = identity.alreadyPro ? 'already_pro_not_confirmed' : 'rc_not_configured';
+                    track('checkout_blocked_identity', { reason: reason });
+                    renderRecovery(identity.alreadyPro
+                        ? 'Tu cuenta figura como Pro, pero no pudimos confirmar ese acceso. No se inició ningún cobro.'
+                        : 'El pago web no está disponible en este momento. Probá de nuevo en unos minutos.');
                     return;
                 }
                 if (!offering) {
@@ -3751,6 +3812,7 @@
                 // redemption URL es un paso aparte: la compra y el guardado del
                 // plan quedan registrados de forma independiente.
                 setState('purchaseCompleted', true);
+                setState('entitlementConfirmed', true);
                 setState('redemptionPersisted', false);
                 setState('handoffReady', false);
                 track('purchase_success', {
@@ -3762,20 +3824,18 @@
                     redemptionAvailable: !!redeemUrl
                 });
                 if (!redeemUrl) {
-                    // Suscripción activa pero sin enlace de redención canónico:
-                    // NO se vuelve a cobrar. El plan ya quedó creado server-side:
-                    // el usuario puede cerrar y restaurar desde Brainy con su email.
+                    // The identified RevenueCat user already owns the entitlement.
+                    // A redemption URL is optional for this path: the mobile app
+                    // logs in with the same Supabase UUID and can finish recovery.
                     purchaseLock = false;
                     setState('pendingRedemptionUrl', null);
-                    track('handoff_recovery_required', {
+                    setState('handoffReady', true);
+                    track('handoff_ready', {
                         packageId: entry.pkg.identifier,
                         offeringId: data.offering.identifier,
                         platform: isMobileDevice() ? 'mobile' : 'desktop'
                     });
-                    renderRecovery(
-                        'Tu suscripción fue activada, pero no pudimos preparar el enlace para Brainy. No se te volvió a cobrar. Escribinos y lo resolvemos.',
-                        () => window.location.reload()
-                    );
+                    goNext();
                     return;
                 }
                 setState('pendingRedemptionUrl', redeemUrl);
@@ -3815,7 +3875,11 @@
         function renderSuccess(step) {
             const platform = isMobileDevice() ? 'mobile' : 'desktop';
             const redeemUrl = funnelState.pendingRedemptionUrl || null;
-            const ready = !!funnelState.purchaseCompleted && !!funnelState.redemptionPersisted && !!funnelState.handoffReady && !!redeemUrl && hasRealPlan();
+            const entitlementConfirmed = !!funnelState.entitlementConfirmed ||
+                (!!funnelState.purchaseCompleted && !!redeemUrl && !!funnelState.redemptionPersisted);
+            const ready = !!funnelState.purchaseCompleted && entitlementConfirmed &&
+                !!funnelState.handoffReady && hasRealPlan() &&
+                (!!redeemUrl ? !!funnelState.redemptionPersisted : true);
 
             if (!ready) {
                 track('handoff_recovery_required', {
@@ -3834,7 +3898,7 @@
                         <div class="paywall-recovery">
                             <p>${redeemUrl
                                 ? 'Tu suscripción fue activada, pero no pudimos confirmar el guardado de tu plan. No se te volvió a cobrar: tocá para reintentar.'
-                                : 'Tu suscripción fue activada, pero no pudimos preparar el enlace para Brainy. No se te volvió a cobrar.'}</p>
+                                : 'No pudimos confirmar el acceso de esta cuenta. No se inició ningún cobro nuevo; intentá nuevamente.'}</p>
                             <div class="actions">
                                 <button class="btn btn-dopamine" type="button" id="retryHandoffBtn">Reintentar</button>
                             </div>

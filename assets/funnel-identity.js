@@ -89,7 +89,13 @@
             if (!response.ok || !data || !isNonEmptyString(data.userId) || data.userId !== user.id) {
                 return { ok: false, error: response.ok ? 'identity_mismatch' : 'prepare_failed' };
             }
-            return { ok: true, userId: data.userId, session: session };
+            return {
+                ok: true,
+                userId: data.userId,
+                alreadyPro: data.alreadyPro === true,
+                accountState: isNonEmptyString(data.accountState) ? data.accountState : null,
+                session: session
+            };
         } catch (error) {
             return { ok: false, error: 'prepare_network_error' };
         }
