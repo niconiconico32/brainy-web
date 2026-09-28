@@ -2,9 +2,9 @@
 
 Documento del contrato **vigente** entre el funnel web (`funnel.html`) y la app
 móvil. La app ya está implementada: la web **termina en Success/Handoff** y no
-ejecuta login, OTP, Supabase Auth, redención ni materialización.
+ejecuta login, Supabase Auth, redención ni materialización.
 
-Última actualización: 2026-09-17.
+Última actualización: 2026-09-28.
 
 ---
 
@@ -15,6 +15,7 @@ WEB (funnel.html)
   Funnel
   → Email
   → create-funnel-plan        (Edge Function, service_role)
+  → prepare-funnel-account     (backend: resolves UUID / alreadyPro)
   → Paywall
   → Purchase / Free Trial     (RevenueCat Web Billing + Stripe)
   → Success
@@ -22,7 +23,7 @@ WEB (funnel.html)
 
 APP (ya implementada)
   Open Brainy
-  → Login original / OTP
+  → Login with email + password
   → Supabase user
   → Purchases.logIn(user.id)
   → Redeem web purchase
@@ -147,33 +148,28 @@ Respuestas de `create-funnel-plan` que el front contempla:
   - el botón de compra se muestra **deshabilitado**: “Checkout unavailable in
     demo mode” (modo demo/desarrollo), y
   - `startCheckout()` corta con `checkout_blocked_no_plan`.
-- Compra web “lista” solo si `entitlementActive === true` **y** existe
-  `redeemUrl`:
-  - Sí → `purchaseCompleted = true`, `handoffReady = true`,
-    `pendingRedemptionUrl`, y se avanza a Success.
-  - No (entitlement activo pero sin `redemptionInfo`) → `purchaseCompleted = true`,
-    `handoffReady = false`, estado de recovery (“Tu suscripción fue activada,
-    pero no pudimos preparar el enlace para Brainy.”). **No se vuelve a cobrar**
-    y no se genera handoff normal.
+- Antes de cargar offerings se exige `prepare-funnel-account` exitoso y un
+  `userId` UUID. RevenueCat se configura con ese UUID.
+- Si `alreadyPro === true`, no se inicia `purchase()`: se confirma el estado
+  actual y se avanza al handoff para que la app finalice la recuperación.
+- Si la compra confirma entitlement pero no devuelve `redeemUrl`, se avanza con
+  `purchaseCompleted`, `entitlementConfirmed` y `handoffReady`; la app verifica
+  el entitlement server-side. **No se declara confirmación server-side en la
+  web y no se vuelve a cobrar.**
 
 ### 2.5 Deep link (`buildClaimLink`)
 
 ```
 brainy://claim
   ?token=<CLAIM_TOKEN>              # 64 hex; solo existe token real
-  &redeem_url=<ENCODED_REDEMPTION_URL>   # solo después de compra web válida
-  &email=<ENCODED_EMAIL>            # encodeURIComponent(email)
+  [&redeem_url=<ENCODED_REDEMPTION_URL>] # opcional si RC ya tiene entitlement
 ```
 
-- El deep link final contiene **token + redeem_url + email**.
+- El deep link contiene el **claim token** y opcionalmente `redeem_url`; nunca
+  contiene email, contraseña ni otros secretos.
 - **Solo se renderiza Success/Handoff con CTA “Abrir Brainy” cuando** hay
-  `planId` real, `claimToken` real, `purchaseCompleted`, `handoffReady` y
-  `pendingRedemptionUrl` válidos.
-- **El email va al deep link como solución TEMPORAL** para la implementación
-  móvil actual (login original en modo funnel, prellenado y envío de OTP).
-
-> **TODO:** reemplazar el email en la URL por resolución **server-side** del
-> handoff para evitar PII dentro del deep link/QR.
+  `planId` real, identidad preparada y `handoffReady`. `redeem_url` no es
+  obligatorio cuando RevenueCat ya reconoce el entitlement.
 
 ### 2.6 Analytics
 
@@ -284,20 +280,32 @@ referencia local). La web no las llama ni las implementa.
 
 ---
 
-## 4. Lo que hace la APP (no la web)
+## 4. Identidad y credenciales
 
-- Login original y OTP (`sendOtp` → `verifyOtp`) → Supabase user.
+- La web solo recoge el email. No solicita, verifica ni reenvía OTP.
+- Antes del checkout, la web llama `prepare-funnel-account` con `planId`,
+  `claimToken` y email. El backend devuelve el UUID de Supabase y puede indicar
+  `alreadyPro`.
+- La web configura RevenueCat con ese UUID y nunca recibe ni genera una
+  contraseña.
+- Las credenciales se envían únicamente desde backend después de la confirmación
+  autoritativa del webhook de RevenueCat. El backend no debe cambiar la
+  contraseña de una cuenta existente.
+
+## 5. Lo que hace la APP (no la web)
+
+- Login con email y contraseña → Supabase user.
 - `Purchases.logIn(user.id)` (RevenueCat identity).
 - `redeemWebPurchase` con el `redeem_url`.
 - Verificación del entitlement `brainy Pro`.
 - `claim-funnel-plan` + materialización.
 - Routing final.
 
-La web **no** implementa OTP, Supabase Auth ni claim.
+La web **no** implementa login, OTP, Supabase Auth ni claim.
 
 ---
 
-## 5. Seguridad / logging
+## 6. Seguridad / logging
 
 - Nunca se envían a analytics ni se imprimen: email, `claimToken`,
   `claim_token_hash`, `redemptionUrl`, `redemption_token`, JWT/Authorization.
@@ -306,7 +314,7 @@ La web **no** implementa OTP, Supabase Auth ni claim.
 
 ---
 
-## 6. Regresión E2E (`npm run test:e2e:funnel`)
+## 7. Regresión E2E (`npm run test:e2e:funnel`)
 
 Escenarios (13):
 
@@ -321,9 +329,9 @@ Escenarios (13):
 | 7 | `DEMO` | backend demo → checkout bloqueado, sin purchase |
 | 8 | `NOPLAN` | `create-funnel-plan` falla → bloqueado |
 | 9 | `CANCEL` | checkout cancelado → vuelve al paywall, plan intacto |
-| 10 | `NOREDEEM` | purchase sin `redemptionInfo` → recovery, sin 2º cobro |
+| 10 | `NOREDEEM` | purchase sin `redemptionInfo` → handoff identificado, sin 2º cobro |
 | 11 | `REFRESH` | refresh post-compra → success, sin recomprar |
-| 12 | `DEEPLINK` | token + redeem_url + email URL-encoded |
+| 12 | `DEEPLINK` | token + redeem_url opcional, sin email |
 | 13 | `PAYLOAD` | difficulty sin “medium”, durations number, counts, rangos |
 
 Resultado actual: **13/13 ok**.
@@ -340,12 +348,12 @@ Escenarios:
 | D | `claimed` | `409 plan_already_claimed`, fila intacta |
 | E | demo | checkout bloqueado (`hasRealPlan() === false`) |
 | F | payload | difficulty sin `medium`, durations number, counts, rangos |
-| G | deep link | token + redeem_url + email URL-encoded |
+| G | deep link | token + redeem_url opcional, sin email |
 | H | tabla | la web solo consulta/escribe `web_funnel_plans`, nunca `funnel_plans` |
 
 ---
 
-## 7. Pendientes / coordinación con la app
+## 8. Pendientes / coordinación con la app
 
 1. **Verificar materialización de huevos**: `egg.catalogId` ya viaja numérico
    (1–8) y `_shared/funnel.ts` lo resuelve con `Number(catalogId)`. Falta
