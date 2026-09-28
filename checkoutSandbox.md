@@ -60,7 +60,7 @@ usuarios reales distintos. Con eso: persist OK y 21/21.
   `pendingRedemptionUrl` conservado, recovery: **reintenta SOLO persistir** (nunca `purchase()`).
 - `localStorage` `brainy_funnel_state`: `claimToken` y `pendingRedemptionUrl` propiedades de
   primer nivel del JSON.
-- Deep link navegador sigue como fallback/compat; cierre de navegador → app → email+OTP → restore.
+- Deep link navegador sigue como fallback/compat; cierre de navegador → app → email+contraseña → restore.
 
 ## 5. Seguridad
 
