@@ -1658,6 +1658,8 @@
 
     <script src="assets/revenuecat-sdk.js"></script>
     <script src="assets/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="assets/funnel-identity.js"></script>
     <script src="assets/revenuecat.js"></script>
     <script>
         const STORAGE_STATE_KEY = 'brainy_funnel_state';
@@ -1736,6 +1738,7 @@
             supabaseUrl: 'https://auth.brainyadhd.com',
             anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkcXdncWZpc2l0ZXN3YmJkdXJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDgxNTUsImV4cCI6MjA4MTA4NDE1NX0.oLadI1C5H89CWqGAz0NjDjbp_zwDGsl726YMVvlqIYg',
             createPlanUrl: 'https://auth.brainyadhd.com/functions/v1/create-funnel-plan',
+            prepareAccountUrl: 'https://auth.brainyadhd.com/functions/v1/prepare-funnel-account',
             setRedemptionUrl: 'https://auth.brainyadhd.com/functions/v1/set-funnel-redemption',
             eggCatalogUrl: '',
             iosStoreUrl: '',
@@ -1823,7 +1826,10 @@
             redemptionPersisted: false,
             handoffReady: false,
             selectedPackageId: null,
-            pendingRedemptionUrl: null
+            pendingRedemptionUrl: null,
+            identityVerified: false,
+            supabaseUserId: null,
+            accountPrepared: false
         };
 
         const PET_SVG = `
@@ -2135,6 +2141,21 @@
         let currentStepIndex = 0;
         let stepTimers = [];
         let advancing = false;
+        let supabaseClient = null;
+
+        function getSupabaseClient() {
+            if (supabaseClient) {
+                return supabaseClient;
+            }
+            const sdk = window.supabase;
+            if (!sdk || typeof sdk.createClient !== 'function' || !FUNNEL_CONFIG.supabaseUrl || !FUNNEL_CONFIG.anonKey) {
+                return null;
+            }
+            supabaseClient = sdk.createClient(FUNNEL_CONFIG.supabaseUrl, FUNNEL_CONFIG.anonKey, {
+                auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+            });
+            return supabaseClient;
+        }
 
         function funnelWebCheckout() {
             if (!FUNNEL_EXPERIMENTS.webCheckout) {
@@ -2597,6 +2618,31 @@
             );
         }
 
+        async function prepareIdentifiedAccount() {
+            const identity = window.BrainyFunnelIdentity;
+            const client = getSupabaseClient();
+            if (!identity || !client || !hasRealPlan() || !funnelState.email) {
+                return { ok: false, error: 'identity_not_ready' };
+            }
+            const result = await identity.prepareFunnelAccount({
+                client,
+                fetchImpl: window.fetch.bind(window),
+                url: FUNNEL_CONFIG.prepareAccountUrl,
+                anonKey: FUNNEL_CONFIG.anonKey,
+                planId: funnelState.planId,
+                claimToken: funnelState.claimToken,
+                email: funnelState.email
+            });
+            if (!result.ok) {
+                setState('accountPrepared', false);
+                return result;
+            }
+            setState('identityVerified', true);
+            setState('supabaseUserId', result.userId);
+            setState('accountPrepared', true);
+            return result;
+        }
+
         function ensureClientPlanKey() {
             if (funnelState.clientPlanKey) {
                 return funnelState.clientPlanKey;
@@ -2693,10 +2739,8 @@
             renderStep();
         }
 
-        // Deep link web -> app. El email es una solución TEMPORAL para la
-        // implementación móvil actual (prellenar login + enviar OTP).
-        // TODO: reemplazar email en URL por resolución server-side del handoff
-        // para evitar PII dentro del deep link/QR.
+        // Deep link web -> app. Identity is resolved by the Supabase UUID and
+        // claim token; do not put email or other PII in the URL or QR payload.
         function buildClaimLink(redeemUrl) {
             const token = hasRealPlan()
                 ? funnelState.claimToken
@@ -2704,10 +2748,6 @@
             let link = `${FUNNEL_CONFIG.appDeepLinkScheme}://claim?token=${encodeURIComponent(token)}`;
             if (redeemUrl) {
                 link += `&redeem_url=${encodeURIComponent(redeemUrl)}`;
-            }
-            const email = funnelState.email ? String(funnelState.email).trim() : '';
-            if (email) {
-                link += `&email=${encodeURIComponent(email)}`;
             }
             return link;
         }
@@ -3099,7 +3139,7 @@
                         <label for="emailInput">Email</label>
                         <input id="emailInput" type="email" inputmode="email" autocomplete="email" placeholder="tu@email.com" value="${funnelState.email || ''}">
                         <div class="field-error" id="emailError">Ingresá un email válido para guardar tu plan.</div>
-                        <p class="field-note">Usaremos este correo para vincular tu plan con Brainy.</p>
+                        <p class="field-note">Te enviaremos un código para verificar que esta cuenta es tuya.</p>
                     </div>
                     <div class="field">
                         <label class="check">
@@ -3128,12 +3168,73 @@
                 }
                 setState('email', value);
                 setState('marketing_optin', document.getElementById('optinCheck').checked);
-                setState('emailSubmitted', true);
-                setState('completedAt', new Date().toISOString());
-                window.brainyUserPlanPayload = buildUserPlanPayload();
-                track('email_submit', { marketingOptIn: !!funnelState.marketing_optin, emailSubmitted: !!funnelState.emailSubmitted });
-                goNext();
+                requestEmailOtp(value);
             });
+
+            async function requestEmailOtp(email) {
+                const identity = window.BrainyFunnelIdentity;
+                const client = getSupabaseClient();
+                const button = document.getElementById('nextBtn');
+                if (!identity || !client) {
+                    showToast('La verificación no está disponible. Probá nuevamente.', 3200);
+                    return;
+                }
+                button.disabled = true;
+                button.textContent = 'Enviando código…';
+                try {
+                    const result = await identity.requestOtp(client, email);
+                    if (!result.ok) throw new Error(result.error);
+                    setState('emailSubmitted', true);
+                    setState('completedAt', new Date().toISOString());
+                    renderOtpStep(email);
+                    track('email_otp_requested', { marketingOptIn: !!funnelState.marketing_optin });
+                } catch (error) {
+                    button.disabled = false;
+                    button.textContent = step.cta;
+                    showToast('No pudimos enviar el código. Revisá tu email e intentá otra vez.', 3200);
+                }
+            }
+
+            function renderOtpStep(email) {
+                document.getElementById('funnelRoot').innerHTML = `
+                    ${backButtonHtml()}
+                    ${cardOpen()}
+                        ${headHtml(step)}
+                        <p class="body-copy">Ingresá el código de 6 dígitos que enviamos a tu email.</p>
+                        <div class="field" style="margin-top:22px">
+                            <label for="otpInput">Código de verificación</label>
+                            <input id="otpInput" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="123456">
+                            <div class="field-error" id="otpError">El código no es válido o ya venció.</div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-dopamine" type="button" id="verifyOtpBtn">Verificar y continuar →</button>
+                            <button class="btn btn-ghost" type="button" id="resendOtpBtn">Enviar otro código</button>
+                        </div>
+                    </article>`;
+
+                const verifyButton = document.getElementById('verifyOtpBtn');
+                const otpInput = document.getElementById('otpInput');
+                verifyButton.addEventListener('click', async () => {
+                    const identity = window.BrainyFunnelIdentity;
+                    const client = getSupabaseClient();
+                    verifyButton.disabled = true;
+                    verifyButton.textContent = 'Verificando…';
+                    try {
+                        const result = await identity.verifyOtp(client, email, otpInput.value);
+                        if (!result.ok) throw new Error(result.error);
+                        setState('identityVerified', true);
+                        setState('supabaseUserId', result.user.id);
+                        window.brainyUserPlanPayload = buildUserPlanPayload();
+                        track('email_otp_verified', {});
+                        goNext();
+                    } catch (error) {
+                        verifyButton.disabled = false;
+                        verifyButton.textContent = 'Verificar y continuar →';
+                        document.getElementById('otpError').style.display = 'block';
+                    }
+                });
+                document.getElementById('resendOtpBtn').addEventListener('click', () => requestEmailOtp(email));
+            }
         }
 
         function renderLoading(step) {
@@ -3414,6 +3515,12 @@
                         routinesCount: funnelState.selectedRoutines.length
                     });
                 }
+                const identity = await prepareIdentifiedAccount();
+                if (!identity.ok) {
+                    track('checkout_blocked_identity', { reason: identity.error });
+                    renderRecovery('No pudimos verificar tu cuenta. Volvé a solicitar el código y probá nuevamente.');
+                    return;
+                }
                 if (!svc || !svc.isAvailable() || !rcConfig.apiKey) {
                     track('purchase_failed', { reason: 'rc_not_configured' });
                     renderRecovery('El pago web no está disponible en este momento. Probá de nuevo en unos minutos.');
@@ -3422,7 +3529,7 @@
                 renderStatus('Buscando tu plan de pago…');
                 let offering = null;
                 try {
-                    svc.configure({ apiKey: rcConfig.apiKey });
+                    svc.configure({ apiKey: rcConfig.apiKey, appUserId: identity.userId });
                     offering = await svc.getOfferings(rcConfig.offeringId);
                 } catch (e) {
                     track('purchase_failed', { reason: 'offerings_error' });

@@ -4,6 +4,7 @@
     "test:e2e:create-plan": "node testers/create-plan-regression.cjs",
     "test:e2e:sandbox": "node testers/sandbox-checkout.cjs",
     "test:reset-password": "node testers/reset-password-regression.cjs",
+    "test:identity": "node testers/identity-regression.cjs",
     "cleanup:funnel-plans": "node testers/cleanup-funnel-plans.cjs"
   },
   "dependencies": {

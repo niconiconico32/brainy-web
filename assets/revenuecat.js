@@ -1,13 +1,12 @@
 /* BrainyRevenueCat — servicio cliente de RevenueCat Web SDK para el funnel.
  *
- * Encapsula: identidad anónima persistente, configuración única, offerings,
+ * Encapsula: identidad Supabase verificada, configuración única, offerings,
  * compra con locales ES y clasificación de errores. Nunca maneja ni expone
  * claves privadas, tokens de redención ni datos de pago sensibles.
  */
 (function () {
     'use strict';
 
-    var ANON_ID_KEY = 'brainy_rc_anonymous_id';
     var instance = null;
     var configured = false;
 
@@ -20,25 +19,6 @@
 
     function isAvailable() {
         return !!sdk();
-    }
-
-    function getAnonymousId() {
-        var existing = null;
-        try {
-            existing = localStorage.getItem(ANON_ID_KEY);
-        } catch (e) {
-            existing = null;
-        }
-        if (existing) {
-            return existing;
-        }
-        var fresh = sdk().generateRevenueCatAnonymousAppUserId();
-        try {
-            localStorage.setItem(ANON_ID_KEY, fresh);
-        } catch (e) {
-            // sin localStorage: seguimos con la id recién generada
-        }
-        return fresh;
     }
 
     function keyKind(key) {
@@ -59,7 +39,7 @@
     }
 
     function configure(cfg) {
-        if (!cfg || !cfg.apiKey) {
+        if (!cfg || !cfg.apiKey || !cfg.appUserId) {
             return null;
         }
         if (!isSafePublicKey(cfg.apiKey)) {
@@ -73,7 +53,7 @@
         }
         instance = sdk().configure({
             apiKey: cfg.apiKey,
-            appUserId: getAnonymousId()
+            appUserId: cfg.appUserId
         });
         configured = true;
         return instance;
