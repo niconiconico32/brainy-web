@@ -26,15 +26,17 @@ APP (ya implementada)
   → Login with email + password
   → Supabase user
   → Purchases.logIn(user.id)
-  → Redeem web purchase
-  → verificar `brainy Pro`
-  → Claim funnel plan (claim-funnel-plan)
-  → Materializar
+  → Discover funnel plan by funnel_user_id
+  → Verify entitlement server-side
+  → If needed, redeem the Redemption URL
+  → finalizeFunnelPlan
   → App
 ```
 
-El orden app es: **redeem antes de claim**, y **claim NO se marca `claimed`
-hasta que la materialización terminó bien**.
+La Redemption URL solo se usa cuando RevenueCat todavía no reconoce el
+entitlement. Si el entitlement ya está activo para el UUID de Supabase, la app
+puede continuar sin esa URL. `finalizeFunnelPlan` debe ser idempotente y solo
+finalizar después de verificar el entitlement server-side.
 
 ---
 
@@ -296,9 +298,11 @@ referencia local). La web no las llama ni las implementa.
 
 - Login con email y contraseña → Supabase user.
 - `Purchases.logIn(user.id)` (RevenueCat identity).
-- `redeemWebPurchase` con el `redeem_url`.
-- Verificación del entitlement `brainy Pro`.
-- `claim-funnel-plan` + materialización.
+- Descubrimiento del plan mediante `funnel_user_id`.
+- Verificación server-side del entitlement `brainy Pro`.
+- `redeemWebPurchase` con `redeem_url` solo cuando el entitlement aún no está
+  activo.
+- `finalizeFunnelPlan` para completar el provisioning de forma idempotente.
 - Routing final.
 
 La web **no** implementa login, OTP, Supabase Auth ni claim.
@@ -358,14 +362,14 @@ Escenarios:
 1. **Verificar materialización de huevos**: `egg.catalogId` ya viaja numérico
    (1–8) y `_shared/funnel.ts` lo resuelve con `Number(catalogId)`. Falta
    confirmar de punta a punta que la app muestra el asset del id enviado.
-2. **Email server-side**: reemplazar `email` en el deep link por resolución
-   server-side (hoy es temporal).
-3. `iosStoreUrl` / `androidStoreUrl` (`FUNNEL_CONFIG`, hoy vacíos → sin botones
-   de tienda).
-4. `revenuecatTermsUrl` (hoy vacío).
-5. `revenuecat_redemption_url` en `web_funnel_plans`: hoy queda `NULL` (la web lo
-   manda solo por deep link). Definir si algún endpoint debe persistirlo para que
-   `restore-funnel-plan` reporte `redemption.pending`.
-6. Confirmar el orden app: redeem → verificar `brainy Pro` → claim → materializar
-   (ya implementado: `claim-funnel-plan` + `restore-funnel-plan` + RPC
-   `claim_funnel_plan`).
+ 2. Confirmar en backend/app el vínculo de `web_funnel_plans.funnel_user_id`
+    con el usuario Supabase y el contrato de `finalizeFunnelPlan`.
+ 3. `iosStoreUrl` / `androidStoreUrl` (`FUNNEL_CONFIG`, hoy vacíos → sin botones
+    de tienda).
+ 4. `revenuecatTermsUrl` (hoy vacío).
+  5. `revenuecat_redemption_url` en `web_funnel_plans`: puede quedar `NULL` cuando
+     el entitlement ya está activo; la app solo necesita la URL cuando debe
+     redimir la compra. Confirmar si el backend debe persistirla para el camino
+     de recuperación que todavía requiera `redemption.pending`.
+ 6. Confirmar que webhook y `finalizeFunnelPlan` entregan credenciales solo
+    después de confirmar el pago y nunca cambian la contraseña de cuentas existentes.

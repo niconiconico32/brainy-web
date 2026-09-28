@@ -76,13 +76,22 @@ function testRevenueCatUsesVerifiedUuidAndRejectsStaleIdentity() {
 function testNoOtpCredentialsOrRedemptionContract() {
   const funnel = fs.readFileSync(require.resolve('../funnel.html'), 'utf8');
   const identitySource = fs.readFileSync(require.resolve('../assets/funnel-identity.js'), 'utf8');
+  const handoff = fs.readFileSync(require.resolve('../handoffdetail.md'), 'utf8');
   assert.doesNotMatch(funnel, /signInWithOtp|verifyOtp|requestEmailOtp|verifyOtpBtn|resendOtpBtn/);
+  assert.doesNotMatch(funnel, /OTP|otp|solicitar el código|(?:verificar|enviamos).{0,30}código/i);
   assert.doesNotMatch(funnel, /password|credentials/i);
   assert.doesNotMatch(identitySource, /signInWithOtp|verifyOtp|password/i);
   assert.match(funnel, /if \(!redeemUrl\)[\s\S]*setState\('handoffReady', true\)[\s\S]*goNext\(\)/);
   assert.match(funnel, /NUNCA vuelve a ejecutar purchase\(\)/);
   assert.doesNotMatch(funnel, /link \+= `&email=/);
   assert.ok(funnel.indexOf('if (identity.alreadyPro)') < funnel.indexOf('svc.purchase('));
+  assert.match(handoff, /Login con email y contraseña/);
+  assert.match(handoff, /Purchases\.logIn\(user\.id\)/);
+  assert.match(handoff, /funnel_user_id/);
+  assert.match(handoff, /Verificación server-side del entitlement/);
+  assert.match(handoff, /finalizeFunnelPlan/);
+  assert.match(handoff, /Redemption URL solo se usa cuando/);
+  assert.doesNotMatch(handoff, /Login original.*OTP|redeem antes de claim/);
 }
 
 async function main() {

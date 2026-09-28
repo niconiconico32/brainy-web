@@ -3501,7 +3501,7 @@
                 const identity = await prepareIdentifiedAccount();
                 if (!identity.ok) {
                     track('checkout_blocked_identity', { reason: identity.error });
-                    renderRecovery('No pudimos verificar tu cuenta. Volvé a solicitar el código y probá nuevamente.');
+                    renderRecovery('No pudimos preparar tu cuenta. Intenta nuevamente.');
                     return;
                 }
                 let offering = null;
