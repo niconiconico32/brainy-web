@@ -9,6 +9,7 @@
 
     var instance = null;
     var configured = false;
+    var configuredAppUserId = null;
 
     function sdk() {
         // window.Purchases es el namespace UMD; la clase con configure/statics
@@ -49,6 +50,13 @@
             return null;
         }
         if (configured && instance) {
+            if (configuredAppUserId !== cfg.appUserId) {
+                throw new Error('RevenueCat is already configured for a different App User ID');
+            }
+            var currentSdkUserId = getSdkAppUserId();
+            if (currentSdkUserId && currentSdkUserId !== cfg.appUserId) {
+                throw new Error('RevenueCat SDK identity does not match the verified Supabase user');
+            }
             return instance;
         }
         instance = sdk().configure({
@@ -56,7 +64,20 @@
             appUserId: cfg.appUserId
         });
         configured = true;
+        configuredAppUserId = cfg.appUserId;
+        var configuredSdkUserId = getSdkAppUserId();
+        if (configuredSdkUserId && configuredSdkUserId !== cfg.appUserId) {
+            throw new Error('RevenueCat SDK rejected the verified Supabase identity');
+        }
         return instance;
+    }
+
+    function getSdkAppUserId() {
+        if (!instance || typeof instance.getAppUserId !== 'function') {
+            return null;
+        }
+        var value = instance.getAppUserId();
+        return typeof value === 'string' && value ? value : null;
     }
 
     function getOffering(offerings, preferredId) {
@@ -76,6 +97,13 @@
         return instance.getOfferings().then(function (offerings) {
             return getOffering(offerings, preferredId);
         });
+    }
+
+    function getCustomerInfo() {
+        if (!instance || typeof instance.getCustomerInfo !== 'function') {
+            return Promise.reject(new Error('RevenueCat customer info is unavailable'));
+        }
+        return instance.getCustomerInfo();
     }
 
     function isEntitledTo(customerInfo, entitlementId) {
@@ -157,7 +185,9 @@
         keyKind: keyKind,
         isSafePublicKey: isSafePublicKey,
         configure: configure,
+        getSdkAppUserId: getSdkAppUserId,
         getOfferings: getOfferings,
+        getCustomerInfo: getCustomerInfo,
         isEntitledTo: isEntitledTo,
         purchase: purchase,
         classifyError: classifyError,
