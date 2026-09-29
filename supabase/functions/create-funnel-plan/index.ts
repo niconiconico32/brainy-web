@@ -1,5 +1,10 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { classifyExisting, retryUpdateFields } from './policy.mjs'
+import {
+  classifyExisting,
+  hasIdentityConflict,
+  retryUpdateConditions,
+  retryUpdateFields,
+} from './policy.mjs'
 
 // Crea el plan del funnel web en la tabla CANÓNICA `public.web_funnel_plans`.
 //
@@ -51,6 +56,7 @@ interface ExistingRow {
   id: string
   status: string
   expires_at: string | null
+  email: string | null
   funnel_user_id: string | null
   purchase_confirmed_at: string | null
 }
@@ -85,12 +91,26 @@ async function reissueToken(
   const newToken = generateClaimToken()
   const newHash = await sha256Hex(newToken)
 
-  const { data: updated, error } = await sb
+  const conditions = retryUpdateConditions(row)
+  let updateQuery = sb
     .from(PLAN_TABLE)
     .update(retryUpdateFields(fields, newHash))
-    .eq('id', row.id)
-    .eq('status', 'pending')
-    .select('id')
+    .eq('id', conditions.id)
+    .eq('status', conditions.status)
+    .is('purchase_confirmed_at', null)
+
+  if (conditions.funnel_user_id === null) {
+    updateQuery = updateQuery.is('funnel_user_id', null)
+  } else {
+    updateQuery = updateQuery.eq('funnel_user_id', conditions.funnel_user_id)
+    if (conditions.email === null) {
+      updateQuery = updateQuery.is('email', null)
+    } else {
+      updateQuery = updateQuery.eq('email', conditions.email)
+    }
+  }
+
+  const { data: updated, error } = await updateQuery.select('id')
 
   if (error) {
     console.error('retry update error', error.message)
@@ -98,7 +118,7 @@ async function reissueToken(
   }
   if (!updated || updated.length === 0) {
     // Otra request cambió el estado entre el SELECT y el UPDATE.
-    return json({ error: 'plan_not_pending' }, 409)
+    return json({ error: 'plan_state_changed' }, 409)
   }
 
   return json({ planId: row.id, claimToken: newToken })
@@ -111,6 +131,9 @@ async function resolveExisting(
 ): Promise<Response> {
   switch (classifyExisting(existing)) {
     case 'retry':
+      if (hasIdentityConflict(existing, fields.email)) {
+        return json({ error: 'identity_conflict' }, 409)
+      }
       return reissueToken(sb, existing, fields)
     case 'claiming':
       return json({ error: 'plan_already_claiming' }, 409)
@@ -181,7 +204,7 @@ Deno.serve(async (req: Request) => {
     // Idempotencia: la clave la genera el front UNA vez y la reutiliza en reintentos.
     const { data: existing, error: selectError } = await sb
       .from(PLAN_TABLE)
-      .select('id, status, expires_at, funnel_user_id, purchase_confirmed_at')
+      .select('id, status, expires_at, email, funnel_user_id, purchase_confirmed_at')
       .eq('client_plan_key', clientPlanKey)
       .maybeSingle()
 
@@ -218,7 +241,7 @@ Deno.serve(async (req: Request) => {
       if (insertError.code === '23505') {
         const { data: raced } = await sb
           .from(PLAN_TABLE)
-          .select('id, status, expires_at, funnel_user_id, purchase_confirmed_at')
+          .select('id, status, expires_at, email, funnel_user_id, purchase_confirmed_at')
           .eq('client_plan_key', clientPlanKey)
           .maybeSingle()
         if (raced) {
