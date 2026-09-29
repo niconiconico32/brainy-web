@@ -11,6 +11,7 @@ Sube al hosting actual estos archivos y carpetas:
 - `contact.html`
 - `privacy.html`
 - `terms.html`
+- `reset-password/`
 - `testers.html`
 - `testers/`
 - `assets/`
@@ -23,6 +24,9 @@ No hace falta subir:
 - `package.json`
 
 La página de testers carga Firebase desde CDN y guarda en Firestore directamente desde el navegador.
+
+La recuperación de contraseña está disponible en `https://brainyadhd.com/reset-password/`.
+Supabase debe usar esa URL como `redirectTo` del flujo de recuperación.
 
 ## Testers
 
