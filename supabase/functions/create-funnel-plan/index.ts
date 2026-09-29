@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { classifyExisting, retryUpdateFields } from './policy.mjs'
 
 // Crea el plan del funnel web en la tabla CANÓNICA `public.web_funnel_plans`.
 //
@@ -50,6 +51,8 @@ interface ExistingRow {
   id: string
   status: string
   expires_at: string | null
+  funnel_user_id: string | null
+  purchase_confirmed_at: string | null
 }
 
 interface PlanFields {
@@ -73,15 +76,6 @@ async function sha256Hex(input: string): Promise<string> {
   return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join('')
 }
 
-function classifyExisting(existing: ExistingRow): 'retry' | 'claiming' | 'claimed' | 'expired' {
-  const expired = !!existing.expires_at && new Date(existing.expires_at).getTime() < Date.now()
-  if (existing.status === 'pending' && !expired) return 'retry'
-  if (existing.status === 'claiming') return 'claiming'
-  if (existing.status === 'claimed') return 'claimed'
-  // status 'expired' o 'pending' con TTL vencido.
-  return 'expired'
-}
-
 // Reintento seguro: misma fila pending, NUEVO claimToken que invalida el anterior.
 async function reissueToken(
   sb: ReturnType<typeof createClient>,
@@ -93,14 +87,7 @@ async function reissueToken(
 
   const { data: updated, error } = await sb
     .from(PLAN_TABLE)
-    .update({
-      claim_token_hash: newHash,
-      plan: fields.plan,
-      email: fields.email,
-      marketing_opt_in: fields.marketingOptIn,
-      source: fields.source,
-      campaign: fields.campaign,
-    })
+    .update(retryUpdateFields(fields, newHash))
     .eq('id', row.id)
     .eq('status', 'pending')
     .select('id')
@@ -129,6 +116,8 @@ async function resolveExisting(
       return json({ error: 'plan_already_claiming' }, 409)
     case 'claimed':
       return json({ error: 'plan_already_claimed' }, 409)
+    case 'paid':
+      return json({ error: 'plan_already_paid' }, 409)
     case 'expired':
       return json({ error: 'plan_expired' }, 409)
   }
@@ -192,7 +181,7 @@ Deno.serve(async (req: Request) => {
     // Idempotencia: la clave la genera el front UNA vez y la reutiliza en reintentos.
     const { data: existing, error: selectError } = await sb
       .from(PLAN_TABLE)
-      .select('id, status, expires_at')
+      .select('id, status, expires_at, funnel_user_id, purchase_confirmed_at')
       .eq('client_plan_key', clientPlanKey)
       .maybeSingle()
 
@@ -229,7 +218,7 @@ Deno.serve(async (req: Request) => {
       if (insertError.code === '23505') {
         const { data: raced } = await sb
           .from(PLAN_TABLE)
-          .select('id, status, expires_at')
+          .select('id, status, expires_at, funnel_user_id, purchase_confirmed_at')
           .eq('client_plan_key', clientPlanKey)
           .maybeSingle()
         if (raced) {
