@@ -15,6 +15,17 @@ async function main() {
   assert.equal(policy.classifyExisting({ status: 'claiming', expires_at: null, purchase_confirmed_at: null }), 'claiming');
   assert.equal(policy.classifyExisting({ status: 'claimed', expires_at: null, purchase_confirmed_at: null }), 'claimed');
 
+  const linked = {
+    id: 'plan-id',
+    status: 'pending',
+    email: 'owner@example.com',
+    funnel_user_id: 'user-id',
+    purchase_confirmed_at: null,
+  };
+  assert.equal(policy.hasIdentityConflict(linked, 'other@example.com'), true);
+  assert.equal(policy.hasIdentityConflict(linked, 'OWNER@example.com'), false);
+  assert.equal(policy.hasIdentityConflict({ ...linked, funnel_user_id: null }, 'other@example.com'), false);
+
   const update = policy.retryUpdateFields(fields, 'hash');
   assert.deepEqual(update, {
     claim_token_hash: 'hash',
@@ -26,7 +37,12 @@ async function main() {
   });
   assert.equal(Object.hasOwn(update, 'funnel_user_id'), false);
   assert.equal(Object.hasOwn(update, 'purchase_confirmed_at'), false);
-  console.log('create-funnel-plan policy: 7/7 passed');
+
+  const conditions = policy.retryUpdateConditions(linked);
+  assert.equal(policy.matchesRetryConditions({ ...linked }, conditions), true);
+  assert.equal(policy.matchesRetryConditions({ ...linked, funnel_user_id: 'new-user' }, conditions), false);
+  assert.equal(policy.matchesRetryConditions({ ...linked, purchase_confirmed_at: 'paid' }, conditions), false);
+  console.log('create-funnel-plan policy: 12/12 passed');
 }
 
 main().catch((error) => {
