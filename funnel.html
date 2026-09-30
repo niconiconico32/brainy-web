@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex,follow">
     <title>Brainy — Tu sistema + tu mascota</title>
-    <meta name="description" content="Dos minutos. Diez preguntas. Una mascota que empieza a crecer con cada paso pequeño.">
+    <meta name="description" content="Unos minutos. Una serie de preguntas. Una mascota que empieza a crecer con cada paso pequeño.">
     <style>
         :root {
             --bg: #f4f1ea;
@@ -1666,7 +1666,8 @@
         const STORAGE_CLIENT_PLAN_KEY = 'brainy_funnel_client_plan_key';
         // Default de duración de subtarea cuando el dato no viene en el JSON.
         const DEFAULT_SUBTASK_DURATION_MINUTES = 5;
-        const QUESTION_KEYS = ['q1_estado_actual', 'q2_dolor', 'q3_intentos_previos', 'q4_causa_fracaso', 'q5_identidad_futura', 'q6_area_prioritaria', 'q7_compromiso', 'q8_tiempo_disponible', 'q9_listo', 'q10_cuando_empezar'];
+        const QUESTION_KEYS = ['nq01_gender', 'nq02_age_group', 'nq03_tired', 'nq04_overthink', 'nq05_sleep', 'nq06_wellbeing', 'nq07_multitasking', 'nq08_control', 'nq09_missing', 'nq10_phone', 'nq11_procrastinate', 'nq12_focus', 'nq13_adhd', 'nq14_potential', 'nq15_struggle', 'nq16_prioritize', 'nq17_expectations', 'nq18_say_no', 'nq19_sacrifice', 'nq20_wish', 'nq21_habits', 'nq22_doing_for', 'nq23_lose_motivation', 'nq24_expert', 'nq25_discipline', 'q4_causa_fracaso', 'nq26_need_most', 'nq27_success', 'nq28_motivating'];
+        const MULTI_QUESTION_KEYS = ['nq09_missing', 'nq15_struggle', 'nq19_sacrifice', 'nq22_doing_for', 'nq27_success'];
 
         const CATEGORIES = [
             { id: 'foco_productividad', emoji: '🧠', label: 'Foco & Productividad' },
@@ -1807,16 +1808,35 @@
 
         const DEFAULT_STATE = {
             locale: null,
-            q1_estado_actual: null,
-            q2_dolor: [],
-            q3_intentos_previos: null,
+            nq01_gender: null,
+            nq02_age_group: null,
+            nq03_tired: null,
+            nq04_overthink: null,
+            nq05_sleep: null,
+            nq06_wellbeing: null,
+            nq07_multitasking: null,
+            nq08_control: null,
+            nq09_missing: [],
+            nq10_phone: null,
+            nq11_procrastinate: null,
+            nq12_focus: null,
+            nq13_adhd: null,
+            nq14_potential: null,
+            nq15_struggle: [],
+            nq16_prioritize: null,
+            nq17_expectations: null,
+            nq18_say_no: null,
+            nq19_sacrifice: [],
+            nq20_wish: null,
+            nq21_habits: null,
+            nq22_doing_for: [],
+            nq23_lose_motivation: null,
+            nq24_expert: null,
+            nq25_discipline: null,
             q4_causa_fracaso: null,
-            q5_identidad_futura: null,
-            q6_area_prioritaria: null,
-            q7_compromiso: null,
-            q8_tiempo_disponible: null,
-            q9_listo: null,
-            q10_cuando_empezar: null,
+            nq26_need_most: null,
+            nq27_success: [],
+            nq28_motivating: null,
             edad: null,
             email: null,
             marketing_optin: false,
@@ -1904,67 +1924,126 @@
                 type: 'begin',
                 eyebrow: 'Brainy',
                 headline: 'Vamos a construir el sistema de tu mente',
-                sub: 'Dos minutos, diez preguntas. Al final, una mascota que empieza a crecer con cada paso pequeño que des.'
+                sub: 'Unos minutos, una serie de preguntas. Al final, una mascota que empieza a crecer con cada paso pequeño que des.'
             },
             {
-                id: 'p1',
+                id: 'nq01',
                 type: 'question',
                 questionIndex: 1,
-                key: 'q1_estado_actual',
-                eyebrow: 'Antes de empezar...',
-                headline: '¿Cuál de estos te describe hoy?',
-                sub: 'Sé honesto. Nadie más va a ver esto.',
+                key: 'nq01_gender',
+                headline: 'Which gender do you identify with?',
                 options: [
-                    { emoji: '😵‍💫', label: 'Modo caos', desc: 'todo se acumula, no sé por dónde empezar' },
-                    { emoji: '🌀', label: 'Estancado', desc: 'lo intento pero no sostengo nada' },
-                    { emoji: '⚡', label: 'Casi ahí', desc: 'sé qué hacer, me cuesta arrancar' },
-                    { emoji: '🧠', label: 'Listo para ordenar mi mente', desc: 'solo me falta el sistema' },
-                    { emoji: '🤷', label: 'Aún no lo tengo claro', desc: '' }
+                    { value: 'Female', label: 'Female' },
+                    { value: 'Male', label: 'Male' }
                 ]
             },
             {
-                id: 'p2',
+                id: 'nq02',
                 type: 'question',
                 questionIndex: 2,
-                key: 'q2_dolor',
-                multi: true,
-                headline: '¿Qué es lo que más te está frenando ahora?',
-                sub: 'Elegí todas las que apliquen.',
-                reassure: 'Gracias por compartirlo. Esto no es falta de voluntad — es que tu cabeza necesita un sistema distinto al de todos. Sigamos.',
+                key: 'nq02_age_group',
+                headline: 'What is your age?',
+                sub: 'Please select your age group. This helps us tailor the summary to your specific needs.',
                 options: [
-                    'Procrastino incluso en lo que quiero hacer',
-                    'Tengo mil tareas en la cabeza y no sé por dónde arrancar',
-                    'Empiezo cosas y no las termino',
-                    'Una tarea grande me abruma antes de empezarla',
-                    'Se me olvidan los hábitos si nada me lo recuerda'
+                    { value: '18-35', label: '18-35' },
+                    { value: '36-45', label: '36-45' },
+                    { value: '46-55', label: '46-55' },
+                    { value: '56-65', label: '56-65' },
+                    { value: '65+', label: '65+' }
                 ]
             },
             {
-                id: 'p3',
+                id: 'nq03',
                 type: 'question',
                 questionIndex: 3,
-                key: 'q3_intentos_previos',
-                headline: '¿Cuántas veces intentaste ordenar esto antes?',
-                sub: 'No hay juicio, solo queremos entender tu punto de partida.',
+                key: 'nq03_tired',
+                headline: 'How often do you feel tired, mentally or physically?',
                 options: [
-                    'Nunca lo intenté con un sistema real',
-                    'Probé apps o planners y los abandoné',
-                    'Perdí la cuenta de cuántas veces empecé de cero',
-                    'Vivo el ciclo: emoción inicial → abandono a los días'
+                    { value: 'Always', label: 'Always' },
+                    { value: 'Often', label: 'Often' },
+                    { value: 'Sometimes', label: 'Sometimes' },
+                    { value: 'Rarely', label: 'Rarely' }
                 ]
             },
             {
-                id: 'p4',
+                id: 'nq04',
                 type: 'question',
                 questionIndex: 4,
-                key: 'q4_causa_fracaso',
-                headline: '¿Por qué creés que no se sostuvo la última vez?',
-                reassure: 'Esto no fue un fracaso tuyo. Fue un sistema que no estaba diseñado para un cerebro como el tuyo.',
+                key: 'nq04_overthink',
+                headline: 'Do you tend to overthink?',
                 options: [
-                    'La tarea se sentía enorme e inabarcable',
-                    'Perdí la motivación a los pocos días',
-                    'Nada me daba feedback ni recordaba por mí',
-                    'Nadie sabía que lo estaba intentando'
+                    { value: 'Always', label: 'Always' },
+                    { value: 'Often', label: 'Often' },
+                    { value: 'Sometimes', label: 'Sometimes' },
+                    { value: 'Rarely', label: 'Rarely' }
+                ]
+            },
+            {
+                id: 'nq05',
+                type: 'question',
+                questionIndex: 5,
+                key: 'nq05_sleep',
+                headline: 'Do you have trouble sleeping?',
+                options: [
+                    { value: 'Always', label: 'Always' },
+                    { value: 'Often', label: 'Often' },
+                    { value: 'Sometimes', label: 'Sometimes' },
+                    { value: 'Rarely', label: 'Rarely' }
+                ]
+            },
+            {
+                id: 'nq06',
+                type: 'question',
+                questionIndex: 6,
+                key: 'nq06_wellbeing',
+                headline: 'Do you neglect your own well-being?',
+                options: [
+                    { value: 'Always', label: 'Always' },
+                    { value: 'Often', label: 'Often' },
+                    { value: 'Sometimes', label: 'Sometimes' },
+                    { value: 'Rarely', label: 'Rarely' }
+                ]
+            },
+            {
+                id: 'nq07',
+                type: 'question',
+                questionIndex: 7,
+                key: 'nq07_multitasking',
+                headline: "Do you struggle to keep up with everything, even though you're constantly multitasking?",
+                options: [
+                    { value: 'Yes', label: 'Yes' },
+                    { value: 'Sometimes', label: 'Sometimes' },
+                    { value: 'No', label: 'No' }
+                ]
+            },
+            {
+                id: 'nq08',
+                type: 'question',
+                questionIndex: 8,
+                key: 'nq08_control',
+                headline: 'When was the last time you felt completely in control of your life?',
+                options: [
+                    { value: 'This week', label: 'This week' },
+                    { value: 'A few weeks ago', label: 'A few weeks ago' },
+                    { value: 'Months ago', label: 'Months ago' },
+                    { value: 'I’m not sure I ever have', label: 'I’m not sure I ever have' }
+                ]
+            },
+            {
+                id: 'nq09',
+                type: 'question',
+                questionIndex: 9,
+                key: 'nq09_missing',
+                multi: true,
+                headline: 'What do you feel is missing from your life right now?',
+                sub: 'Select all that apply.',
+                options: [
+                    { value: 'Motivation', label: 'Motivation' },
+                    { value: 'Structure', label: 'Structure' },
+                    { value: 'Support from others', label: 'Support from others' },
+                    { value: 'A clear plan', label: 'A clear plan' },
+                    { value: 'Time', label: 'Time' },
+                    { value: 'Belief in myself', label: 'Belief in myself' }
                 ]
             },
             {
@@ -1975,16 +2054,84 @@
                 cta: 'Seguir →'
             },
             {
-                id: 'p5',
+                id: 'nq10',
                 type: 'question',
-                questionIndex: 5,
-                key: 'q5_identidad_futura',
-                headline: '¿En qué versión de vos te querés convertir?',
+                questionIndex: 10,
+                key: 'nq10_phone',
+                headline: "Do you feel like you're on your phone too much?",
                 options: [
-                    { emoji: '🎯', label: 'El Enfocado', desc: 'el que termina lo que empieza' },
-                    { emoji: '🗂️', label: 'El Organizado', desc: 'el que tiene un sistema, no caos' },
-                    { emoji: '🌱', label: 'El Constante', desc: 'el que sostiene hábitos sin depender de "tener ganas"' },
-                    { emoji: '😌', label: 'El Tranquilo', desc: 'el que dejó de sentirse abrumado por su propia lista' }
+                    { value: 'Always', label: 'Always' },
+                    { value: 'Often', label: 'Often' },
+                    { value: 'Sometimes', label: 'Sometimes' },
+                    { value: 'Rarely', label: 'Rarely' }
+                ]
+            },
+            {
+                id: 'nq11',
+                type: 'question',
+                questionIndex: 11,
+                key: 'nq11_procrastinate',
+                headline: 'How often do you put off important tasks?',
+                options: [
+                    { value: 'Always', label: 'Always' },
+                    { value: 'Often', label: 'Often' },
+                    { value: 'Sometimes', label: 'Sometimes' },
+                    { value: 'Rarely', label: 'Rarely' }
+                ]
+            },
+            {
+                id: 'nq12',
+                type: 'question',
+                questionIndex: 12,
+                key: 'nq12_focus',
+                headline: 'Do you find it hard to concentrate or stay focused?',
+                options: [
+                    { value: 'Always', label: 'Always' },
+                    { value: 'Often', label: 'Often' },
+                    { value: 'Sometimes', label: 'Sometimes' },
+                    { value: 'Rarely', label: 'Rarely' }
+                ]
+            },
+            {
+                id: 'nq13',
+                type: 'question',
+                questionIndex: 13,
+                key: 'nq13_adhd',
+                headline: 'Do you have ADHD or think you might have it?',
+                sub: 'Your answer helps us better understand your needs.',
+                options: [
+                    { value: 'Yes, I’ve been diagnosed with ADHD', label: 'Yes, I’ve been diagnosed with ADHD' },
+                    { value: 'I think I might have it', label: 'I think I might have it' },
+                    { value: 'No, I don’t think I have ADHD', label: 'No, I don’t think I have ADHD' }
+                ]
+            },
+            {
+                id: 'nq14',
+                type: 'question',
+                questionIndex: 14,
+                key: 'nq14_potential',
+                headline: "Do you feel like there's more potential inside you waiting to be unlocked?",
+                options: [
+                    { value: 'Yes', label: 'Yes' },
+                    { value: 'Sometimes', label: 'Sometimes' },
+                    { value: 'No', label: 'No' }
+                ]
+            },
+            {
+                id: 'nq15',
+                type: 'question',
+                questionIndex: 15,
+                key: 'nq15_struggle',
+                multi: true,
+                headline: 'What do you find yourself struggling with the most?',
+                sub: 'Select all that apply.',
+                options: [
+                    { value: 'Anxiety', label: 'Anxiety' },
+                    { value: 'Self-doubt', label: 'Self-doubt' },
+                    { value: 'Burnout', label: 'Burnout' },
+                    { value: 'Loneliness', label: 'Loneliness' },
+                    { value: 'Lack of motivation', label: 'Lack of motivation' },
+                    { value: 'I feel okay most days', label: 'I feel okay most days' }
                 ]
             },
             {
@@ -2000,41 +2147,96 @@
                 }
             },
             {
-                id: 'p6',
+                id: 'nq16',
                 type: 'question',
-                questionIndex: 6,
-                key: 'q6_area_prioritaria',
-                headline: '¿Qué área querés poner en orden primero?',
+                questionIndex: 16,
+                key: 'nq16_prioritize',
+                headline: "Do you often prioritize others' needs over your own?",
                 options: [
-                    { emoji: '🧠', label: 'Foco & Productividad', desc: 'trabajo/estudio' },
-                    { emoji: '🏠', label: 'Rutinas & Organización personal', desc: '' },
-                    { emoji: '💪', label: 'Salud & Energía', desc: '' },
-                    { emoji: '😌', label: 'Calma & Regulación emocional', desc: '' }
+                    { value: 'Often', label: 'Often' },
+                    { value: 'Sometimes', label: 'Sometimes' },
+                    { value: 'Never', label: 'Never' }
                 ]
             },
             {
-                id: 'p7',
+                id: 'nq17',
                 type: 'question',
-                questionIndex: 7,
-                key: 'q7_compromiso',
-                headline: '¿Qué tan comprometido estás con cambiar esto, en serio, ahora mismo?',
+                questionIndex: 17,
+                key: 'nq17_expectations',
+                headline: 'Do you feel like others expect too much from you?',
                 options: [
-                    'Solo estoy mirando opciones',
-                    'Medio comprometido',
-                    'Totalmente comprometido — quiero empezar ya'
+                    { value: 'Often', label: 'Often' },
+                    { value: 'Sometimes', label: 'Sometimes' },
+                    { value: 'Never', label: 'Never' }
                 ]
             },
             {
-                id: 'p8',
+                id: 'nq18',
                 type: 'question',
-                questionIndex: 8,
-                key: 'q8_tiempo_disponible',
-                headline: '¿Cuánto tiempo podés dedicarle por día?',
+                questionIndex: 18,
+                key: 'nq18_say_no',
+                headline: "Is it difficult for you to say 'no' to others?",
                 options: [
-                    'Menos de 15 min',
-                    '15-30 min',
-                    '30-60 min',
-                    'Más de 1 hora'
+                    { value: 'Often', label: 'Often' },
+                    { value: 'Sometimes', label: 'Sometimes' },
+                    { value: 'Never', label: 'Never' }
+                ]
+            },
+            {
+                id: 'nq19',
+                type: 'question',
+                questionIndex: 19,
+                key: 'nq19_sacrifice',
+                multi: true,
+                headline: 'Which of these do you often sacrifice for others?',
+                sub: 'Select all that apply.',
+                options: [
+                    { value: 'Sleep', label: 'Sleep' },
+                    { value: 'Nutrition', label: 'Nutrition' },
+                    { value: 'Alone time', label: 'Alone time' },
+                    { value: 'Your own goals', label: 'Your own goals' },
+                    { value: 'Emotional space', label: 'Emotional space' }
+                ]
+            },
+            {
+                id: 'nq20',
+                type: 'question',
+                questionIndex: 20,
+                key: 'nq20_wish',
+                headline: 'What’s one thing you wish others knew about what you’re going through?',
+                options: [
+                    { value: 'I’m trying hard', label: 'I’m trying hard' },
+                    { value: 'I don’t know where to start', label: 'I don’t know where to start' },
+                    { value: 'I need time and support', label: 'I need time and support' },
+                    { value: 'I want change, but I feel stuck', label: 'I want change, but I feel stuck' }
+                ]
+            },
+            {
+                id: 'nq21',
+                type: 'question',
+                questionIndex: 21,
+                key: 'nq21_habits',
+                headline: 'Have you ever attempted to build habits but found it hard to stick with them?',
+                options: [
+                    { value: 'Yes, many times', label: 'Yes, many times' },
+                    { value: 'A few times', label: 'A few times' },
+                    { value: 'Never really tried', label: 'Never really tried' }
+                ]
+            },
+            {
+                id: 'nq22',
+                type: 'question',
+                questionIndex: 22,
+                key: 'nq22_doing_for',
+                multi: true,
+                headline: 'Who are you doing this for?',
+                sub: 'Select all that apply.',
+                options: [
+                    { value: 'Myself', label: 'Myself' },
+                    { value: 'My family', label: 'My family' },
+                    { value: 'My future self', label: 'My future self' },
+                    { value: 'Someone who believes in me', label: 'Someone who believes in me' },
+                    { value: 'I don’t know yet', label: 'I don’t know yet' }
                 ]
             },
             {
@@ -2049,30 +2251,94 @@
                 ]
             },
             {
-                id: 'p9',
+                id: 'nq23',
                 type: 'question',
-                questionIndex: 9,
-                key: 'q9_listo',
-                headline: '¿Listo para dejar de empezar de cero cada vez?',
-                sub: 'Esta vez tenés un sistema y una mascota que no te va a dejar solo/a.',
-                doubtOption: 'Aún tengo dudas',
-                doubtCopy: 'Está bien dudar. Por eso Brainy hace el trabajo pesado por vos: desglosa, recuerda y te muestra el progreso aunque tu cabeza esté en otro lado.',
+                questionIndex: 23,
+                key: 'nq23_lose_motivation',
+                headline: 'Do you find it easy to lose motivation?',
                 options: [
-                    'Sí, estoy listo/a',
-                    'Aún tengo dudas'
+                    { value: 'Yes', label: 'Yes' },
+                    { value: 'No', label: 'No' },
+                    { value: 'I haven’t tried yet', label: 'I haven’t tried yet' }
                 ]
             },
             {
-                id: 'p10',
+                id: 'nq24',
                 type: 'question',
-                questionIndex: 10,
-                key: 'q10_cuando_empezar',
-                hasAge: true,
-                headline: 'Última pregunta. ¿Cuándo querés empezar a ordenar tu mente?',
+                questionIndex: 24,
+                key: 'nq24_expert',
+                headline: 'Did an expert recommend MellowFlow to you?',
                 options: [
-                    'Hoy mismo',
-                    'Esta semana',
-                    'Todavía no estoy seguro/a'
+                    { value: 'Yes', label: 'Yes' },
+                    { value: 'No', label: 'No' }
+                ]
+            },
+            {
+                id: 'nq25',
+                type: 'question',
+                questionIndex: 25,
+                key: 'nq25_discipline',
+                headline: 'How would you describe your connection to self-discipline?',
+                options: [
+                    { value: 'I have none', label: 'I have none' },
+                    { value: 'It comes in phases', label: 'It comes in phases' },
+                    { value: 'I’m usually pretty structured', label: 'I’m usually pretty structured' }
+                ]
+            },
+            {
+                id: 'p4',
+                type: 'question',
+                questionIndex: 26,
+                key: 'q4_causa_fracaso',
+                headline: '¿Por qué creés que no se sostuvo la última vez?',
+                reassure: 'Esto no fue un fracaso tuyo. Fue un sistema que no estaba diseñado para un cerebro como el tuyo.',
+                options: [
+                    { value: 'La tarea se sentía enorme e inabarcable', label: 'La tarea se sentía enorme e inabarcable' },
+                    { value: 'Perdí la motivación a los pocos días', label: 'Perdí la motivación a los pocos días' },
+                    { value: 'Nada me daba feedback ni recordaba por mí', label: 'Nada me daba feedback ni recordaba por mí' },
+                    { value: 'Nadie sabía que lo estaba intentando', label: 'Nadie sabía que lo estaba intentando' }
+                ]
+            },
+            {
+                id: 'nq26',
+                type: 'question',
+                questionIndex: 27,
+                key: 'nq26_need_most',
+                headline: 'What do you believe you need most to live a better life?',
+                options: [
+                    { value: 'More energy', label: 'More energy' },
+                    { value: 'Stronger habits', label: 'Stronger habits' },
+                    { value: 'Better focus', label: 'Better focus' },
+                    { value: 'Inner peace', label: 'Inner peace' }
+                ]
+            },
+            {
+                id: 'nq27',
+                type: 'question',
+                questionIndex: 28,
+                key: 'nq27_success',
+                multi: true,
+                headline: 'What would success look like for you in the next 30 days?',
+                sub: 'Select all that apply.',
+                options: [
+                    { value: 'Waking up feeling motivated', label: 'Waking up feeling motivated' },
+                    { value: 'Going a week without procrastinating', label: 'Going a week without procrastinating' },
+                    { value: 'Eating healthier meals', label: 'Eating healthier meals' },
+                    { value: 'Feeling calmer in stressful situations', label: 'Feeling calmer in stressful situations' },
+                    { value: 'Sticking to a morning routine', label: 'Sticking to a morning routine' }
+                ]
+            },
+            {
+                id: 'nq28',
+                type: 'question',
+                questionIndex: 29,
+                key: 'nq28_motivating',
+                headline: 'What’s motivating you to start now?',
+                options: [
+                    { value: 'I want to stop feeling stuck', label: 'I want to stop feeling stuck' },
+                    { value: 'I’m tired of restarting', label: 'I’m tired of restarting' },
+                    { value: 'I want long-term change', label: 'I want long-term change' },
+                    { value: 'I just want to feel better', label: 'I just want to feel better' }
                 ]
             },
             {
@@ -2152,48 +2418,124 @@
 
         const STEP_COPY = {
             begin: {
-                es: { headline: 'Vamos a construir el sistema de tu mente', sub: 'Dos minutos, diez preguntas. Al final, una mascota que empieza a crecer con cada paso pequeño que des.' },
-                en: { headline: "Let's build your personal brain system", sub: 'Two minutes, ten questions. At the end, you will have a companion that grows with every small step you take.' }
+                es: { headline: 'Vamos a construir el sistema de tu mente', sub: 'Unos minutos, una serie de preguntas. Al final, una mascota que empieza a crecer con cada paso pequeño que des.' },
+                en: { headline: "Let's build your personal brain system", sub: 'A few minutes, a series of questions. At the end, you will have a companion that grows with every small step you take.' }
             },
-            p1: {
-                es: { eyebrow: 'Antes de empezar...', headline: '¿Cuál de estas opciones te describe hoy?', sub: 'Responde con honestidad. Nadie más verá esto.', options: ['Modo caos', 'Estancado', 'Casi listo', 'Listo para ordenar mi mente', 'Todavía no lo tengo claro'], desc: ['Todo se acumula y no sé por dónde empezar', 'Lo intento, pero no logro mantener nada', 'Sé qué hacer, pero me cuesta comenzar', 'Solo me falta un sistema', ''] },
-                en: { eyebrow: 'Before we begin...', headline: 'Which option best describes you today?', sub: 'Be honest. No one else will see this.', options: ['Chaos mode', 'Stuck', 'Almost there', 'Ready to organize my mind', "I’m not sure yet"], desc: ['Everything piles up and I do not know where to start', 'I try, but I cannot keep anything going', 'I know what to do, but starting is hard', 'I just need a system', ''] }
+            nq01: {
+                es: { headline: '¿Con qué género te identificas?', options: ['Femenino', 'Masculino'] },
+                en: { headline: 'Which gender do you identify with?', options: ['Female', 'Male'] }
             },
-            p2: {
-                es: { headline: '¿Qué es lo que más te está frenando ahora?', sub: 'Selecciona todas las opciones que correspondan.', reassure: 'Gracias por compartirlo. No es falta de voluntad: tu mente necesita un sistema diferente. Sigamos.', options: ['Incluso postergo las cosas que quiero hacer', 'Tengo demasiadas tareas en la cabeza y no sé por dónde empezar', 'Empiezo cosas y no las termino', 'Una tarea grande me abruma antes de comenzar', 'Olvido mis hábitos si nada me los recuerda'] },
-                en: { headline: 'What is holding you back the most right now?', sub: 'Select all that apply.', reassure: 'Thanks for sharing. This is not a lack of willpower: your mind needs a different kind of system. Let’s keep going.', options: ['I procrastinate even on things I want to do', 'I have too many tasks in my head and do not know where to start', 'I start things but do not finish them', 'A big task overwhelms me before I begin', 'I forget my habits when nothing reminds me'] }
+            nq02: {
+                es: { headline: '¿Cuál es tu edad?', sub: 'Selecciona tu grupo de edad. Esto nos ayuda a adaptar el resumen a tus necesidades.', options: ['18-35', '36-45', '46-55', '56-65', '65+'] },
+                en: { headline: 'What is your age?', sub: 'Please select your age group. This helps us tailor the summary to your specific needs.', options: ['18-35', '36-45', '46-55', '56-65', '65+'] }
             },
-            p3: {
-                es: { headline: '¿Cuántas veces intentaste organizar esto antes?', sub: 'No hay juicios; queremos entender tu punto de partida.', options: ['Nunca lo intenté con un sistema real', 'Probé aplicaciones o agendas y las abandoné', 'Perdí la cuenta de cuántas veces empecé de cero', 'Vivo este ciclo: entusiasmo inicial y abandono a los pocos días'] },
-                en: { headline: 'How many times have you tried to organize this before?', sub: 'There is no judgment. We just want to understand your starting point.', options: ['I have never tried with a real system', 'I tried apps or planners and abandoned them', 'I have lost count of how many times I started over', 'I repeat this cycle: initial excitement, then giving up within days'] }
+            nq03: {
+                es: { headline: '¿Con qué frecuencia te sientes cansado/a, mental o físicamente?', options: ['Siempre', 'A menudo', 'A veces', 'Rara vez'] },
+                en: { headline: 'How often do you feel tired, mentally or physically?', options: ['Always', 'Often', 'Sometimes', 'Rarely'] }
+            },
+            nq04: {
+                es: { headline: '¿Tiendes a sobrepensar las cosas?', options: ['Siempre', 'A menudo', 'A veces', 'Rara vez'] },
+                en: { headline: 'Do you tend to overthink?', options: ['Always', 'Often', 'Sometimes', 'Rarely'] }
+            },
+            nq05: {
+                es: { headline: '¿Tienes problemas para dormir?', options: ['Siempre', 'A menudo', 'A veces', 'Rara vez'] },
+                en: { headline: 'Do you have trouble sleeping?', options: ['Always', 'Often', 'Sometimes', 'Rarely'] }
+            },
+            nq06: {
+                es: { headline: '¿Descuidas tu propio bienestar?', options: ['Siempre', 'A menudo', 'A veces', 'Rara vez'] },
+                en: { headline: 'Do you neglect your own well-being?', options: ['Always', 'Often', 'Sometimes', 'Rarely'] }
+            },
+            nq07: {
+                es: { headline: '¿Te cuesta seguir el ritmo de todo, aunque estás haciendo varias cosas a la vez?', options: ['Sí', 'A veces', 'No'] },
+                en: { headline: "Do you struggle to keep up with everything, even though you're constantly multitasking?", options: ['Yes', 'Sometimes', 'No'] }
+            },
+            nq08: {
+                es: { headline: '¿Cuándo fue la última vez que sentiste que tenías tu vida bajo control?', options: ['Esta semana', 'Hace unas semanas', 'Hace meses', 'No creo haberlo sentido nunca'] },
+                en: { headline: 'When was the last time you felt completely in control of your life?', options: ['This week', 'A few weeks ago', 'Months ago', 'I’m not sure I ever have'] }
+            },
+            nq09: {
+                es: { headline: '¿Qué sientes que te falta en tu vida ahora mismo?', sub: 'Selecciona todas las que correspondan.', options: ['Motivación', 'Estructura', 'Apoyo de otras personas', 'Un plan claro', 'Tiempo', 'Confianza en mí mismo/a'] },
+                en: { headline: 'What do you feel is missing from your life right now?', sub: 'Select all that apply.', options: ['Motivation', 'Structure', 'Support from others', 'A clear plan', 'Time', 'Belief in myself'] }
+            },
+            nq10: {
+                es: { headline: '¿Sientes que pasas demasiado tiempo en el teléfono?', options: ['Siempre', 'A menudo', 'A veces', 'Rara vez'] },
+                en: { headline: "Do you feel like you're on your phone too much?", options: ['Always', 'Often', 'Sometimes', 'Rarely'] }
+            },
+            nq11: {
+                es: { headline: '¿Con qué frecuencia pospones tareas importantes?', options: ['Siempre', 'A menudo', 'A veces', 'Rara vez'] },
+                en: { headline: 'How often do you put off important tasks?', options: ['Always', 'Often', 'Sometimes', 'Rarely'] }
+            },
+            nq12: {
+                es: { headline: '¿Te cuesta concentrarte o mantener la atención?', options: ['Siempre', 'A menudo', 'A veces', 'Rara vez'] },
+                en: { headline: 'Do you find it hard to concentrate or stay focused?', options: ['Always', 'Often', 'Sometimes', 'Rarely'] }
+            },
+            nq13: {
+                es: { headline: '¿Tienes TDAH o crees que podrías tenerlo?', sub: 'Tu respuesta nos ayuda a entender mejor tus necesidades.', options: ['Sí, tengo diagnóstico de TDAH', 'Creo que podría tenerlo', 'No, no creo tener TDAH'] },
+                en: { headline: 'Do you have ADHD or think you might have it?', sub: 'Your answer helps us better understand your needs.', options: ['Yes, I’ve been diagnosed with ADHD', 'I think I might have it', 'No, I don’t think I have ADHD'] }
+            },
+            nq14: {
+                es: { headline: '¿Sientes que hay más potencial en ti esperando ser descubierto?', options: ['Sí', 'A veces', 'No'] },
+                en: { headline: "Do you feel like there's more potential inside you waiting to be unlocked?", options: ['Yes', 'Sometimes', 'No'] }
+            },
+            nq15: {
+                es: { headline: '¿Con qué luchas más?', sub: 'Selecciona todas las que correspondan.', options: ['Ansiedad', 'Inseguridad', 'Agotamiento', 'Soledad', 'Falta de motivación', 'La mayoría de los días estoy bien'] },
+                en: { headline: 'What do you find yourself struggling with the most?', sub: 'Select all that apply.', options: ['Anxiety', 'Self-doubt', 'Burnout', 'Loneliness', 'Lack of motivation', 'I feel okay most days'] }
+            },
+            nq16: {
+                es: { headline: '¿Sueles priorizar las necesidades de otros sobre las tuyas?', options: ['A menudo', 'A veces', 'Nunca'] },
+                en: { headline: "Do you often prioritize others' needs over your own?", options: ['Often', 'Sometimes', 'Never'] }
+            },
+            nq17: {
+                es: { headline: '¿Sientes que los demás esperan demasiado de ti?', options: ['A menudo', 'A veces', 'Nunca'] },
+                en: { headline: 'Do you feel like others expect too much from you?', options: ['Often', 'Sometimes', 'Never'] }
+            },
+            nq18: {
+                es: { headline: '¿Te cuesta decir «no» a los demás?', options: ['A menudo', 'A veces', 'Nunca'] },
+                en: { headline: "Is it difficult for you to say 'no' to others?", options: ['Often', 'Sometimes', 'Never'] }
+            },
+            nq19: {
+                es: { headline: '¿Qué sueles sacrificar por los demás?', sub: 'Selecciona todas las que correspondan.', options: ['Sueño', 'Alimentación', 'Tiempo a solas', 'Tus propias metas', 'Espacio emocional'] },
+                en: { headline: 'Which of these do you often sacrifice for others?', sub: 'Select all that apply.', options: ['Sleep', 'Nutrition', 'Alone time', 'Your own goals', 'Emotional space'] }
+            },
+            nq20: {
+                es: { headline: '¿Qué te gustaría que los demás supieran sobre lo que estás pasando?', options: ['Estoy esforzándome mucho', 'No sé por dónde empezar', 'Necesito tiempo y apoyo', 'Quiero cambiar, pero me siento estancado/a'] },
+                en: { headline: 'What’s one thing you wish others knew about what you’re going through?', options: ['I’m trying hard', 'I don’t know where to start', 'I need time and support', 'I want change, but I feel stuck'] }
+            },
+            nq21: {
+                es: { headline: '¿Alguna vez intentaste crear hábitos pero te costó mantenerlos?', options: ['Sí, muchas veces', 'Algunas veces', 'Nunca lo intenté realmente'] },
+                en: { headline: 'Have you ever attempted to build habits but found it hard to stick with them?', options: ['Yes, many times', 'A few times', 'Never really tried'] }
+            },
+            nq22: {
+                es: { headline: '¿Para quién estás haciendo esto?', sub: 'Selecciona todas las que correspondan.', options: ['Para mí', 'Para mi familia', 'Para mi yo del futuro', 'Para alguien que cree en mí', 'Aún no lo sé'] },
+                en: { headline: 'Who are you doing this for?', sub: 'Select all that apply.', options: ['Myself', 'My family', 'My future self', 'Someone who believes in me', 'I don’t know yet'] }
+            },
+            nq23: {
+                es: { headline: '¿Pierdes la motivación con facilidad?', options: ['Sí', 'No', 'Aún no lo he intentado'] },
+                en: { headline: 'Do you find it easy to lose motivation?', options: ['Yes', 'No', 'I haven’t tried yet'] }
+            },
+            nq24: {
+                es: { headline: '¿Un experto te recomendó MellowFlow?', options: ['Sí', 'No'] },
+                en: { headline: 'Did an expert recommend MellowFlow to you?', options: ['Yes', 'No'] }
+            },
+            nq25: {
+                es: { headline: '¿Cómo describirías tu relación con la autodisciplina?', options: ['No tengo ninguna', 'Va por etapas', 'Suelo ser bastante estructurado/a'] },
+                en: { headline: 'How would you describe your connection to self-discipline?', options: ['I have none', 'It comes in phases', 'I’m usually pretty structured'] }
             },
             p4: {
                 es: { headline: '¿Por qué crees que no funcionó la última vez?', reassure: 'Esto no fue un fracaso tuyo. Era un sistema que no estaba diseñado para una mente como la tuya.', options: ['La tarea parecía enorme e inabarcable', 'Perdí la motivación a los pocos días', 'Nada me daba retroalimentación ni me recordaba qué hacer', 'Nadie sabía que lo estaba intentando'] },
                 en: { headline: 'Why do you think it did not last last time?', reassure: 'This was not your failure. It was a system that was not designed for a brain like yours.', options: ['The task felt huge and impossible to tackle', 'I lost motivation after a few days', 'Nothing gave me feedback or reminded me what to do', 'No one knew I was trying'] }
             },
-            p5: {
-                es: { headline: '¿En qué versión de ti quieres convertirte?', options: ['La persona enfocada', 'La persona organizada', 'La persona constante', 'La persona tranquila'], desc: ['La que termina lo que empieza', 'La que tiene un sistema, no caos', 'La que mantiene hábitos sin depender de tener ganas', 'La que ya no se siente abrumada por su propia lista'] },
-                en: { headline: 'What version of yourself do you want to become?', options: ['Focused', 'Organized', 'Consistent', 'Calm'], desc: ['Someone who finishes what they start', 'Someone with a system, not chaos', 'Someone who keeps habits without relying on motivation', 'Someone who no longer feels overwhelmed by their own list'] }
+            nq26: {
+                es: { headline: '¿Qué crees que necesitas más para vivir mejor?', options: ['Más energía', 'Hábitos más fuertes', 'Mejor concentración', 'Paz interior'] },
+                en: { headline: 'What do you believe you need most to live a better life?', options: ['More energy', 'Stronger habits', 'Better focus', 'Inner peace'] }
             },
-            p6: {
-                es: { headline: '¿Qué área quieres organizar primero?', options: ['Enfoque y productividad', 'Rutinas y organización personal', 'Salud y energía', 'Calma y regulación emocional'], desc: ['Trabajo o estudio', '', '', ''] },
-                en: { headline: 'What area do you want to organize first?', options: ['Focus and productivity', 'Routines and personal organization', 'Health and energy', 'Calm and emotional regulation'], desc: ['Work or study', '', '', ''] }
+            nq27: {
+                es: { headline: '¿Cómo se vería el éxito para ti en los próximos 30 días?', sub: 'Selecciona todas las que correspondan.', options: ['Despertar con motivación', 'Pasar una semana sin procrastinar', 'Comer más sano', 'Sentirme más calmado/a en situaciones de estrés', 'Mantener una rutina de mañana'] },
+                en: { headline: 'What would success look like for you in the next 30 days?', sub: 'Select all that apply.', options: ['Waking up feeling motivated', 'Going a week without procrastinating', 'Eating healthier meals', 'Feeling calmer in stressful situations', 'Sticking to a morning routine'] }
             },
-            p7: {
-                es: { headline: '¿Qué tan comprometido estás con cambiar esto ahora?', options: ['Solo estoy explorando opciones', 'Estoy algo comprometido', 'Estoy totalmente comprometido; quiero comenzar ya'] },
-                en: { headline: 'How committed are you to changing this right now?', options: ['I am just exploring my options', 'I am somewhat committed', 'I am fully committed; I want to start now'] }
-            },
-            p8: {
-                es: { headline: '¿Cuánto tiempo puedes dedicarle al día?', options: ['Menos de 15 minutos', '15 a 30 minutos', '30 a 60 minutos', 'Más de una hora'] },
-                en: { headline: 'How much time can you dedicate each day?', options: ['Less than 15 minutes', '15 to 30 minutes', '30 to 60 minutes', 'More than an hour'] }
-            },
-            p9: {
-                es: { headline: '¿Listo para dejar de empezar de cero cada vez?', sub: 'Esta vez tendrás un sistema y una mascota que te acompañará.', doubtOption: 'Todavía tengo dudas', doubtCopy: 'Está bien tener dudas. Brainy hace el trabajo pesado: divide las tareas, te recuerda lo importante y muestra tu progreso.', options: ['Sí, estoy listo', 'Todavía tengo dudas'] },
-                en: { headline: 'Are you ready to stop starting over?', sub: 'This time, you will have a system and a companion by your side.', doubtOption: 'I still have questions', doubtCopy: 'It is okay to have questions. Brainy does the heavy lifting: breaking things down, reminding you, and showing your progress.', options: ['Yes, I am ready', 'I still have questions'] }
-            },
-            p10: {
-                es: { headline: 'Última pregunta. ¿Cuándo quieres empezar a organizar tu mente?', options: ['Hoy mismo', 'Esta semana', 'Todavía no estoy seguro'] },
-                en: { headline: 'One last question. When do you want to start organizing your mind?', options: ['Today', 'This week', 'I am not sure yet'] }
+            nq28: {
+                es: { headline: '¿Qué te motiva a empezar ahora?', options: ['Quiero dejar de sentirme estancado/a', 'Estoy cansado/a de volver a empezar', 'Quiero un cambio duradero', 'Solo quiero sentirme mejor'] },
+                en: { headline: 'What’s motivating you to start now?', options: ['I want to stop feeling stuck', 'I’m tired of restarting', 'I want long-term change', 'I just want to feel better'] }
             },
             interstitial_1: {
                 es: { headline: 'No estás solo en esto', body: 'Diseñado para mentes con TDAH. El patrón no es tu falta de voluntad: sin un sistema que divida lo grande y te muestre el progreso, cualquiera podría abandonar. Brainy lo convierte en pasos pequeños y una mascota que crece con cada uno.', cta: 'Continuar →' },
@@ -2333,9 +2675,11 @@
                     merged[key] = safe[key];
                 }
             }
-            if (!Array.isArray(merged.q2_dolor)) {
-                merged.q2_dolor = [];
-            }
+            MULTI_QUESTION_KEYS.forEach((key) => {
+                if (!Array.isArray(merged[key])) {
+                    merged[key] = [];
+                }
+            });
             if (!Array.isArray(merged.selectedTasks)) {
                 merged.selectedTasks = [];
             }
@@ -2384,8 +2728,8 @@
         function answeredCount() {
             return QUESTION_KEYS.filter((key) => {
                 const value = funnelState[key];
-                if (key === 'q2_dolor') {
-                    return Array.isArray(value) && value.length > 0;
+                if (Array.isArray(value)) {
+                    return value.length > 0;
                 }
                 return value !== null && value !== undefined;
             }).length;
@@ -2401,10 +2745,13 @@
             const fill = document.getElementById('funnelProgressFill');
             const label = document.getElementById('funnelProgressLabel');
             progress.hidden = false;
-            const pct = answeredCount() * 10;
+            const total = QUESTION_KEYS.length;
+            const pct = Math.round((answeredCount() / total) * 100);
             fill.style.width = `${pct}%`;
             if (step.questionIndex) {
-                label.textContent = `Pregunta ${step.questionIndex} de 10`;
+                label.textContent = currentLocale() === 'en'
+                    ? `Question ${step.questionIndex} of ${total}`
+                    : `Pregunta ${step.questionIndex} de ${total}`;
                 label.hidden = false;
             } else {
                 label.textContent = '';
@@ -2703,16 +3050,35 @@
             return {
                 version: 1,
                 answers: {
-                    p1: answerValue('q1_estado_actual'),
-                    p2: answerValue('q2_dolor'),
-                    p3: answerValue('q3_intentos_previos'),
-                    p4: answerValue('q4_causa_fracaso'),
-                    p5: answerValue('q5_identidad_futura'),
-                    p6: answerValue('q6_area_prioritaria'),
-                    p7: answerValue('q7_compromiso'),
-                    p8: answerValue('q8_tiempo_disponible'),
-                    p9: answerValue('q9_listo'),
-                    p10: answerValue('q10_cuando_empezar')
+                    nq01_gender: answerValue('nq01_gender'),
+                    nq02_age_group: answerValue('nq02_age_group'),
+                    nq03_tired: answerValue('nq03_tired'),
+                    nq04_overthink: answerValue('nq04_overthink'),
+                    nq05_sleep: answerValue('nq05_sleep'),
+                    nq06_wellbeing: answerValue('nq06_wellbeing'),
+                    nq07_multitasking: answerValue('nq07_multitasking'),
+                    nq08_control: answerValue('nq08_control'),
+                    nq09_missing: answerValue('nq09_missing'),
+                    nq10_phone: answerValue('nq10_phone'),
+                    nq11_procrastinate: answerValue('nq11_procrastinate'),
+                    nq12_focus: answerValue('nq12_focus'),
+                    nq13_adhd: answerValue('nq13_adhd'),
+                    nq14_potential: answerValue('nq14_potential'),
+                    nq15_struggle: answerValue('nq15_struggle'),
+                    nq16_prioritize: answerValue('nq16_prioritize'),
+                    nq17_expectations: answerValue('nq17_expectations'),
+                    nq18_say_no: answerValue('nq18_say_no'),
+                    nq19_sacrifice: answerValue('nq19_sacrifice'),
+                    nq20_wish: answerValue('nq20_wish'),
+                    nq21_habits: answerValue('nq21_habits'),
+                    nq22_doing_for: answerValue('nq22_doing_for'),
+                    nq23_lose_motivation: answerValue('nq23_lose_motivation'),
+                    nq24_expert: answerValue('nq24_expert'),
+                    nq25_discipline: answerValue('nq25_discipline'),
+                    p26_cause: answerValue('q4_causa_fracaso'),
+                    nq26_need_most: answerValue('nq26_need_most'),
+                    nq27_success: answerValue('nq27_success'),
+                    nq28_motivating: answerValue('nq28_motivating')
                 },
                 tasks: tasks,
                 routines: routines,
@@ -2723,7 +3089,7 @@
                     createdAt: now,
                     source: 'website',
                     campaign: 'brainy_onboarding_v1',
-                    locale: 'es-AR',
+                    locale: currentLocale() === 'en' ? 'en-US' : 'es-AR',
                     tasksCount: tasks.length,
                     routinesCount: routines.length,
                     totalSelectedCount: tasks.length + routines.length
@@ -2736,7 +3102,11 @@
                 'La tarea se sentía enorme e inabarcable': 'Esta vez todo empieza por un paso chico: tu tarea ya está desglosada y solo tenés que completar la que ves adelante.',
                 'Perdí la motivación a los pocos días': 'El hábito deja de depender de tus ganas: la rutina y tu compañero lo sostienen solos, incluso en los días planos.',
                 'Nada me daba feedback ni recordaba por mí': 'Cada paso se registra solo y Brainy te recuerda por vos: el progreso nunca vuelve a depender de tu memoria.',
-                'Nadie sabía que lo estaba intentando': 'Tu compañero crece con cada paso que das y te espera al otro lado: hay alguien que sí está mirando que avances.'
+                'Nadie sabía que lo estaba intentando': 'Tu compañero crece con cada paso que das y te espera al otro lado: hay alguien que sí está mirando que avances.',
+                'The task felt huge and impossible to tackle': 'Esta vez todo empieza por un paso chico: tu tarea ya está desglosada y solo tenés que completar la que ves adelante.',
+                'I lost motivation after a few days': 'El hábito deja de depender de tus ganas: la rutina y tu compañero lo sostienen solos, incluso en los días planos.',
+                'Nothing gave me feedback or reminded me what to do': 'Cada paso se registra solo y Brainy te recuerda por vos: el progreso nunca vuelve a depender de tu memoria.',
+                'No one knew I was trying': 'Tu compañero crece con cada paso que das y te espera al otro lado: hay alguien que sí está mirando que avances.'
             };
             return map[p4Answer] || 'Todo lo que armaste quedó guardado para que arranques sin depender de la motivación del día.';
         }
@@ -3341,14 +3711,12 @@
         }
 
         function renderLoading(step) {
-            const areaLabel = funnelState.q6_area_prioritaria || 'tu área';
-            const timeLabel = funnelState.q8_tiempo_disponible || 'tu ritmo';
             const tasksCount = funnelState.selectedTasks.length;
             const routinesCount = funnelState.selectedRoutines.length;
             const items = [
                 currentLocale() === 'en' ? 'Analyzing your answers' : 'Analizando tus respuestas',
-                `${ui('loadingArea')}: ${areaLabel}`,
-                `${ui('loadingTime')}: ${timeLabel}`,
+                currentLocale() === 'en' ? 'Focusing on what matters to you' : 'Enfocando lo que te importa',
+                currentLocale() === 'en' ? 'Adjusting the pace to your life' : 'Ajustando el ritmo a tu vida',
                 `${currentLocale() === 'en' ? 'Preparing' : 'Preparando'} ${tasksCount} ${tasksCount === 1 ? ui('task') : ui('tasks')} ${currentLocale() === 'en' ? 'broken down into small steps' : 'desglosadas en pasos pequeños'}`,
                 `${currentLocale() === 'en' ? 'Adding' : 'Agregando'} ${routinesCount} ${routinesCount === 1 ? ui('routine') : ui('routines')} ${currentLocale() === 'en' ? 'to your day' : 'diarias'}`,
                 currentLocale() === 'en' ? 'Matching a companion to each routine' : 'Asignando un compañero a cada rutina'
@@ -4380,7 +4748,7 @@
             const rawStep = stepList()[currentStepIndex];
             const step = localizedStep(rawStep);
             document.title = step.questionIndex
-                ? (currentLocale() === 'en' ? `Brainy — Question ${step.questionIndex} of 10` : `Brainy — Pregunta ${step.questionIndex} de 10`)
+                ? (currentLocale() === 'en' ? `Brainy — Question ${step.questionIndex} of ${QUESTION_KEYS.length}` : `Brainy — Pregunta ${step.questionIndex} de ${QUESTION_KEYS.length}`)
                 : (currentLocale() === 'en' ? 'Brainy — Your system and companion' : 'Brainy — Tu sistema y tu mascota');
 
             if (step.type === 'language') {
