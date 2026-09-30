@@ -7,6 +7,8 @@
     "test:identity": "node testers/identity-regression.cjs",
     "test:create-plan-policy": "node testers/create-funnel-plan-policy.cjs",
     "test:revenuecat-metadata": "node testers/revenuecat-metadata-regression.cjs",
+    "test:manual-sandbox-contract": "node testers/manual-sandbox-checkout-regression.cjs",
+    "test:manual-sandbox": "node testers/manual-sandbox-checkout.cjs",
     "cleanup:funnel-plans": "node testers/cleanup-funnel-plans.cjs"
   },
   "dependencies": {
