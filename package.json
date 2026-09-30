@@ -6,6 +6,7 @@
     "test:reset-password": "node testers/reset-password-regression.cjs",
     "test:identity": "node testers/identity-regression.cjs",
     "test:create-plan-policy": "node testers/create-funnel-plan-policy.cjs",
+    "test:revenuecat-metadata": "node testers/revenuecat-metadata-regression.cjs",
     "cleanup:funnel-plans": "node testers/cleanup-funnel-plans.cjs"
   },
   "dependencies": {

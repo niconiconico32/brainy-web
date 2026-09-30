@@ -3679,6 +3679,7 @@
                     result = await Promise.race([
                         svc.purchase({
                             rcPackage: entry.pkg,
+                            planId: funnelState.planId,
                             customerEmail: funnelState.email || undefined,
                             selectedLocale: 'es',
                             defaultLocale: 'es',
