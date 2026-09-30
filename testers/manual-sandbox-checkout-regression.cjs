@@ -1,5 +1,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const http = require('node:http');
+const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { chromium } = require('playwright');
 const {
@@ -12,6 +14,33 @@ const {
 
 const runner = fs.readFileSync(require.resolve('./manual-sandbox-checkout.cjs'), 'utf8');
 const PLAN_ID = '11111111-1111-4111-8111-111111111111';
+
+async function startAssetServer() {
+  const root = path.resolve(__dirname, '..');
+  const server = http.createServer((request, response) => {
+    const relative = request.url === '/fixture.html' ? null : request.url.replace(/^\//, '');
+    if (!relative) {
+      response.writeHead(200, { 'Content-Type': 'text/html' });
+      response.end(`<!doctype html><script src="/assets/revenuecat-sdk.js"></script><script src="/assets/revenuecat.js"></script>`);
+      return;
+    }
+    if (!relative.startsWith('assets/')) {
+      response.writeHead(404);
+      response.end();
+      return;
+    }
+    try {
+      const file = fs.readFileSync(path.join(root, relative));
+      response.writeHead(200, { 'Content-Type': 'application/javascript' });
+      response.end(file);
+    } catch {
+      response.writeHead(404);
+      response.end();
+    }
+  });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  return { server, port: server.address().port };
+}
 
 function testContract() {
   assert.match(runner, /headless:\s*false/);
@@ -160,14 +189,13 @@ async function testBrowserSdkBoundaryInstrumentation() {
     await page.setContent('<p>SDK boundary test</p>');
     const result = await page.evaluate(async (planId) => {
       window.__MANUAL_SANDBOX_PLAN_ID__ = planId;
-      window.Purchases = {
-        Purchases: {
-          configure: function () {
-            return {
-              getOfferings: function () { return Promise.resolve({}); },
-              purchase: function (params) { return Promise.resolve({ params, thisValue: this }); },
-            };
-          },
+      window.Purchases = {};
+      window.Purchases.Purchases = {
+        configure: function () {
+          return {
+            getOfferings: function () { return Promise.resolve({}); },
+            purchase: function (params) { return Promise.resolve({ params, thisValue: this }); },
+          };
         },
       };
       const instance = window.Purchases.Purchases.configure({ appUserId: '22222222-2222-4222-8222-222222222222' });
@@ -190,6 +218,41 @@ async function testBrowserSdkBoundaryInstrumentation() {
   }
 }
 
+async function testRealVendoredAssetsLoad() {
+  const { server, port } = await startAssetServer();
+  const browser = await chromium.launch({ headless: true });
+  try {
+    const context = await browser.newContext();
+    await installBrowserInstrumentation(context, 'strp_sb_test_public_key');
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${port}/fixture.html`);
+    const result = await page.evaluate((appUserId) => {
+      const namespace = window.Purchases;
+      const service = window.BrainyRevenueCat;
+      const instance = service.configure({ apiKey: 'strp_sb_test_public_key', appUserId });
+      return {
+        namespaceHasPurchases: !!(namespace && namespace.Purchases),
+        brainyConfigureAvailable: typeof service.configure === 'function',
+        sdkConfigureObserved: window.__MANUAL_SANDBOX__.configure,
+        appUserIdObserved: window.__MANUAL_SANDBOX__.appUserId === appUserId,
+        sdkGetOfferingsAvailable: typeof instance.getOfferings === 'function',
+        sdkPurchaseAvailable: typeof instance.purchase === 'function',
+      };
+    }, '22222222-2222-4222-8222-222222222222');
+    assert.deepEqual(result, {
+      namespaceHasPurchases: true,
+      brainyConfigureAvailable: true,
+      sdkConfigureObserved: 1,
+      appUserIdObserved: true,
+      sdkGetOfferingsAvailable: true,
+      sdkPurchaseAvailable: true,
+    });
+  } finally {
+    await browser.close();
+    await new Promise(resolve => server.close(resolve));
+  }
+}
+
 function testMissingEnvironment() {
   const result = spawnSync(process.execPath, [require.resolve('./manual-sandbox-checkout.cjs')], {
     env: { ...process.env, FUNNEL_RC_KEY: '', FUNNEL_TEST_EMAIL: '' },
@@ -207,6 +270,7 @@ async function main() {
     ['preflight click guard behavior', testClickGuardBehavior],
     ['SDK wrapper preserves behavior and metadata checks', testSdkWrapperBehavior],
     ['browser SDK boundary instrumentation', testBrowserSdkBoundaryInstrumentation],
+    ['real vendored assets load', testRealVendoredAssetsLoad],
     ['missing environment fails safely', testMissingEnvironment],
   ];
   let passed = 0;

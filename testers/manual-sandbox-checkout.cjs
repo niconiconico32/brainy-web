@@ -152,6 +152,26 @@ function installBrowserInstrumentation(context, key) {
       Object.defineProperty(ctor, '__manualSandboxConfigureWrapped', { value: true });
     };
 
+    const watchNamespace = namespace => {
+      if (!namespace || typeof namespace !== 'object' || namespace.__manualSandboxNamespaceWatched) {
+        return namespace;
+      }
+      const existing = namespace.Purchases;
+      let purchases = existing;
+      Object.defineProperty(namespace, 'Purchases', {
+        configurable: true,
+        enumerable: true,
+        get: () => purchases,
+        set: next => {
+          purchases = next;
+          wrapConfigure(next);
+        },
+      });
+      Object.defineProperty(namespace, '__manualSandboxNamespaceWatched', { value: true });
+      if (existing) wrapConfigure(existing);
+      return namespace;
+    };
+
     let purchasesNamespace = {};
     let currentNamespace = null;
     const namespaceProxy = new Proxy(purchasesNamespace, {
@@ -164,7 +184,11 @@ function installBrowserInstrumentation(context, key) {
     Object.defineProperty(window, 'Purchases', {
       configurable: true,
       get: () => currentNamespace || namespaceProxy,
-      set: next => { currentNamespace = next || {}; purchasesNamespace = currentNamespace; wrapConfigure(currentNamespace); },
+      set: next => {
+        currentNamespace = watchNamespace(next || {});
+        purchasesNamespace = currentNamespace;
+        wrapConfigure(currentNamespace);
+      },
     });
 
     let brainyService = null;
