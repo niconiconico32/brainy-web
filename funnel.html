@@ -1675,6 +1675,13 @@
             { id: 'calma_regulacion', emoji: '😌', label: 'Calma & Regulación emocional' }
         ];
 
+        const CATEGORY_COPY = {
+            foco_productividad: { es: 'Enfoque y productividad', en: 'Focus and productivity' },
+            rutinas_organizacion: { es: 'Rutinas y organización personal', en: 'Routines and personal organization' },
+            salud_energia: { es: 'Salud y energía', en: 'Health and energy' },
+            calma_regulacion: { es: 'Calma y regulación emocional', en: 'Calm and emotional regulation' }
+        };
+
         // Fuente de verdad (confirmada por backend): egg_catalog.id NUMÉRICO 1–8.
         // El funnel SOLO asigna estos 8 huevos comunes; no se crean slugs nuevos.
         // El nombre visible es el canónico del egg_catalog.id. `emoji`/`color` son
@@ -1799,6 +1806,7 @@
         }
 
         const DEFAULT_STATE = {
+            locale: null,
             q1_estado_actual: null,
             q2_dolor: [],
             q3_intentos_previos: null,
@@ -1887,6 +1895,10 @@
             </svg>`;
 
         const FUNNEL_STEPS = [
+            {
+                id: 'language',
+                type: 'language'
+            },
             {
                 id: 'begin',
                 type: 'begin',
@@ -2138,6 +2150,149 @@
             }
         ];
 
+        const STEP_COPY = {
+            begin: {
+                es: { headline: 'Vamos a construir el sistema de tu mente', sub: 'Dos minutos, diez preguntas. Al final, una mascota que empieza a crecer con cada paso pequeño que des.' },
+                en: { headline: "Let's build your personal brain system", sub: 'Two minutes, ten questions. At the end, you will have a companion that grows with every small step you take.' }
+            },
+            p1: {
+                es: { eyebrow: 'Antes de empezar...', headline: '¿Cuál de estas opciones te describe hoy?', sub: 'Responde con honestidad. Nadie más verá esto.', options: ['Modo caos', 'Estancado', 'Casi listo', 'Listo para ordenar mi mente', 'Todavía no lo tengo claro'], desc: ['Todo se acumula y no sé por dónde empezar', 'Lo intento, pero no logro mantener nada', 'Sé qué hacer, pero me cuesta comenzar', 'Solo me falta un sistema', ''] },
+                en: { eyebrow: 'Before we begin...', headline: 'Which option best describes you today?', sub: 'Be honest. No one else will see this.', options: ['Chaos mode', 'Stuck', 'Almost there', 'Ready to organize my mind', "I’m not sure yet"], desc: ['Everything piles up and I do not know where to start', 'I try, but I cannot keep anything going', 'I know what to do, but starting is hard', 'I just need a system', ''] }
+            },
+            p2: {
+                es: { headline: '¿Qué es lo que más te está frenando ahora?', sub: 'Selecciona todas las opciones que correspondan.', reassure: 'Gracias por compartirlo. No es falta de voluntad: tu mente necesita un sistema diferente. Sigamos.', options: ['Incluso postergo las cosas que quiero hacer', 'Tengo demasiadas tareas en la cabeza y no sé por dónde empezar', 'Empiezo cosas y no las termino', 'Una tarea grande me abruma antes de comenzar', 'Olvido mis hábitos si nada me los recuerda'] },
+                en: { headline: 'What is holding you back the most right now?', sub: 'Select all that apply.', reassure: 'Thanks for sharing. This is not a lack of willpower: your mind needs a different kind of system. Let’s keep going.', options: ['I procrastinate even on things I want to do', 'I have too many tasks in my head and do not know where to start', 'I start things but do not finish them', 'A big task overwhelms me before I begin', 'I forget my habits when nothing reminds me'] }
+            },
+            p3: {
+                es: { headline: '¿Cuántas veces intentaste organizar esto antes?', sub: 'No hay juicios; queremos entender tu punto de partida.', options: ['Nunca lo intenté con un sistema real', 'Probé aplicaciones o agendas y las abandoné', 'Perdí la cuenta de cuántas veces empecé de cero', 'Vivo este ciclo: entusiasmo inicial y abandono a los pocos días'] },
+                en: { headline: 'How many times have you tried to organize this before?', sub: 'There is no judgment. We just want to understand your starting point.', options: ['I have never tried with a real system', 'I tried apps or planners and abandoned them', 'I have lost count of how many times I started over', 'I repeat this cycle: initial excitement, then giving up within days'] }
+            },
+            p4: {
+                es: { headline: '¿Por qué crees que no funcionó la última vez?', reassure: 'Esto no fue un fracaso tuyo. Era un sistema que no estaba diseñado para una mente como la tuya.', options: ['La tarea parecía enorme e inabarcable', 'Perdí la motivación a los pocos días', 'Nada me daba retroalimentación ni me recordaba qué hacer', 'Nadie sabía que lo estaba intentando'] },
+                en: { headline: 'Why do you think it did not last last time?', reassure: 'This was not your failure. It was a system that was not designed for a brain like yours.', options: ['The task felt huge and impossible to tackle', 'I lost motivation after a few days', 'Nothing gave me feedback or reminded me what to do', 'No one knew I was trying'] }
+            },
+            p5: {
+                es: { headline: '¿En qué versión de ti quieres convertirte?', options: ['La persona enfocada', 'La persona organizada', 'La persona constante', 'La persona tranquila'], desc: ['La que termina lo que empieza', 'La que tiene un sistema, no caos', 'La que mantiene hábitos sin depender de tener ganas', 'La que ya no se siente abrumada por su propia lista'] },
+                en: { headline: 'What version of yourself do you want to become?', options: ['Focused', 'Organized', 'Consistent', 'Calm'], desc: ['Someone who finishes what they start', 'Someone with a system, not chaos', 'Someone who keeps habits without relying on motivation', 'Someone who no longer feels overwhelmed by their own list'] }
+            },
+            p6: {
+                es: { headline: '¿Qué área quieres organizar primero?', options: ['Enfoque y productividad', 'Rutinas y organización personal', 'Salud y energía', 'Calma y regulación emocional'], desc: ['Trabajo o estudio', '', '', ''] },
+                en: { headline: 'What area do you want to organize first?', options: ['Focus and productivity', 'Routines and personal organization', 'Health and energy', 'Calm and emotional regulation'], desc: ['Work or study', '', '', ''] }
+            },
+            p7: {
+                es: { headline: '¿Qué tan comprometido estás con cambiar esto ahora?', options: ['Solo estoy explorando opciones', 'Estoy algo comprometido', 'Estoy totalmente comprometido; quiero comenzar ya'] },
+                en: { headline: 'How committed are you to changing this right now?', options: ['I am just exploring my options', 'I am somewhat committed', 'I am fully committed; I want to start now'] }
+            },
+            p8: {
+                es: { headline: '¿Cuánto tiempo puedes dedicarle al día?', options: ['Menos de 15 minutos', '15 a 30 minutos', '30 a 60 minutos', 'Más de una hora'] },
+                en: { headline: 'How much time can you dedicate each day?', options: ['Less than 15 minutes', '15 to 30 minutes', '30 to 60 minutes', 'More than an hour'] }
+            },
+            p9: {
+                es: { headline: '¿Listo para dejar de empezar de cero cada vez?', sub: 'Esta vez tendrás un sistema y una mascota que te acompañará.', doubtOption: 'Todavía tengo dudas', doubtCopy: 'Está bien tener dudas. Brainy hace el trabajo pesado: divide las tareas, te recuerda lo importante y muestra tu progreso.', options: ['Sí, estoy listo', 'Todavía tengo dudas'] },
+                en: { headline: 'Are you ready to stop starting over?', sub: 'This time, you will have a system and a companion by your side.', doubtOption: 'I still have questions', doubtCopy: 'It is okay to have questions. Brainy does the heavy lifting: breaking things down, reminding you, and showing your progress.', options: ['Yes, I am ready', 'I still have questions'] }
+            },
+            p10: {
+                es: { headline: 'Última pregunta. ¿Cuándo quieres empezar a organizar tu mente?', options: ['Hoy mismo', 'Esta semana', 'Todavía no estoy seguro'] },
+                en: { headline: 'One last question. When do you want to start organizing your mind?', options: ['Today', 'This week', 'I am not sure yet'] }
+            },
+            interstitial_1: {
+                es: { headline: 'No estás solo en esto', body: 'Diseñado para mentes con TDAH. El patrón no es tu falta de voluntad: sin un sistema que divida lo grande y te muestre el progreso, cualquiera podría abandonar. Brainy lo convierte en pasos pequeños y una mascota que crece con cada uno.', cta: 'Continuar →' },
+                en: { headline: 'You are not alone in this', body: 'Designed for ADHD brains. The pattern is not a lack of willpower: without a system that breaks down big tasks and shows your progress, anyone could give up. Brainy turns it into small steps and a companion that grows with each one.', cta: 'Continue →' }
+            },
+            interstitial_2: {
+                es: { headline: 'Así funciona una mente con un sistema', body: 'No se trata de fuerza de voluntad. Se trata de dividir las tareas hasta que cada paso parezca posible.', cta: 'Quiero ver cómo crece la mía →', breakdown: { title: '«Organizar mi armario» se divide en:', steps: ['Sacar todo', 'Separar en 3 grupos', 'Doblar', 'Guardar'], caption: 'Cada micro paso que completas también la hace crecer.' } },
+                en: { headline: 'This is how a brain with a system works', body: 'It is not about willpower. It is about breaking things down until every step feels possible.', cta: 'I want to see mine grow →', breakdown: { title: '“Organize my closet” becomes:', steps: ['Take everything out', 'Separate into 3 piles', 'Fold', 'Put away'], caption: 'Every small step you complete helps it grow too.' } }
+            },
+            interstitial_3: {
+                es: { headline: 'Así se ve intentarlo solo frente a tener un sistema', body: 'No necesitas más disciplina. Necesitas un sistema que te acompañe en los días difíciles.', cta: 'Continuar →', curves: [{ label: 'Solo con fuerza de voluntad', desc: 'Una línea irregular que sube y baja con la motivación' }, { label: 'Con Brainy', desc: 'Una curva constante mientras tu mascota crece' }] },
+                en: { headline: 'Trying alone versus having a system', body: 'You do not need more discipline. You need a system that supports you on hard days.', cta: 'Continue →', curves: [{ label: 'Willpower alone', desc: 'An uneven line that rises and falls with motivation' }, { label: 'With Brainy', desc: 'A steady curve as your companion grows' }] }
+            },
+            task_select: {
+                es: { headline: 'Elige de 1 a 3 tareas que te están frenando', sub: 'Elige una o hasta 3 tareas. Toca cada una para ver sus pasos antes de seleccionarla.' },
+                en: { headline: 'Choose 1 to 3 tasks that are holding you back', sub: 'Choose one or up to 3 tasks. Tap each one to see its steps before selecting it.' }
+            },
+            routine_select: {
+                es: { headline: 'Ahora elige de 1 a 5 rutinas diarias', sub: 'Son acciones pequeñas que repetirás cada día sin tener que decidir. Elige al menos una y hasta 5.' },
+                en: { headline: 'Now choose 1 to 5 daily routines', sub: 'These are small actions you will repeat each day without having to decide. Choose at least one and up to 5.' }
+            },
+            plan_summary: {
+                es: { headline: 'Tu plan de Brainy está listo', cta: 'Ver mi Brainy →' },
+                en: { headline: 'Your Brainy plan is ready', cta: 'See my Brainy plan →' }
+            },
+            loading: {
+                es: { headline: 'Preparando tu plan...', subFinal: 'Todo listo. Este es un último vistazo a tu primer día.' },
+                en: { headline: 'Preparing your plan...', subFinal: 'All set. Here is one last look at your first day.' }
+            },
+            product_preview: {
+                es: { headline: 'Así se verá tu primer día en Brainy', sub: 'Un adelanto real de tu plan, con tu compañero y tu primera misión. Toca un paso para probar cómo avanzas.', cta: 'Guardar mi plan →' },
+                en: { headline: 'This is what your first day in Brainy will look like', sub: 'A real preview of your plan, with your companion and first mission. Tap a step to try making progress.', cta: 'Save my plan →' }
+            },
+            contact: {
+                es: { headline: 'Guarda tu plan', body: 'Así tus tareas, rutinas y compañeros estarán listos cuando abras Brainy.', cta: 'Guardar mi plan →' },
+                en: { headline: 'Save your plan', body: 'Your tasks, routines, and companions will be ready when you open Brainy.', cta: 'Save my plan →' }
+            },
+            prepaywall: {
+                es: { headline: 'Tu Brainy está preparado', sub: 'Todo lo que elegiste está listo: tareas, rutinas y compañeros.', cta: 'Continuar con mi plan →' },
+                en: { headline: 'Your Brainy is ready', sub: 'Everything you chose is ready: tasks, routines, and companions.', cta: 'Continue with my plan →' }
+            },
+            paywall: {
+                es: { headline: 'Activa tu plan de Brainy', sub: 'Continúa con tus tareas, rutinas y compañeros en Brainy.' },
+                en: { headline: 'Activate your Brainy plan', sub: 'Continue with your tasks, routines, and companions in Brainy.' }
+            },
+            success: {
+                es: { headline: 'Tu plan de Brainy está activado 🎉', sub: 'Llévalo a Brainy para comenzar sin configurar todo de nuevo.' },
+                en: { headline: 'Your Brainy plan is active 🎉', sub: 'Take it to Brainy and get started without setting everything up again.' }
+            },
+            handoff: {
+                es: { headline: 'Te esperamos en la app', sub: 'Abre Brainy en tu teléfono y tu plan estará allí esperándote.', cta: 'Abrir Brainy' },
+                en: { headline: 'We will see you in the app', sub: 'Open Brainy on your phone and your plan will be waiting for you.', cta: 'Open Brainy' }
+            }
+        };
+
+        const UI_COPY = {
+            es: {
+                languageHeadline: 'Elige tu idioma', languageSub: 'Puedes cambiarlo más adelante.', spanish: 'Español', english: 'English', start: 'Comenzar →', restart: 'Empezar de nuevo', saved: 'Tu progreso se guarda automáticamente en este dispositivo.', back: '‹ Volver', next: 'Siguiente →', age: '¿Qué edad tienes?', agePlaceholder: 'Ej.: 25', ageError: 'Necesitamos tu edad para personalizar los ejemplos.', emailError: 'Ingresa un email válido para guardar tu plan.', emailNote: 'Usaremos este correo para preparar tu cuenta y vincular tu plan.', optin: 'Quiero recibir novedades, consejos y ofertas de Brainy.', today: 'Hoy', companion: 'TU COMPAÑERO', mission: 'TU MISIÓN', divided: 'Brainy lo divide en:', smallSteps: 'Los pasos pequeños también cuentan.', selectAll: 'Selecciona todas las opciones que correspondan.', loadingArea: 'Enfocando tu área', loadingTime: 'Ajustando el ritmo a tu tiempo', task: 'tarea', tasks: 'tareas', routine: 'rutina', routines: 'rutinas', maxOnly: 'Solo {max}. Selecciona una elegida para cambiarla.', selected: 'Elegiste', minimum: 'mínimo', upTo: 'hasta', steps: 'pasos', tapToSee: 'toca para ver', select: 'Seleccionar', noData: 'No se pudieron cargar los datos. Recarga la página o inténtalo de nuevo.', noTasks: 'No hay tareas seleccionadas.', noRoutines: 'No hay rutinas seleccionadas.'
+            },
+            en: {
+                languageHeadline: 'Choose your language', languageSub: 'You can change it later.', spanish: 'Español', english: 'English', start: 'Start →', restart: 'Start over', saved: 'Your progress is saved automatically on this device.', back: '‹ Back', next: 'Next →', age: 'How old are you?', agePlaceholder: 'e.g. 25', ageError: 'We need your age to tailor the examples.', emailError: 'Enter a valid email to save your plan.', emailNote: 'We will use this email to prepare your account and link your plan.', optin: 'I want to receive Brainy news, tips, and offers.', today: 'Today', companion: 'YOUR COMPANION', mission: 'YOUR MISSION', divided: 'Brainy breaks it down into:', smallSteps: 'Small steps count too.', selectAll: 'Select all that apply.', loadingArea: 'Focusing on your area', loadingTime: 'Adjusting the pace to your time', task: 'task', tasks: 'tasks', routine: 'routine', routines: 'routines', maxOnly: 'Only {max}. Select one you chose to replace it.', selected: 'Selected', minimum: 'minimum', upTo: 'up to', steps: 'steps', tapToSee: 'tap to view', select: 'Select', noData: 'We could not load the data. Reload the page or try again.', noTasks: 'No tasks selected.', noRoutines: 'No routines selected.'
+            }
+        };
+
+        function currentLocale() {
+            return funnelState.locale === 'en' ? 'en' : 'es';
+        }
+
+        function ui(key, vars) {
+            let text = UI_COPY[currentLocale()][key] || UI_COPY.es[key] || key;
+            Object.keys(vars || {}).forEach((name) => { text = text.replace(`{${name}}`, vars[name]); });
+            return text;
+        }
+
+        function localizedText(es, en) {
+            return currentLocale() === 'en' ? en : es;
+        }
+
+        function localizedStep(step) {
+            const copy = (STEP_COPY[step.id] || {})[currentLocale()];
+            if (!copy) {
+                return step;
+            }
+            const localized = { ...step, ...copy };
+            if (step.options && copy.options) {
+                localized.options = step.options.map((option, index) => {
+                    const value = typeof option === 'string' ? option : (option.value || option.label);
+                    const label = copy.options[index] || value;
+                    const desc = copy.desc ? copy.desc[index] || '' : (typeof option === 'string' ? '' : option.desc || '');
+                    return { ...(typeof option === 'string' ? {} : option), value, label, desc };
+                });
+            }
+            if (step.doubtOption && copy.doubtOption) {
+                localized.doubtOption = step.doubtOption;
+                localized.doubtLabel = copy.doubtOption;
+            }
+            return localized;
+        }
+
         let funnelState = JSON.parse(JSON.stringify(DEFAULT_STATE));
         let currentStepIndex = 0;
         let stepTimers = [];
@@ -2238,7 +2393,7 @@
 
         function updateProgress() {
             const step = stepList()[currentStepIndex];
-            if (step.type === 'begin') {
+            if (step.type === 'begin' || step.type === 'language') {
                 document.getElementById('funnelProgress').hidden = true;
                 return;
             }
@@ -2850,7 +3005,7 @@
         }
 
         function backButtonHtml() {
-            return `<div class="step-top"><button class="back-btn" type="button" data-action="back" aria-label="Volver">‹ Volver</button></div>`;
+            return `<div class="step-top"><button class="back-btn" type="button" data-action="back" aria-label="${ui('back')}">${ui('back')}</button></div>`;
         }
 
         function cardOpen() {
@@ -2883,10 +3038,10 @@
                     <div class="mascot-hero">${petStageHtml(4, true).replace('width:128px;height:128px', 'width:150px;height:150px').replace('<span class="sparkle">✨</span>', '')}</div>
                     ${headHtml(step)}
                     <div class="actions">
-                        <button class="btn btn-dopamine" type="button" data-action="start" id="startBtn">Comenzar →</button>
-                        ${hasProgress ? `<button class="btn btn-ghost" type="button" data-action="reset">Empezar de nuevo</button>` : ''}
+                        <button class="btn btn-dopamine" type="button" data-action="start" id="startBtn">${ui('start')}</button>
+                        ${hasProgress ? `<button class="btn btn-ghost" type="button" data-action="reset">${ui('restart')}</button>` : ''}
                     </div>
-                    <p class="footer-note">Tu progreso se guarda automáticamente en este dispositivo.</p>
+                    <p class="footer-note">${ui('saved')}</p>
                 </article>`;
             document.addEventListener('click', handleBeginClick);
         }
@@ -2903,6 +3058,28 @@
             }
         }
 
+        function renderLanguage() {
+            document.getElementById('funnelRoot').innerHTML = `
+                ${cardOpen()}
+                    <div class="brand-row"><div class="brand-name">Brain<span>y</span></div></div>
+                    <div class="card-head">
+                        <h1>Elige tu idioma / Choose your language</h1>
+                        <p class="sub">Puedes cambiarlo más adelante. / You can change it later.</p>
+                    </div>
+                    <div class="options language-options">
+                        <button class="opt" type="button" data-locale="es"><span class="opt-body"><span class="opt-label">${UI_COPY.es.spanish}</span></span><span class="opt-check">✓</span></button>
+                        <button class="opt" type="button" data-locale="en"><span class="opt-body"><span class="opt-label">${UI_COPY.en.english}</span></span><span class="opt-check">✓</span></button>
+                    </div>
+                </article>`;
+            document.querySelectorAll('[data-locale]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    setState('locale', button.dataset.locale);
+                    document.documentElement.lang = button.dataset.locale;
+                    goNext();
+                });
+            });
+        }
+
         function renderQuestion(step) {
             const key = step.key;
             const multi = !!step.multi;
@@ -2910,10 +3087,11 @@
             const selected = (value) => multi ? current.includes(value) : current === value;
             const optionsHtml = step.options.map((opt, index) => {
                 const label = typeof opt === 'string' ? opt : opt.label;
+                const value = typeof opt === 'string' ? opt : opt.value;
                 const desc = typeof opt === 'string' ? '' : (opt.desc || '');
                 const emoji = typeof opt === 'string' ? '' : (opt.emoji || '');
                 return `
-                    <button class="opt ${selected(label) ? 'selected' : ''}" type="button" data-opt="${index}">
+                    <button class="opt ${selected(value) ? 'selected' : ''}" type="button" data-opt="${index}">
                         ${emoji ? `<span class="opt-emoji">${emoji}</span>` : ''}
                         <span class="opt-body">
                             <span class="opt-label">${label}</span>
@@ -2925,9 +3103,9 @@
 
             const ageHtml = step.hasAge ? `
                 <div class="field">
-                    <label for="ageInput">¿Qué edad tenés?</label>
-                    <input id="ageInput" type="number" inputmode="numeric" min="1" max="120" placeholder="Ej: 25" value="${funnelState.edad ?? ''}">
-                    <div class="field-error" id="ageError">Necesitamos saber la edad para personalizar los ejemplos.</div>
+                    <label for="ageInput">${ui('age')}</label>
+                    <input id="ageInput" type="number" inputmode="numeric" min="1" max="120" placeholder="${ui('agePlaceholder')}" value="${funnelState.edad ?? ''}">
+                    <div class="field-error" id="ageError">${ui('ageError')}</div>
                 </div>` : '';
 
             const doubtHtml = step.doubtOption && funnelState[key] === step.doubtOption
@@ -2943,37 +3121,39 @@
                     ${ageHtml}
                     ${doubtHtml}
                     <div class="actions">
-                        <button class="btn btn-dopamine" type="button" id="nextBtn" ${canGo ? '' : 'disabled'}>Siguiente →</button>
+                        <button class="btn btn-dopamine" type="button" id="nextBtn" ${canGo ? '' : 'disabled'}>${ui('next')}</button>
                     </div>
                 </article>`;
 
             const optionEls = document.querySelectorAll('.opt');
             optionEls.forEach((el, index) => {
-                const label = typeof step.options[index] === 'string' ? step.options[index] : step.options[index].label;
+                const option = step.options[index];
+                const label = typeof option === 'string' ? option : option.label;
+                const value = typeof option === 'string' ? option : option.value;
                 el.addEventListener('click', () => {
                     if (multi) {
                         const arr = funnelState[key];
-                        const pos = arr.indexOf(label);
+                        const pos = arr.indexOf(value);
                         if (pos > -1) {
                             arr.splice(pos, 1);
                         } else {
-                            arr.push(label);
+                            arr.push(value);
                         }
                         funnelState[key] = arr;
                         el.classList.toggle('selected');
                         nextBtn.disabled = arr.length === 0;
                     } else {
-                        funnelState[key] = label;
+                        funnelState[key] = value;
                         optionEls.forEach((other) => other.classList.toggle('selected', other === el));
                         nextBtn.disabled = false;
                         if (step.doubtOption) {
                             const existing = document.getElementById('funnelRoot').querySelector('.note');
-                            if (label === step.doubtOption && !existing) {
+                            if (value === step.doubtOption && !existing) {
                                 const note = document.createElement('div');
                                 note.className = 'note';
                                 note.textContent = step.doubtCopy;
                                 document.getElementById('funnelRoot').querySelector('.actions').insertAdjacentElement('beforebegin', note);
-                            } else if (label !== step.doubtOption && existing) {
+                            } else if (value !== step.doubtOption && existing) {
                                 existing.remove();
                             }
                         }
@@ -3122,13 +3302,13 @@
                     <div class="field" style="margin-top:22px">
                         <label for="emailInput">Email</label>
                         <input id="emailInput" type="email" inputmode="email" autocomplete="email" placeholder="tu@email.com" value="${funnelState.email || ''}">
-                        <div class="field-error" id="emailError">Ingresá un email válido para guardar tu plan.</div>
-                        <p class="field-note">Usaremos este correo para preparar tu cuenta y vincular tu plan.</p>
+                        <div class="field-error" id="emailError">${ui('emailError')}</div>
+                        <p class="field-note">${ui('emailNote')}</p>
                     </div>
                     <div class="field">
                         <label class="check">
                             <input type="checkbox" id="optinCheck" ${funnelState.marketing_optin ? 'checked' : ''}>
-                            <span>Quiero recibir novedades, consejos y ofertas de Brainy.</span>
+                            <span>${ui('optin')}</span>
                         </label>
                     </div>
                     <div class="actions">
@@ -3166,12 +3346,12 @@
             const tasksCount = funnelState.selectedTasks.length;
             const routinesCount = funnelState.selectedRoutines.length;
             const items = [
-                'Analizando tus respuestas',
-                `Enfocando tu área: ${areaLabel}`,
-                `Ajustando el ritmo a tu tiempo: ${timeLabel}`,
-                `Preparando ${tasksCount} ${tasksCount === 1 ? 'tarea' : 'tareas'} desglosadas en pasos chicos`,
-                `Agregando ${routinesCount} ${routinesCount === 1 ? 'rutina' : 'rutinas'} diarias`,
-                'Ligando un huevo a cada rutina'
+                currentLocale() === 'en' ? 'Analyzing your answers' : 'Analizando tus respuestas',
+                `${ui('loadingArea')}: ${areaLabel}`,
+                `${ui('loadingTime')}: ${timeLabel}`,
+                `${currentLocale() === 'en' ? 'Preparing' : 'Preparando'} ${tasksCount} ${tasksCount === 1 ? ui('task') : ui('tasks')} ${currentLocale() === 'en' ? 'broken down into small steps' : 'desglosadas en pasos pequeños'}`,
+                `${currentLocale() === 'en' ? 'Adding' : 'Agregando'} ${routinesCount} ${routinesCount === 1 ? ui('routine') : ui('routines')} ${currentLocale() === 'en' ? 'to your day' : 'diarias'}`,
+                currentLocale() === 'en' ? 'Matching a companion to each routine' : 'Asignando un compañero a cada rutina'
             ];
             const itemsHtml = items.map((item) => `
                 <li class="loading-item">
@@ -3242,11 +3422,11 @@
                     ${headHtml(step)}
                     <div class="app-mock preview-mock" id="previewMock">
                         <div class="app-head">
-                            <h3>Hola 👋</h3>
-                            <span id="appDate">Hoy</span>
+                            <h3>${currentLocale() === 'en' ? 'Hello' : 'Hola'} 👋</h3>
+                            <span id="appDate">${ui('today')}</span>
                         </div>
                         <div class="app-body">
-                            <div class="pv-label-row">TU COMPAÑERO</div>
+                            <div class="pv-label-row">${ui('companion')}</div>
                             <div class="pv-companion">
                                 <span class="pv-egg" id="pvEgg" style="background:${eggBg}">${egg.emoji}</span>
                                 <div class="pv-companion-info">
@@ -3255,13 +3435,13 @@
                                 </div>
                                 <span class="pv-count" id="pvCount">0 / ${subSteps.length}</span>
                             </div>
-                            <div class="pv-label-row">TU MISIÓN</div>
+                            <div class="pv-label-row">${ui('mission')}</div>
                             <div class="pv-mission">
                                 <div class="pv-task"><span class="pv-task-icon">🎯</span>${mission.title}</div>
-                                <p class="pv-hint">Brainy la divide en:</p>
+                                <p class="pv-hint">${ui('divided')}</p>
                                 <div class="pv-steps">${stepsHtml}</div>
                             </div>
-                            <div class="pv-feedback" id="pvFeedback" hidden>Pequeños pasos también cuentan.</div>
+                        <div class="pv-feedback" id="pvFeedback" hidden>${ui('smallSteps')}</div>
                         </div>
                     </div>
                     <div class="actions">
@@ -3269,7 +3449,7 @@
                     </div>
                 </article>`;
 
-            document.getElementById('appDate').textContent = `Hoy, ${todayLabel()}`;
+            document.getElementById('appDate').textContent = `${ui('today')}, ${todayLabel()}`;
 
             if (FUNNEL_EXPERIMENTS.interactivePreview) {
                 let completed = false;
@@ -3315,9 +3495,9 @@
             const eggCount = assignedRoutines().length;
 
             const benefits = [
-                { icon: '🎯', title: 'Tareas desglosadas en pasos chicos', desc: taskCount > 1 ? `Tus ${taskCount} pendientes se convierten en micro-pasos que podés arrancar sin abrumarte.` : 'Tu pendiente se convierte en micro-pasos que podés arrancar sin abrumarte.' },
-                { icon: '🔁', title: 'Rutinas adaptadas a tu vida', desc: routineCount > 1 ? `${routineCount} rutinas diarias que repetís sin decidir nada cada día.` : 'Tu rutina diaria se repite solo: no tenés que decidir nada cada día.' },
-                { icon: '🐣', title: 'Compañeros que evolucionan con vos', desc: eggCount === 1 ? 'Tu huevo crece con cada paso y te espera al otro lado cada día.' : `Cada rutina tiene su huevo (${eggCount}) que crece con cada paso que das.` }
+                { icon: '🎯', title: localizedText('Tareas divididas en pasos pequeños', 'Tasks broken down into small steps'), desc: taskCount > 1 ? localizedText(`Tus ${taskCount} pendientes se convierten en micro pasos que puedes comenzar sin sentirte abrumado.`, `Your ${taskCount} tasks become small steps you can start without feeling overwhelmed.`) : localizedText('Tu pendiente se convierte en micro pasos que puedes comenzar sin sentirte abrumado.', 'Your task becomes small steps you can start without feeling overwhelmed.') },
+                { icon: '🔁', title: localizedText('Rutinas adaptadas a tu vida', 'Routines adapted to your life'), desc: routineCount > 1 ? localizedText(`${routineCount} rutinas diarias que repites sin tener que decidir cada día.`, `${routineCount} daily routines you repeat without having to decide each day.`) : localizedText('Tu rutina diaria se repite sola: no tienes que decidir cada día.', 'Your daily routine repeats on its own: you do not have to decide each day.') },
+                { icon: '🐣', title: localizedText('Compañeros que evolucionan contigo', 'Companions that evolve with you'), desc: eggCount === 1 ? localizedText('Tu huevo crece con cada paso y te espera cada día.', 'Your egg grows with every step and waits for you each day.') : localizedText(`Cada rutina tiene su huevo (${eggCount}) que crece con cada paso.`, `Each routine has its own egg (${eggCount}) that grows with every step.`) }
             ];
             const benefitsHtml = benefits.map((b) => `
                 <div class="presell-benefit">
@@ -3334,14 +3514,14 @@
                     ${headHtml(step)}
                     <div class="presell-box">
                         <div class="presell-personalized">
-                            <span>Basado en tus respuestas</span>
+                        <span>${localizedText('Basado en tus respuestas', 'Based on your answers')}</span>
                             <p>${objectionCopy}</p>
                         </div>
                         ${benefitsHtml}
                     </div>
                     <div class="actions">
                         <button class="btn btn-dopamine" type="button" id="nextBtn">${step.cta}</button>
-                        <p class="field-note">Sin cargos ocultos. Podés usarlo y decidir después.</p>
+                        <p class="field-note">${localizedText('Sin cargos ocultos. Puedes usarlo y decidir después.', 'No hidden charges. You can try it and decide later.')}</p>
                     </div>
                 </article>`;
 
@@ -3350,19 +3530,19 @@
                     return;
                 }
                 this.disabled = true;
-                this.textContent = 'Preparando tu plan…';
+                this.textContent = localizedText('Preparando tu plan…', 'Preparing your plan…');
                 ensurePlan().then(async (result) => {
                     if (!result && FUNNEL_CONFIG.enableBackend) {
                         this.disabled = false;
                         this.textContent = step.cta;
-                        showToast('No pudimos crear tu plan por ahora. Probá de nuevo.', 3200);
+                        showToast(localizedText('No pudimos crear tu plan por ahora. Inténtalo de nuevo.', 'We could not create your plan right now. Try again.'), 3200);
                         track('create_plan_failed', { reason: 'user_retry_available' });
                         return;
                     }
                     if (!FUNNEL_CONFIG.enableBackend) {
                         this.disabled = false;
                         this.textContent = step.cta;
-                        showToast('El checkout identificado requiere el backend activo.', 3200);
+                        showToast(localizedText('El checkout identificado requiere el backend activo.', 'Identified checkout requires the backend to be active.'), 3200);
                         return;
                     }
                     const identity = await prepareIdentifiedAccount();
@@ -3371,13 +3551,13 @@
                     } else {
                         this.disabled = false;
                         this.textContent = step.cta;
-                        showToast('No pudimos preparar tu cuenta. Probá nuevamente.', 3200);
+                        showToast(localizedText('No pudimos preparar tu cuenta. Inténtalo nuevamente.', 'We could not prepare your account. Try again.'), 3200);
                         track('checkout_blocked_identity', { reason: identity.error });
                     }
                 }).catch(() => {
                     this.disabled = false;
                     this.textContent = step.cta;
-                    showToast('No pudimos preparar tu cuenta. Probá nuevamente.', 3200);
+                    showToast(localizedText('No pudimos preparar tu cuenta. Inténtalo nuevamente.', 'We could not prepare your account. Try again.'), 3200);
                     track('checkout_blocked_identity', { reason: 'prepare_network_error' });
                 });
             });
@@ -3415,7 +3595,7 @@
                         <div class="paywall-recovery">
                             <p>${copy}</p>
                             <div class="actions">
-                                <button class="btn btn-dopamine" type="button" id="retryPaywallBtn">Intentar nuevamente</button>
+                            <button class="btn btn-dopamine" type="button" id="retryPaywallBtn">${localizedText('Intentar nuevamente', 'Try again')}</button>
                             </div>
                         </div>
                     </article>`;
@@ -3461,7 +3641,7 @@
                         // Ya se cobró pero faltó persistir: reintentar SOLO
                         // set-funnel-redemption (nunca purchase()).
                         renderRecovery(
-                            'Tu suscripción fue activada, pero no pudimos confirmar el guardado de tu plan. No se te volvió a cobrar: tocá para reintentar.',
+                            localizedText('Tu suscripción fue activada, pero no pudimos confirmar el guardado de tu plan. No se te volvió a cobrar: toca para reintentar.', 'Your subscription is active, but we could not confirm that your plan was saved. You were not charged again: tap to retry.'),
                             () => retryPendingRedemption()
                         );
                     } else {
@@ -3475,7 +3655,7 @@
                         } catch (error) {
                             track('handoff_recovery_required', { reason: 'entitlement_not_confirmed' });
                             renderRecovery(
-                                'Tu suscripción no se volvió a cobrar. No pudimos confirmar el acceso de esta cuenta; intentá nuevamente.',
+                                localizedText('Tu suscripción no se volvió a cobrar. No pudimos confirmar el acceso de esta cuenta; inténtalo nuevamente.', 'You were not charged again. We could not confirm this account’s access; try again.'),
                                 () => initPaywall()
                             );
                         }
@@ -3483,11 +3663,11 @@
                     return;
                 }
                 if (!funnelState.planId || !funnelState.claimToken) {
-                    renderStatus('Preparando tu plan…');
+                    renderStatus(localizedText('Preparando tu plan…', 'Preparing your plan…'));
                     const plan = await ensurePlan();
                     if (!plan) {
                         track('purchase_failed', { reason: 'no_plan' });
-                        renderRecovery('No pudimos preparar tu plan por ahora. Probá de nuevo.');
+                        renderRecovery(localizedText('No pudimos preparar tu plan por ahora. Inténtalo de nuevo.', 'We could not prepare your plan right now. Try again.'));
                         return;
                     }
                 }
@@ -3501,7 +3681,7 @@
                 const identity = await prepareIdentifiedAccount();
                 if (!identity.ok) {
                     track('checkout_blocked_identity', { reason: identity.error });
-                    renderRecovery('No pudimos preparar tu cuenta. Intenta nuevamente.');
+                    renderRecovery(localizedText('No pudimos preparar tu cuenta. Inténtalo nuevamente.', 'We could not prepare your account. Try again.'));
                     return;
                 }
                 let offering = null;
@@ -3514,19 +3694,19 @@
                         completeIdentifiedHandoffWithoutPurchase();
                         return;
                     }
-                    renderStatus('Buscando tu plan de pago…');
+                    renderStatus(localizedText('Buscando tu plan de pago…', 'Looking for your payment plan…'));
                     offering = await svc.getOfferings(rcConfig.offeringId);
                 } catch (e) {
                     const reason = identity.alreadyPro ? 'already_pro_not_confirmed' : 'rc_not_configured';
                     track('checkout_blocked_identity', { reason: reason });
                     renderRecovery(identity.alreadyPro
-                        ? 'Tu cuenta figura como Pro, pero no pudimos confirmar ese acceso. No se inició ningún cobro.'
-                        : 'El pago web no está disponible en este momento. Probá de nuevo en unos minutos.');
+                        ? localizedText('Tu cuenta figura como Pro, pero no pudimos confirmar ese acceso. No se inició ningún cobro.', 'Your account appears to be Pro, but we could not confirm access. No charge was started.')
+                        : localizedText('El pago web no está disponible en este momento. Inténtalo de nuevo en unos minutos.', 'Web payment is not available right now. Try again in a few minutes.'));
                     return;
                 }
                 if (!offering) {
                     track('purchase_failed', { reason: 'no_offering' });
-                    renderRecovery('Todavía no hay planes disponibles. Probá de nuevo en unos minutos.');
+                    renderRecovery(localizedText('Todavía no hay planes disponibles. Inténtalo de nuevo en unos minutos.', 'No plans are available yet. Try again in a few minutes.'));
                     return;
                 }
                 const packages = [];
@@ -3538,7 +3718,7 @@
                 }
                 if (packages.length === 0) {
                     track('purchase_failed', { reason: 'no_packages' });
-                    renderRecovery('Todavía no hay planes disponibles. Probá de nuevo en unos minutos.');
+                    renderRecovery(localizedText('Todavía no hay planes disponibles. Inténtalo de nuevo en unos minutos.', 'No plans are available yet. Try again in a few minutes.'));
                     return;
                 }
                 let selectedId = funnelState.selectedPackageId;
@@ -3557,16 +3737,16 @@
                 const product = pkg.webBillingProduct || {};
                 if (product.period && product.period.unit) {
                     if (product.period.unit === 'year') {
-                        return product.period.number > 1 ? `cada ${product.period.number} años` : 'por año';
+                        return product.period.number > 1 ? localizedText(`cada ${product.period.number} años`, `every ${product.period.number} years`) : localizedText('por año', 'per year');
                     }
                     if (product.period.unit === 'month') {
-                        return product.period.number > 1 ? `cada ${product.period.number} meses` : 'por mes';
+                        return product.period.number > 1 ? localizedText(`cada ${product.period.number} meses`, `every ${product.period.number} months`) : localizedText('por mes', 'per month');
                     }
                     if (product.period.unit === 'week') {
-                        return 'por semana';
+                        return localizedText('por semana', 'per week');
                     }
                     if (product.period.unit === 'day') {
-                        return 'por día';
+                        return localizedText('por día', 'per day');
                     }
                 }
                 return '';
@@ -3587,20 +3767,20 @@
             function renderPaywallCards() {
                 const data = paywallData;
                 const checkoutAllowed = hasRealPlan();
-                const taskLabel = `${funnelState.selectedTasks.length} ${funnelState.selectedTasks.length === 1 ? 'tarea' : 'tareas'}`;
-                const routineLabel = `${funnelState.selectedRoutines.length} ${funnelState.selectedRoutines.length === 1 ? 'rutina' : 'rutinas'}`;
-                const eggLabel = `${assignedRoutines().length} ${assignedRoutines().length === 1 ? 'compañero' : 'compañeros'}`;
+                const taskLabel = `${funnelState.selectedTasks.length} ${funnelState.selectedTasks.length === 1 ? ui('task') : ui('tasks')}`;
+                const routineLabel = `${funnelState.selectedRoutines.length} ${funnelState.selectedRoutines.length === 1 ? ui('routine') : ui('routines')}`;
+                const eggLabel = `${assignedRoutines().length} ${assignedRoutines().length === 1 ? localizedText('compañero', 'companion') : localizedText('compañeros', 'companions')}`;
                 const chips = `<span class="paywall-chip">${taskLabel}</span><span class="paywall-chip">${routineLabel}</span><span class="paywall-chip">${eggLabel}</span>`;
 
                 const cardsHtml = data.packages.map((entry) => {
                     const sel = entry.pkg.identifier === data.selectedId;
-                    const badge = entry.kind === 'annual' ? '<span class="plan-badge">Recomendado</span>' : '';
+                    const badge = entry.kind === 'annual' ? `<span class="plan-badge">${localizedText('Recomendado', 'Recommended')}</span>` : '';
                     const productTitle = entry.pkg.webBillingProduct && entry.pkg.webBillingProduct.title ? ` · ${entry.pkg.webBillingProduct.title}` : '';
                     return `
                         <button class="plan-card ${sel ? 'selected' : ''}" type="button" data-pkg="${entry.pkg.identifier}">
                             <span class="plan-radio ${sel ? 'hl' : ''}"></span>
                             <span class="plan-info">
-                                <strong>${entry.kind === 'annual' ? 'Plan anual' : 'Plan mensual'}${badge}</strong>
+                                <strong>${entry.kind === 'annual' ? localizedText('Plan anual', 'Annual plan') : localizedText('Plan mensual', 'Monthly plan')}${badge}</strong>
                                 <span>${periodLabel(entry.pkg)}${productTitle}</span>
                             </span>
                             <span class="plan-price">
@@ -3616,11 +3796,11 @@
                         ${headHtml(step)}
                         <div class="paywall-summary">${chips}</div>
                         <div class="plan-cards">${cardsHtml}</div>
-                        <p class="paywall-note">${rcConfig.termsUrl ? 'Al continuar aceptás los términos de Brainy. Podés cancelar en cualquier momento.' : 'Podés cancelar en cualquier momento desde tu cuenta.'}</p>
+                         <p class="paywall-note">${rcConfig.termsUrl ? localizedText('Al continuar aceptas los términos de Brainy. Puedes cancelar en cualquier momento.', 'By continuing, you accept Brainy’s terms. You can cancel at any time.') : localizedText('Puedes cancelar en cualquier momento desde tu cuenta.', 'You can cancel at any time from your account.')}</p>
                         <div class="actions">
                             ${checkoutAllowed
-                                ? '<button class="btn btn-dopamine" type="button" id="purchaseBtn">Activar mi plan →</button>'
-                                : '<button class="btn btn-dopamine" type="button" id="purchaseBtn" disabled>Checkout unavailable in demo mode</button><p class="field-note">Modo demo: no se puede cobrar sin un plan real en el backend.</p>'}
+                                ? `<button class="btn btn-dopamine" type="button" id="purchaseBtn">${localizedText('Activar mi plan →', 'Activate my plan →')}</button>`
+                                : `<button class="btn btn-dopamine" type="button" id="purchaseBtn" disabled>${localizedText('Checkout no disponible en modo demo', 'Checkout unavailable in demo mode')}</button><p class="field-note">${localizedText('Modo demo: no se puede cobrar sin un plan real en el backend.', 'Demo mode: payment is unavailable without a real backend plan.')}</p>`}
                         </div>
                     </article>`;
 
@@ -3681,8 +3861,8 @@
                             rcPackage: entry.pkg,
                             planId: funnelState.planId,
                             customerEmail: funnelState.email || undefined,
-                            selectedLocale: 'es',
-                            defaultLocale: 'es',
+                            selectedLocale: currentLocale(),
+                            defaultLocale: currentLocale(),
                             termsAndConditionsUrl: rcConfig.termsUrl || undefined
                         }),
                         new Promise(function (resolve, reject) {
@@ -3706,9 +3886,9 @@
                     if (err.isTimeout) {
                         track('purchase_failed', { reason: 'timeout' });
                         btn.disabled = false;
-                        btn.textContent = 'Activar mi plan →';
+                        btn.textContent = localizedText('Activar mi plan →', 'Activate my plan →');
                         try { var ovl = document.getElementById('rcb-ui-pw-root'); if (ovl && ovl.parentNode) { ovl.parentNode.removeChild(ovl); } } catch (e) {}
-                        renderRecovery('La confirmación del pago está tardando demasiado. No se te volvió a cobrar: revisá tu correo y probá de nuevo.');
+                        renderRecovery(localizedText('La confirmación del pago está tardando demasiado. No se te volvió a cobrar: revisa tu correo e inténtalo de nuevo.', 'Payment confirmation is taking too long. You were not charged again: check your email and try again.'));
                         setTimeout(function () {
                             var still = document.getElementById('rcb-ui-pw-root');
                             if (still) { window.location.reload(); }
@@ -3724,8 +3904,8 @@
                     }
                     track('purchase_failed', { code: cls.code, reason: cls.kind });
                     btn.disabled = false;
-                    btn.textContent = 'Activar mi plan →';
-                    showToast('Hubo un problema al iniciar el pago. Inténtalo nuevamente.', 3200);
+                    btn.textContent = localizedText('Activar mi plan →', 'Activate my plan →');
+                    showToast(localizedText('Hubo un problema al iniciar el pago. Inténtalo nuevamente.', 'There was a problem starting payment. Try again.'), 3200);
                     return;
                 }
                 const isEntitled = svc.isEntitledTo(result.customerInfo, rcConfig.entitlementId);
@@ -3733,7 +3913,7 @@
                 if (!isEntitled) {
                     purchaseLock = false;
                     track('purchase_failed', { reason: 'entitlement_inactive' });
-                    renderRecovery('No pudimos confirmar tu suscripción todavía. No se te volvió a cobrar: revisá tu correo y probá de nuevo.');
+                    renderRecovery(localizedText('No pudimos confirmar tu suscripción todavía. No se te volvió a cobrar: revisa tu correo e inténtalo de nuevo.', 'We could not confirm your subscription yet. You were not charged again: check your email and try again.'));
                     return;
                 }
                 // REVENUECAT CONFIRMÓ LA COMPRA. La persistencia server-side del
@@ -3791,8 +3971,8 @@
                     offeringId: data.offering.identifier,
                     platform: isMobileDevice() ? 'mobile' : 'desktop'
                 });
-                renderRecovery(
-                    'Tu suscripción fue activada, pero no pudimos guardar tu plan en el servidor. No se te volvió a cobrar: tocá para reintentarlo.',
+                    renderRecovery(
+                    localizedText('Tu suscripción fue activada, pero no pudimos guardar tu plan en el servidor. No se te volvió a cobrar: toca para reintentarlo.', 'Your subscription is active, but we could not save your plan on the server. You were not charged again: tap to retry.'),
                     () => retryPendingRedemption()
                 );
             }
@@ -3823,13 +4003,13 @@
                     : () => window.location.reload();
                 document.getElementById('funnelRoot').innerHTML = `
                     ${cardOpen()}
-                        ${headHtml({ ...step, headline: existingPro ? 'Tu cuenta ya está lista' : step.headline })}
+                        ${headHtml({ ...step, headline: existingPro ? localizedText('Tu cuenta ya está lista', 'Your account is ready') : step.headline })}
                         <div class="paywall-recovery">
                             <p>${redeemUrl
-                                ? 'Tu suscripción fue activada, pero no pudimos confirmar el guardado de tu plan. No se te volvió a cobrar: tocá para reintentar.'
-                                : 'No pudimos confirmar el acceso de esta cuenta. No se inició ningún cobro nuevo; intentá nuevamente.'}</p>
+                                ? localizedText('Tu suscripción fue activada, pero no pudimos confirmar el guardado de tu plan. No se te volvió a cobrar: toca para reintentar.', 'Your subscription is active, but we could not confirm that your plan was saved. You were not charged again: tap to retry.')
+                                : localizedText('No pudimos confirmar el acceso de esta cuenta. No se inició ningún cobro nuevo; inténtalo nuevamente.', 'We could not confirm this account’s access. No new charge was started; try again.')}</p>
                             <div class="actions">
-                                <button class="btn btn-dopamine" type="button" id="retryHandoffBtn">Reintentar</button>
+                                <button class="btn btn-dopamine" type="button" id="retryHandoffBtn">${localizedText('Reintentar', 'Retry')}</button>
                             </div>
                         </div>
                     </article>`;
@@ -3855,13 +4035,13 @@
             const link = buildClaimLink(redeemUrl);
             const storesHtml = storeButtonsHtml();
             const recoveryNote = !redeemUrl && funnelState.planId
-                ? `<p class="handoff-hint">${existingPro ? 'Abrí la app para continuar con tu cuenta existente.' : 'Abrí la app para completar la activación con tu cuenta identificada.'}</p>`
+                ? `<p class="handoff-hint">${existingPro ? localizedText('Abre la app para continuar con tu cuenta existente.', 'Open the app to continue with your existing account.') : localizedText('Abre la app para completar la activación con tu cuenta identificada.', 'Open the app to finish activation with your identified account.')}</p>`
                 : '';
             const checks = (existingPro
-                ? ['Cuenta existente detectada', 'Tu plan guardado', 'Continuá en la app para finalizar']
+                ? [localizedText('Cuenta existente detectada', 'Existing account detected'), localizedText('Tu plan está guardado', 'Your plan is saved'), localizedText('Continúa en la app para finalizar', 'Continue in the app to finish')]
                 : redeemUrl
-                    ? ['Suscripción activada', 'Tu plan guardado', 'Tareas y rutinas preparadas']
-                    : ['Compra recibida por RevenueCat', 'Tu plan guardado', 'Continuá en la app para completar la activación']
+                    ? [localizedText('Suscripción activada', 'Subscription active'), localizedText('Tu plan está guardado', 'Your plan is saved'), localizedText('Tareas y rutinas preparadas', 'Tasks and routines prepared')]
+                    : [localizedText('Compra recibida por RevenueCat', 'Purchase received by RevenueCat'), localizedText('Tu plan está guardado', 'Your plan is saved'), localizedText('Continúa en la app para completar la activación', 'Continue in the app to finish activation')]
             ).map((c) => `<li><span class="ok">✓</span>${c}</li>`).join('');
 
             let mainArea;
@@ -3869,22 +4049,22 @@
                 mainArea = `
                     <div class="handoff-main">
                         <a class="btn btn-dopamine handoff-open" href="${link}" id="openAppBtn">Abrir Brainy →</a>
-                        <p class="handoff-hint">Si no abre automáticamente, tocá el botón de tu tienda.</p>
+                         <p class="handoff-hint">${localizedText('Si no se abre automáticamente, toca el botón de tu tienda.', 'If it does not open automatically, tap your store button.')}</p>
                         <div class="handoff-stores">${storesHtml}</div>
-                        <div class="handoff-note" id="handoffNote" hidden>¿No se abrió? Instalá Brainy y volvé a tocar el botón.</div>
+                         <div class="handoff-note" id="handoffNote" hidden>${localizedText('¿No se abrió? Instala Brainy y vuelve a tocar el botón.', 'Did it not open? Install Brainy and tap the button again.')}</div>
                     </div>`;
             } else {
                 mainArea = `
                     <div class="handoff-main">
-                        <p class="handoff-desk-title">Continúa en tu teléfono</p>
+                         <p class="handoff-desk-title">${localizedText('Continúa en tu teléfono', 'Continue on your phone')}</p>
                         <ol class="handoff-steps">
-                            <li>Instalá Brainy (App Store o Google Play).</li>
-                            <li>Escaneá el código con la cámara del celular.</li>
-                            <li>Tu plan y tu suscripción te van a estar esperando.</li>
+                             <li>${localizedText('Instala Brainy (App Store o Google Play).', 'Install Brainy (App Store or Google Play).')}</li>
+                             <li>${localizedText('Escanea el código con la cámara de tu celular.', 'Scan the code with your phone camera.')}</li>
+                             <li>${localizedText('Tu plan y tu suscripción estarán esperándote.', 'Your plan and subscription will be waiting for you.')}</li>
                         </ol>
                         ${qrSvgHtml(link)}
-                        <button class="btn btn-ghost handoff-copy" type="button" id="copyLinkBtn" data-link="${link}">Copiar enlace</button>
-                        <p class="handoff-hint">Abrilo en el navegador del celular y Brainy va a tomar tu plan.</p>
+                         <button class="btn btn-ghost handoff-copy" type="button" id="copyLinkBtn" data-link="${link}">${localizedText('Copiar enlace', 'Copy link')}</button>
+                         <p class="handoff-hint">${localizedText('Ábrelo en el navegador del celular y Brainy cargará tu plan.', 'Open it in your phone browser and Brainy will load your plan.')}</p>
                         <div class="handoff-stores">${storesHtml}</div>
                     </div>`;
             }
@@ -3920,8 +4100,8 @@
                 copyBtn.addEventListener('click', () => {
                     const target = buildClaimLink(redeemUrl);
                     const done = () => {
-                        copyBtn.textContent = '¡Copiado!';
-                        setTimeout(() => { copyBtn.textContent = 'Copiar enlace'; }, 2200);
+                        copyBtn.textContent = localizedText('¡Copiado!', 'Copied!');
+                        setTimeout(() => { copyBtn.textContent = localizedText('Copiar enlace', 'Copy link'); }, 2200);
                     };
                     if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(target).then(done).catch(() => done());
@@ -3945,9 +4125,9 @@
                 mainArea = `
                     <div class="handoff-main">
                         <a class="btn btn-dopamine handoff-open" href="${link}" id="openAppBtn">${step.cta} →</a>
-                        <p class="handoff-hint">Si no abre automáticamente, tocá el botón de tu tienda.</p>
+                        <p class="handoff-hint">${localizedText('Si no se abre automáticamente, toca el botón de tu tienda.', 'If it does not open automatically, tap your store button.')}</p>
                         <div class="handoff-stores">${storesHtml}</div>
-                        <div class="handoff-note" id="handoffNote" hidden>¿No se abrió? Instalá Brainy y volvé a tocar el botón.</div>
+                        <div class="handoff-note" id="handoffNote" hidden>${localizedText('¿No se abrió? Instala Brainy y vuelve a tocar el botón.', 'Did it not open? Install Brainy and tap the button again.')}</div>
                     </div>`;
             } else {
                 const copyLink = funnelState.claimToken && FUNNEL_CONFIG.appDeepLinkScheme
@@ -3955,15 +4135,15 @@
                     : null;
                 mainArea = `
                     <div class="handoff-main">
-                        <p class="handoff-desk-title">Continúa en tu teléfono</p>
+                        <p class="handoff-desk-title">${localizedText('Continúa en tu teléfono', 'Continue on your phone')}</p>
                         <ol class="handoff-steps">
-                            <li>Instalá Brainy (App Store o Google Play).</li>
-                            <li>Tocá el botón «Abrir en el celular».</li>
-                            <li>Tu plan va a estar esperándote con tu token de activación.</li>
+                            <li>${localizedText('Instala Brainy (App Store o Google Play).', 'Install Brainy (App Store or Google Play).')}</li>
+                            <li>${localizedText('Toca el botón «Abrir en el celular».', 'Tap the “Open on phone” button.')}</li>
+                            <li>${localizedText('Tu plan estará esperándote con tu token de activación.', 'Your plan will be waiting with your activation token.')}</li>
                         </ol>
                         ${copyLink ? `
-                            <button class="btn btn-ghost handoff-copy" type="button" id="copyLinkBtn" data-link="${copyLink}">Copiar enlace de activación</button>
-                            <p class="field-note">Abrilo en el navegador del celular y Brainy va a tomar tu plan.</p>` : ''}
+                             <button class="btn btn-ghost handoff-copy" type="button" id="copyLinkBtn" data-link="${copyLink}">${localizedText('Copiar enlace de activación', 'Copy activation link')}</button>
+                             <p class="field-note">${localizedText('Ábrelo en el navegador del celular y Brainy cargará tu plan.', 'Open it in your phone browser and Brainy will load your plan.')}</p>` : ''}
                         <div class="handoff-stores">${storesHtml}</div>
                     </div>`;
             }
@@ -3995,8 +4175,8 @@
                 copyBtn.addEventListener('click', () => {
                     const target = buildClaimLink();
                     const done = () => {
-                        copyBtn.textContent = '¡Copiado!';
-                        setTimeout(() => { copyBtn.textContent = 'Copiar enlace de activación'; }, 2200);
+                        copyBtn.textContent = localizedText('¡Copiado!', 'Copied!');
+                        setTimeout(() => { copyBtn.textContent = localizedText('Copiar enlace de activación', 'Copy activation link'); }, 2200);
                     };
                     if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(target).then(done).catch(() => done());
@@ -4013,7 +4193,9 @@
         }
 
         function todayLabel() {
-            const months = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+            const months = currentLocale() === 'en'
+                ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+                : ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
             const d = new Date();
             return `${d.getDate()} ${months[d.getMonth()]}`;
         }
@@ -4040,7 +4222,7 @@
 
             const cardsHtml = categories.map((cat) => `
                     <section class="picker-cat">
-                        <div class="cat-head"><span class="cat-emoji">${cat.emoji}</span><span>${cat.label}</span></div>
+                        <div class="cat-head"><span class="cat-emoji">${cat.emoji}</span><span>${(CATEGORY_COPY[cat.id] && CATEGORY_COPY[cat.id][currentLocale()]) || cat.label}</span></div>
                         <div class="picker-list">
                             ${cat.items.map((item) => {
                                 const isSel = selected.some((s) => s.id === item.id);
@@ -4051,11 +4233,11 @@
                                                 ${item.emoji ? `<span class="pick-emoji">${item.emoji}</span>` : ''}
                                                 <span class="pick-body">
                                                     <strong>${item.title}</strong>
-                                                    <span class="pick-meta">${item.subtasks.length} pasos · tocar para ver</span>
+                                                 <span class="pick-meta">${item.subtasks.length} ${ui('steps')} · ${ui('tapToSee')}</span>
                                                 </span>
                                                 <span class="pick-chev">▾</span>
                                             </button>
-                                            <button class="pick-check" type="button" data-select="${item.id}" aria-label="Seleccionar ${item.title}">✓</button>
+                                                <button class="pick-check" type="button" data-select="${item.id}" aria-label="${ui('select')} ${item.title}">✓</button>
                                         </div>
                                         <div class="pick-steps" hidden>
                                             <ol>${item.subtasks.map((s) => `<li>${s.title}</li>`).join('')}</ol>
@@ -4066,7 +4248,7 @@
                     </section>`).join('');
 
             const dataError = loadDataError || !data
-                ? `<div class="data-error">No se pudieron cargar los datos. Recargá la página o intentá de nuevo.</div>`
+                ? `<div class="data-error">${ui('noData')}</div>`
                 : '';
 
             document.getElementById('funnelRoot').innerHTML = `
@@ -4075,9 +4257,9 @@
                     ${headHtml(step)}
                     ${dataError}
                     <div class="picker-wrap">${cardsHtml}</div>
-                    <p class="pick-counter">Elegiste <strong id="pickCount">${selected.length}</strong> · mínimo ${min}, hasta ${max} ${step.source === 'tasks' ? 'tareas' : 'rutinas'}</p>
+                    <p class="pick-counter">${ui('selected')} <strong id="pickCount">${selected.length}</strong> · ${ui('minimum')} ${min}, ${ui('upTo')} ${max} ${step.source === 'tasks' ? ui('tasks') : ui('routines')}</p>
                     <div class="actions">
-                        <button class="btn btn-dopamine" type="button" id="nextBtn" ${selected.length >= min ? '' : 'disabled'}>Siguiente →</button>
+                        <button class="btn btn-dopamine" type="button" id="nextBtn" ${selected.length >= min ? '' : 'disabled'}>${ui('next')}</button>
                     </div>
                 </article>`;
 
@@ -4121,7 +4303,7 @@
                         track(step.source === 'tasks' ? 'task_selected' : 'routine_selected', { count: fresh.length, templateId: id });
                     } else {
                         if (funnelState[key].length >= max) {
-                            showToast(`Solo ${max}. Tocá una elegida para cambiarla.`, 2600);
+                            showToast(ui('maxOnly', { max }), 2600);
                             return;
                         }
                         funnelState[key] = funnelState[key].concat([item]);
@@ -4153,8 +4335,8 @@
                     <div class="plan-row">
                         <span class="plan-emoji">${item.emoji || categoryMeta(item.category).emoji}</span>
                         <span class="plan-name">${item.title}</span>
-                        <span class="plan-meta">${(item.subtasks || []).length} pasos</span>
-                    </div>`).join('') || `<div class="data-error">No hay tareas seleccionadas.</div>`;
+                        <span class="plan-meta">${(item.subtasks || []).length} ${ui('steps')}</span>
+                    </div>`).join('') || `<div class="data-error">${ui('noTasks')}</div>`;
 
             const routineRows = routines.map((item, i) => {
                 const egg = eggForRoutine(i);
@@ -4163,22 +4345,22 @@
                         <span class="plan-egg" style="background: radial-gradient(circle at 35% 28%, #ffffff 12%, ${egg.color} 58%, rgba(36,18,63,0.18) 135%);">${egg.emoji}</span>
                         <span class="plan-name">${egg.name} <span class="plan-sep">—</span> ${item.name || item.title}</span>
                     </div>`;
-            }).join('') || `<div class="data-error">No hay rutinas seleccionadas.</div>`;
+                }).join('') || `<div class="data-error">${ui('noRoutines')}</div>`;
 
             document.getElementById('funnelRoot').innerHTML = `
                 ${backButtonHtml()}
                 ${cardOpen()}
                     ${headHtml(step)}
                     <div class="plan-block">
-                        <h4>🎯 Tus tareas</h4>
-                        <p class="plan-note">1–3 tareas seleccionadas.</p>
+                        <h4>🎯 ${currentLocale() === 'en' ? 'Your tasks' : 'Tus tareas'}</h4>
+                        <p class="plan-note">${currentLocale() === 'en' ? '1–3 tasks selected.' : '1–3 tareas seleccionadas.'}</p>
                         <div class="plan-rows">${taskRows}</div>
                     </div>
                     <div class="plan-block">
-                        <h4>🐣 Tus rutinas</h4>
+                        <h4>🐣 ${currentLocale() === 'en' ? 'Your routines' : 'Tus rutinas'}</h4>
                         <div class="plan-rows">${routineRows}</div>
                     </div>
-                    <p class="plan-copy">Cada rutina tiene un compañero. Complétala para ayudarlo a crecer.</p>
+                    <p class="plan-copy">${currentLocale() === 'en' ? 'Each routine has a companion. Complete it to help it grow.' : 'Cada rutina tiene un compañero. Complétala para ayudarlo a crecer.'}</p>
                     <div class="actions">
                         <button class="btn btn-dopamine" type="button" id="nextBtn">${step.cta}</button>
                     </div>
@@ -4195,10 +4377,15 @@
         function renderStep() {
             clearTimers();
             advancing = false;
-            const step = stepList()[currentStepIndex];
-            document.title = step.questionIndex ? `Brainy — Pregunta ${step.questionIndex} de 10` : 'Brainy — Tu sistema + tu mascota';
+            const rawStep = stepList()[currentStepIndex];
+            const step = localizedStep(rawStep);
+            document.title = step.questionIndex
+                ? (currentLocale() === 'en' ? `Brainy — Question ${step.questionIndex} of 10` : `Brainy — Pregunta ${step.questionIndex} de 10`)
+                : (currentLocale() === 'en' ? 'Brainy — Your system and companion' : 'Brainy — Tu sistema y tu mascota');
 
-            if (step.type === 'begin') {
+            if (step.type === 'language') {
+                renderLanguage();
+            } else if (step.type === 'begin') {
                 renderBegin(step);
             } else if (step.type === 'question') {
                 renderQuestion(step);
@@ -4234,9 +4421,10 @@
             history.replaceState(null, '', window.location.pathname);
         }
 
-        currentStepIndex = loadStep();
         funnelState = mergeLoadedState(loadState());
+        currentStepIndex = funnelState.locale ? loadStep() : 0;
         persistState();
+        document.documentElement.lang = currentLocale();
 
         document.addEventListener('click', (event) => {
             const el = event.target.closest ? event.target.closest('[data-action="back"]') : null;
