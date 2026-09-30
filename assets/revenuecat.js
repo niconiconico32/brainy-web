@@ -106,6 +106,11 @@
         return instance.getCustomerInfo();
     }
 
+    function isValidPlanId(planId) {
+        return typeof planId === 'string' &&
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(planId);
+    }
+
     function isEntitledTo(customerInfo, entitlementId) {
         return !!(
             customerInfo &&
@@ -117,11 +122,15 @@
     }
 
     function purchase(opts) {
+        if (!opts || !isValidPlanId(opts.planId)) {
+            return Promise.reject(new Error('purchase_requires_real_plan_id'));
+        }
         var params = {
             rcPackage: opts.rcPackage,
             customerEmail: opts.customerEmail,
             selectedLocale: opts.selectedLocale || 'es',
-            defaultLocale: opts.defaultLocale || 'es'
+            defaultLocale: opts.defaultLocale || 'es',
+            metadata: { brainy_plan_id: opts.planId }
         };
         if (opts.termsAndConditionsUrl) {
             params.termsAndConditionsUrl = opts.termsAndConditionsUrl;
@@ -188,6 +197,7 @@
         getSdkAppUserId: getSdkAppUserId,
         getOfferings: getOfferings,
         getCustomerInfo: getCustomerInfo,
+        isValidPlanId: isValidPlanId,
         isEntitledTo: isEntitledTo,
         purchase: purchase,
         classifyError: classifyError,

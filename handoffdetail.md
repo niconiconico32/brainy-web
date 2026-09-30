@@ -185,7 +185,23 @@ prohibidas (`email`, `claim_token`, `claim_token_hash`, `redemption_url`,
 segura: `tasksCount`, `routinesCount`, `packageId`, `offeringId`, `platform`,
 `campaign`, `locale`. Nunca se loguea el deep link completo.
 
-### 2.7 localStorage
+### 2.7 Asociación compra-plan en RevenueCat
+
+`funnel.html` carga `assets/revenuecat-sdk.js`, cuyo bundle contiene
+`purchases-js` **1.60.1**. Ese bundle acepta `PurchaseParams.metadata` y la
+propaga en la operación de compra. Antes de llamar a `purchase()`, el wrapper
+construye exclusivamente:
+
+```json
+{ "brainy_plan_id": "<planId UUID>" }
+```
+
+`planId` debe ser un UUID real de `web_funnel_plans`. No se envían
+`claimToken`, email, contraseñas ni otros secretos en metadata. El backend debe
+leer `event.metadata.brainy_plan_id` desde el webhook de RevenueCat para
+asociar la compra al plan exacto. La web no llama directamente al webhook.
+
+### 2.8 localStorage
 
 Se mantiene `brainy_funnel_state` y `brainy_funnel_step`. Además se persiste
 `brainy_funnel_client_plan_key` (clave estable de idempotencia).
