@@ -30,6 +30,37 @@ function redact(value, secrets) {
     .slice(0, 180);
 }
 
+function instrumentSdkInstance(instance, calls) {
+  if (!instance || instance.__manualSandboxSdkWrapped) return instance;
+  const sdkPurchase = instance.purchase;
+  const sdkGetOfferings = instance.getOfferings;
+  instance.getOfferings = function () {
+    calls.sdkGetOfferingsCalls = (calls.sdkGetOfferingsCalls || 0) + 1;
+    calls.events.push('sdk_getOfferings');
+    return sdkGetOfferings.apply(this, arguments);
+  };
+  instance.purchase = function (params) {
+    calls.sdkPurchaseCalls += 1;
+    const metadata = params && params.metadata && typeof params.metadata === 'object' ? params.metadata : {};
+    const keys = Object.keys(metadata);
+    let state = {};
+    try { state = JSON.parse(localStorage.getItem('brainy_funnel_state') || '{}'); } catch {}
+    const planId = metadata.brainy_plan_id;
+    calls.sdkMetadataKeys = keys;
+    calls.sdkPlanIdIsUuid = typeof planId === 'string' &&
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(planId);
+    calls.sdkPlanMatchesState = calls.sdkPlanIdIsUuid && planId === (state.planId || globalThis.__MANUAL_SANDBOX_PLAN_ID__);
+    calls.sdkMetadataExact = keys.length === 1 && keys[0] === 'brainy_plan_id' && calls.sdkPlanMatchesState;
+    calls.events.push('sdk_purchase');
+    if (calls.sdkPurchaseCalls > 1) {
+      return Promise.reject(new Error('manual_sandbox_duplicate_sdk_purchase_blocked'));
+    }
+    return sdkPurchase.apply(this, arguments);
+  };
+  Object.defineProperty(instance, '__manualSandboxSdkWrapped', { value: true });
+  return instance;
+}
+
 function acquireLock() {
   try {
     const fd = fs.openSync(LOCK_PATH, 'wx');
@@ -39,14 +70,30 @@ function acquireLock() {
   } catch (error) {
     let owner = 'unknown';
     try { owner = fs.readFileSync(LOCK_PATH, 'utf8').trim(); } catch {}
+    let ownerAlive = false;
     if (/^\d+$/.test(owner)) {
       try {
         process.kill(Number(owner), 0);
-        fail('another manual sandbox runner is already active');
-      } catch {}
+        ownerAlive = true;
+      } catch (processError) {
+        if (processError && processError.code === 'EPERM') ownerAlive = true;
+      }
+    }
+    if (ownerAlive) {
+      fail('another manual sandbox runner is already active');
     }
     try { fs.rmSync(LOCK_PATH, { force: true }); } catch {}
-    return acquireLock();
+    try {
+      const fd = fs.openSync(LOCK_PATH, 'wx');
+      fs.writeFileSync(fd, String(process.pid));
+      fs.closeSync(fd);
+      return () => fs.rmSync(LOCK_PATH, { force: true });
+    } catch (retryError) {
+      if (retryError && retryError.code === 'EEXIST') {
+        fail('another manual sandbox runner is already active');
+      }
+      throw retryError;
+    }
   }
 }
 
@@ -60,52 +107,81 @@ function validateEnvironment() {
   return { key, email };
 }
 
+function installPreflightClickGuard() {
+  const state = window.__MANUAL_SANDBOX__;
+  document.addEventListener('click', event => {
+    const target = event.target && event.target.closest ? event.target.closest('#purchaseBtn') : null;
+    if (target && state.preflightPassed !== true) {
+      state.preflightBlockedClicks = (state.preflightBlockedClicks || 0) + 1;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }, true);
+}
+
 function installBrowserInstrumentation(context, key) {
-  return context.addInitScript(({ sandboxKey }) => {
+  return context.addInitScript(({ sandboxKey, sandboxInstrumentSource }) => {
     const calls = {
       configure: 0,
-      getOfferings: 0,
-      purchase: 0,
-      purchaseMetadataKeys: null,
+      brainyPurchaseCalls: 0,
+      sdkPurchaseCalls: 0,
+      sdkGetOfferingsCalls: 0,
+      sdkMetadataKeys: null,
+      sdkPlanIdIsUuid: false,
+      sdkPlanMatchesState: false,
+      sdkMetadataExact: false,
       appUserId: null,
+      preflightPassed: false,
+      preflightBlockedClicks: 0,
       events: [],
     };
     Object.defineProperty(window, '__MANUAL_SANDBOX__', { value: calls, configurable: false });
 
-    let service = null;
+    const instrumentSdkInstance = (0, eval)(`(${sandboxInstrumentSource})`);
+
+    const wrapConfigure = namespace => {
+      const ctor = namespace && namespace.Purchases ? namespace.Purchases : namespace;
+      if (!ctor || typeof ctor.configure !== 'function' || ctor.__manualSandboxConfigureWrapped) return;
+      const configure = ctor.configure;
+      ctor.configure = function (config) {
+        calls.configure += 1;
+        calls.appUserId = config && config.appUserId ? config.appUserId : null;
+        calls.events.push('configure');
+        return instrumentSdkInstance(configure.apply(this, arguments), calls);
+      };
+      Object.defineProperty(ctor, '__manualSandboxConfigureWrapped', { value: true });
+    };
+
+    let purchasesNamespace = {};
+    let currentNamespace = null;
+    const namespaceProxy = new Proxy(purchasesNamespace, {
+      set(target, property, value) {
+        target[property] = value;
+        if (property === 'Purchases') wrapConfigure(value);
+        return true;
+      },
+    });
+    Object.defineProperty(window, 'Purchases', {
+      configurable: true,
+      get: () => currentNamespace || namespaceProxy,
+      set: next => { currentNamespace = next || {}; purchasesNamespace = currentNamespace; wrapConfigure(currentNamespace); },
+    });
+
+    let brainyService = null;
     Object.defineProperty(window, 'BrainyRevenueCat', {
       configurable: true,
-      get: () => service,
-      set: (next) => {
-        if (!next || next.__manualSandboxWrapped) {
-          service = next;
-          return;
+      get: () => brainyService,
+      set: next => {
+        if (next && !next.__manualSandboxBrainyWrapped && typeof next.purchase === 'function') {
+          const brainyPurchase = next.purchase;
+          next.purchase = function () {
+            calls.brainyPurchaseCalls += 1;
+            calls.events.push('brainy_purchase');
+            return brainyPurchase.apply(this, arguments);
+          };
+          Object.defineProperty(next, '__manualSandboxBrainyWrapped', { value: true });
         }
-        const configure = next.configure;
-        const getOfferings = next.getOfferings;
-        const purchase = next.purchase;
-        next.configure = function (config) {
-          calls.configure += 1;
-          calls.appUserId = config && config.appUserId ? config.appUserId : null;
-          calls.events.push('configure');
-          return configure.apply(this, arguments);
-        };
-        next.getOfferings = function () {
-          calls.getOfferings += 1;
-          calls.events.push('getOfferings');
-          return getOfferings.apply(this, arguments);
-        };
-        next.purchase = function (options) {
-          calls.purchase += 1;
-          calls.purchaseMetadataKeys = options && options.metadata ? Object.keys(options.metadata) : null;
-          calls.events.push('purchase');
-          if (calls.purchase > 1) {
-            return Promise.reject(new Error('manual_sandbox_duplicate_purchase_blocked'));
-          }
-          return purchase.apply(this, arguments);
-        };
-        Object.defineProperty(next, '__manualSandboxWrapped', { value: true });
-        service = next;
+        brainyService = next;
       },
     });
 
@@ -114,7 +190,8 @@ function installBrowserInstrumentation(context, key) {
       revenuecatOfferingId: 'web_default',
       revenuecatEntitlementId: 'brainy Pro',
     };
-  }, { sandboxKey: key });
+  }, { sandboxKey: key, sandboxInstrumentSource: instrumentSdkInstance.toString() })
+    .then(() => context.addInitScript(installPreflightClickGuard));
 }
 
 async function waitForPaywall(page, timeoutMs) {
@@ -151,15 +228,21 @@ async function readPrePurchaseState(page) {
       checkoutEnabled: typeof window.funnelWebCheckout === 'function' && window.funnelWebCheckout() === true,
       serviceAvailable: !!service && typeof service.isAvailable === 'function' && service.isAvailable(),
       configureCalls: calls.configure || 0,
-      offeringsCalls: calls.getOfferings || 0,
-      purchaseCalls: calls.purchase || 0,
+      sdkGetOfferingsCalls: calls.sdkGetOfferingsCalls || 0,
+      brainyPurchaseCalls: calls.brainyPurchaseCalls || 0,
+      sdkPurchaseCalls: calls.sdkPurchaseCalls || 0,
+      sdkMetadataKeys: calls.sdkMetadataKeys,
+      sdkPlanIdIsUuid: !!calls.sdkPlanIdIsUuid,
+      sdkPlanMatchesState: !!calls.sdkPlanMatchesState,
+      sdkMetadataExact: !!calls.sdkMetadataExact,
       appUserIdIsUuid: typeof calls.appUserId === 'string' &&
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(calls.appUserId),
       offeringVisible: document.querySelectorAll('.plan-card').length > 0,
       planIdIsUuid: typeof planId === 'string' &&
         /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(planId),
       alreadyPro: state.alreadyPro === true,
-      metadataKeys: ['brainy_plan_id'],
+      preflightPassed: calls.preflightPassed === true,
+      preflightBlockedClicks: calls.preflightBlockedClicks || 0,
     };
   });
 }
@@ -207,23 +290,45 @@ async function main() {
     }
 
     const checks = await readPrePurchaseState(page);
-    console.log(`[${new Date().toISOString()}] Pre-checkout: ${JSON.stringify({ ...checks, metadataKeys: checks.metadataKeys })}`);
+    console.log(`[${new Date().toISOString()}] Pre-checkout: ${JSON.stringify(checks)}`);
     const valid = checks.checkoutEnabled && checks.serviceAvailable && checks.configureCalls > 0 &&
-      checks.offeringsCalls > 0 && checks.offeringVisible && checks.planIdIsUuid &&
-      checks.appUserIdIsUuid && !checks.alreadyPro && checks.purchaseCalls === 0;
+      checks.sdkGetOfferingsCalls > 0 && checks.sdkPurchaseCalls === 0 && checks.offeringVisible && checks.planIdIsUuid &&
+      checks.appUserIdIsUuid && !checks.alreadyPro && checks.brainyPurchaseCalls === 0;
     if (!valid) {
       console.log('Pre-checkout inválido; no se permite continuar y no se ejecutó ninguna compra.');
       await waitForEnter();
       return;
     }
 
+    await page.evaluate(() => {
+      if (window.__MANUAL_SANDBOX__) window.__MANUAL_SANDBOX__.preflightPassed = true;
+    });
     console.log('Pre-checkout válido. Haz clic manualmente una sola vez y completa el checkout sandbox.');
-    await waitForEnter();
+    const terminal = readline.createInterface({ input: process.stdin, output: process.stdout });
+    const earlyEnter = terminal.question('Completa manualmente la compra. Presiona Enter solo después de que termine. ')
+      .then(() => ({ kind: 'early_enter' }));
+    const outcomePromise = waitForManualCompletion(page, 20 * 60 * 1000);
+    const result = await Promise.race([earlyEnter, outcomePromise]);
+    terminal.close();
     const finalState = await page.evaluate(() => {
       const state = JSON.parse(localStorage.getItem('brainy_funnel_state') || '{}');
       const calls = window.__MANUAL_SANDBOX__ || {};
-      return { purchaseCalls: calls.purchase || 0, purchaseCompleted: !!state.purchaseCompleted, handoffReady: !!state.handoffReady };
+      return {
+        brainyPurchaseCalls: calls.brainyPurchaseCalls || 0,
+        sdkPurchaseCalls: calls.sdkPurchaseCalls || 0,
+        sdkMetadataKeys: calls.sdkMetadataKeys,
+        sdkPlanIdIsUuid: !!calls.sdkPlanIdIsUuid,
+        sdkPlanMatchesState: !!calls.sdkPlanMatchesState,
+        sdkMetadataExact: !!calls.sdkMetadataExact,
+        purchaseCompleted: !!state.purchaseCompleted,
+        handoffReady: !!state.handoffReady,
+      };
     });
+    if (result.kind === 'early_enter') {
+      console.log(`[${new Date().toISOString()}] Prueba incompleta: Enter fue presionado antes de confirmar el resultado.`);
+    } else {
+      console.log(`[${new Date().toISOString()}] Resultado manual: ${result.kind}.`);
+    }
     console.log(`[${new Date().toISOString()}] Final: ${JSON.stringify(finalState)}`);
     console.log(`HTTP create-plan=${http.createPlan.join(',') || 'none'} prepare-account=${http.prepareAccount.join(',') || 'none'} RevenueCat=${http.revenuecat.length}`);
     console.log(`Errores de página: ${errors.length}`);
@@ -233,7 +338,49 @@ async function main() {
   }
 }
 
-main().catch(error => {
-  console.error(redact(error.message, [process.env.FUNNEL_RC_KEY, process.env.FUNNEL_TEST_EMAIL]));
-  process.exitCode = 1;
-});
+async function waitForManualCompletion(page, timeoutMs) {
+  const started = Date.now();
+  let purchaseLogged = false;
+  while (Date.now() - started < timeoutMs) {
+    if (page.isClosed()) return { kind: 'browser_closed' };
+    const snapshot = await page.evaluate(() => {
+      const state = JSON.parse(localStorage.getItem('brainy_funnel_state') || '{}');
+      const calls = window.__MANUAL_SANDBOX__ || {};
+      return {
+        sdkPurchaseCalls: calls.sdkPurchaseCalls || 0,
+        purchaseCompleted: !!state.purchaseCompleted,
+        handoffReady: !!state.handoffReady,
+        recoveryVisible: !!document.querySelector('.paywall-recovery'),
+        successVisible: !!document.querySelector('.success-checks'),
+      };
+    });
+    if (snapshot.sdkPurchaseCalls > 0 && !purchaseLogged) {
+      console.log(`[${new Date().toISOString()}] SDK purchase invocado: ${snapshot.sdkPurchaseCalls}`);
+      purchaseLogged = true;
+    }
+    if (snapshot.purchaseCompleted && (snapshot.handoffReady || snapshot.successVisible)) {
+      return { kind: 'success' };
+    }
+    if (snapshot.sdkPurchaseCalls > 0 && snapshot.recoveryVisible) {
+      return { kind: 'terminal_error' };
+    }
+    await page.waitForTimeout(500);
+  }
+  return { kind: 'timeout' };
+}
+
+if (require.main === module) {
+  main().catch(error => {
+    console.error(redact(error.message, [process.env.FUNNEL_RC_KEY, process.env.FUNNEL_TEST_EMAIL]));
+    process.exitCode = 1;
+  });
+}
+
+module.exports = {
+  LOCK_PATH,
+  acquireLock,
+  installBrowserInstrumentation,
+  installPreflightClickGuard,
+  instrumentSdkInstance,
+  waitForManualCompletion,
+};
