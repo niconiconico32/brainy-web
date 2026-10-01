@@ -15,6 +15,7 @@
     "test:science-screens": "node testers/science-screens-regression.cjs",
     "test:profile-diagnosis": "node testers/profile-diagnosis-regression.cjs",
     "test:plan-loading": "node testers/plan-loading-regression.cjs",
+    "test:paywall": "node testers/paywall-regression.cjs",
     "cleanup:funnel-plans": "node testers/cleanup-funnel-plans.cjs"
   },
   "dependencies": {

@@ -2841,97 +2841,404 @@
             color: var(--text);
         }
 
+        /* ---- Paywall rediseñado ---- */
+
+        .step-paywall {
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .paywall-head {
+            text-align: center;
+        }
+
+        .paywall-head h1 {
+            margin-top: 0;
+            font-family: var(--funnel-serif);
+            font-size: clamp(1.5rem, 6.4vw, 2.05rem);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            line-height: 1.14;
+            text-wrap: balance;
+        }
+
+        .paywall-head .sub {
+            max-width: 40ch;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Banner del contador */
+        .paywall-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 20px;
+            padding: 12px 16px;
+            border-radius: 18px;
+            background: var(--funnel-accent-soft);
+            border: 1px solid rgba(21, 152, 117, 0.22);
+        }
+
+        .paywall-banner-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            line-height: 1.3;
+            color: var(--funnel-accent-strong);
+        }
+
+        .paywall-countdown-numbers {
+            display: inline-flex;
+            align-items: flex-start;
+            gap: 6px;
+        }
+
+        .paywall-countdown-unit {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 40px;
+        }
+
+        .paywall-countdown-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+            color: var(--funnel-text);
+        }
+
+        .paywall-countdown-sep {
+            font-size: 1.3rem;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--funnel-accent-strong);
+        }
+
+        .paywall-countdown-caption {
+            margin-top: 3px;
+            font-size: 0.58rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            color: var(--funnel-muted);
+        }
+
+        /* Tarjetas de oferta: toda la tarjeta es seleccionable via radio */
         .plan-cards {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin: 6px 0 14px;
+            margin: 20px 0 0;
         }
 
         .plan-card {
             position: relative;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 16px 16px 16px 48px;
-            border-radius: 18px;
-            border: 2px solid var(--border);
-            background: rgba(255, 255, 255, 0.6);
+            gap: 12px;
+            min-height: 44px;
+            padding: 16px;
+            border: 2px solid var(--funnel-border);
+            border-radius: 22px;
+            background: var(--funnel-surface);
+            box-shadow: var(--funnel-shadow);
             cursor: pointer;
-            text-align: left;
-            font: inherit;
-            color: var(--text);
-            transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
-        }
-
-        .plan-card .plan-radio {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid rgba(36, 18, 63, 0.25);
-            background: #fff;
-        }
-
-        .plan-card .plan-radio.hl {
-            border-color: var(--accent);
-            background: var(--accent);
-            box-shadow: inset 0 0 0 4px #fff;
+            transition: border-color 0.15s ease, background 0.15s ease;
         }
 
         .plan-card.selected {
-            border-color: var(--accent);
-            background: rgba(91, 75, 244, 0.06);
-            transform: translateY(-1px);
+            border-color: var(--funnel-accent);
+            background: #F6FCF9;
         }
 
-        .plan-card .plan-info {
+        .plan-card:focus-within {
+            outline: 3px solid var(--funnel-accent);
+            outline-offset: 3px;
+        }
+
+        /* Radio real, accesible por teclado, visualmente discreto. */
+        .plan-card-radio {
+            position: absolute;
+            opacity: 0;
+            width: 44px;
+            height: 44px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .plan-card-radio:focus-visible ~ .plan-card-state {
+            outline: 3px solid var(--funnel-accent);
+            outline-offset: 3px;
+            border-radius: 999px;
+        }
+
+        .plan-card-main {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
+            flex: 1 1 auto;
             min-width: 0;
         }
 
-        .plan-card .plan-info strong {
-            font-size: 1.02rem;
-        }
-
-        .plan-card .plan-info span {
-            font-size: 0.82rem;
-            color: var(--muted);
-        }
-
-        .plan-card .plan-price {
+        .plan-card-head {
             display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            flex-shrink: 0;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        .plan-card .plan-price strong {
-            font-size: 1.12rem;
-            color: var(--accent);
-        }
-
-        .plan-card .plan-price span {
-            font-size: 0.76rem;
-            color: var(--muted);
+        .plan-card-title {
+            font-size: 1.02rem;
+            font-weight: 700;
+            line-height: 1.25;
         }
 
         .plan-badge {
-            display: inline-block;
-            margin-left: 8px;
-            padding: 2px 8px;
+            padding: 3px 9px;
             border-radius: 999px;
-            background: var(--dopamine);
-            color: var(--text);
-            font-size: 0.68rem;
-            font-weight: 900;
-            vertical-align: middle;
+            background: var(--funnel-accent-soft);
+            border: 1px solid rgba(21, 152, 117, 0.25);
+            font-size: 0.64rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--funnel-accent-strong);
+        }
+
+        .plan-card-price-row {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .plan-card-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+            color: var(--funnel-text);
+        }
+
+        .plan-card-period,
+        .plan-card-daily,
+        .plan-card-note,
+        .plan-card-trial {
+            font-size: 0.8rem;
+            line-height: 1.4;
+            color: var(--funnel-muted);
+        }
+
+        .plan-card-daily,
+        .plan-card-save,
+        .plan-card-compare,
+        .plan-card-trial {
+            display: block;
+        }
+
+        .plan-card-save {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--funnel-accent-strong);
+        }
+
+        /* La comparacion es una referencia, no un precio anterior tachado. */
+        .plan-card-compare {
+            font-size: 0.76rem;
+            color: var(--funnel-muted);
+        }
+
+        .plan-card-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            flex: 0 0 auto;
+        }
+
+        /* Check visible + texto "Selected": nunca solo el color. */
+        .plan-card-check {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid rgba(36, 37, 33, 0.18);
+            background: #fff;
+            position: relative;
+        }
+
+        .plan-card.selected .plan-card-check {
+            border-color: var(--funnel-accent);
+            background: var(--funnel-accent);
+        }
+
+        .plan-card.selected .plan-card-check::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 3px;
+            width: 5px;
+            height: 9px;
+            border: solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .plan-card-selected-text {
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--funnel-accent-strong);
+        }
+
+        .paywall-expired {
+            margin: 12px 0 0;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: #FBE3E6;
+            border: 1px solid #E9B4BB;
+            font-size: 0.88rem;
+            font-weight: 700;
+            text-align: center;
+            color: #8C2F3B;
+        }
+
+        .paywall-cta {
+            width: 100%;
+        }
+
+        .step-paywall .btn[disabled] {
+            background: #E7E5DE;
+            color: #8A8C86;
+            box-shadow: none;
+            opacity: 1;
+        }
+
+        .paywall-disclosure {
+            margin: 16px 0 0;
+            font-size: 0.8rem;
+            line-height: 1.55;
+            color: var(--funnel-muted);
+            text-wrap: pretty;
+        }
+
+        .paywall-legal {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 12px 0 0;
+            font-size: 0.8rem;
+        }
+
+        .paywall-legal a {
+            color: var(--funnel-accent-strong);
+            font-weight: 700;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            padding: 4px 2px;
+        }
+
+        .paywall-legal a:focus-visible {
+            outline: 2px solid var(--funnel-accent);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        .paywall-secure {
+            margin-top: 18px;
+            padding: 16px;
+            border: 1px solid var(--funnel-border);
+            border-radius: 20px;
+            background: var(--funnel-surface);
+            box-shadow: var(--funnel-shadow);
+            text-align: center;
+        }
+
+        .paywall-secure-head {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Escudo CSS puro: sin imagenes ni marcas de metodos de pago. */
+        .paywall-secure-icon {
+            width: 18px;
+            height: 20px;
+            border: 2px solid var(--funnel-accent);
+            border-radius: 4px 4px 9px 9px;
+            clip-path: polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%);
+            position: relative;
+        }
+
+        .paywall-secure-title {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: var(--funnel-accent-strong);
+        }
+
+        .paywall-secure-text {
+            margin: 10px 0 0;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            color: var(--funnel-muted);
+        }
+
+        .paywall-secure-list {
+            list-style: none;
+            margin: 10px 0 0;
+            padding: 0;
+            display: grid;
+            gap: 4px;
+            font-size: 0.78rem;
+            color: var(--funnel-muted);
+        }
+
+        .paywall-secure-list li::before {
+            content: '✓';
+            margin-right: 6px;
+            color: var(--funnel-accent);
+            font-weight: 800;
+        }
+
+        @media (max-width: 420px) {
+            .paywall-banner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .plan-card-price {
+                font-size: 1.35rem;
+            }
+
+            .plan-card {
+                padding: 14px;
+            }
+        }
+
+        @media (max-width: 340px) {
+            .plan-card-price-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
+            }
+
+            .plan-card-price {
+                font-size: 1.25rem;
+            }
+
+            .plan-card-title {
+                font-size: 0.98rem;
+            }
         }
 
         .paywall-note {
@@ -3436,6 +3743,7 @@
             redemptionPersisted: false,
             handoffReady: false,
             selectedPackageId: null,
+            paywallOfferExpiresAt: null,
             pendingRedemptionUrl: null,
             identityPrepared: false,
             supabaseUserId: null,
@@ -4592,6 +4900,7 @@
         }
 
         let cancelPlanLoadingRunners = null;
+        let paywallCleanup = null;
 
         function clearTimers() {
             stepTimers.forEach((timer) => {
@@ -4603,6 +4912,11 @@
             if (cancelPlanLoadingRunners) {
                 cancelPlanLoadingRunners();
                 cancelPlanLoadingRunners = null;
+            }
+            // El contador del paywall usa su propio intervalo y listeners.
+            if (paywallCleanup) {
+                paywallCleanup();
+                paywallCleanup = null;
             }
         }
 
@@ -6453,6 +6767,117 @@
             });
         }
 
+        // --- Paywall: helpers puros, contador y render ---
+        //
+        // La oferta dura 15 minutos reales desde la PRIMERA visita al paywall.
+        const PAYWALL_OFFER_DURATION_MS = 15 * 60 * 1000;
+        const PAYWALL_TICK_MS = 500;
+
+        // Precio real del producto de RevenueCat. El monto NUNCA se parsea del
+        // string localizado: se leen los campos numericos del SDK.
+        function paywallProductPrice(pkg) {
+            const price = pkg && pkg.webBillingProduct ? pkg.webBillingProduct.price : null;
+            if (!price || typeof price !== 'object') {
+                return { numeric: null, currency: null, formatted: '' };
+            }
+            let numeric = null;
+            if (typeof price.amountMicros === 'number' && Number.isFinite(price.amountMicros) && price.amountMicros > 0) {
+                numeric = price.amountMicros / 1e6;
+            } else if (typeof price.amount === 'number' && Number.isFinite(price.amount) && price.amount > 0) {
+                numeric = price.amount / 100;
+            }
+            const currency = typeof price.currency === 'string' && price.currency ? price.currency.toUpperCase() : null;
+            const formatted = typeof price.formattedPrice === 'string' ? price.formattedPrice : '';
+            return { numeric: numeric, currency: currency, formatted: formatted };
+        }
+
+        function formatPaywallMoney(amount, currency) {
+            if (typeof amount !== 'number' || !Number.isFinite(amount)) {
+                return '';
+            }
+            try {
+                // Reglas de decimales de la moneda, sin concatenar simbolos.
+                return new Intl.NumberFormat(currentLocale(), { style: 'currency', currency: currency }).format(amount);
+            } catch {
+                return '';
+            }
+        }
+
+        // Equivalencias SOLO informativas: nunca alteran el cobro.
+        // monthlyDaily = monthly / (365.25 / 12); annualDaily = annual / 365.25.
+        // `days` viene del periodo real del producto: 365.25 anual,
+        // 365.25 / 12 mensual.
+        function paywallDailyEquivalent(product) {
+            if (!product || !product.numeric || !product.currency || !product.days) {
+                return '';
+            }
+            const value = formatPaywallMoney(product.numeric / product.days, product.currency);
+            return value ? localizedText(`About ${value} per day`, `About ${value} per day`) : '';
+        }
+
+        // Comparacion anual: mensual x 12. Solo si ambas monedas coinciden.
+        function paywallAnnualComparison(annualProduct, monthlyProduct) {
+            const empty = { equivalent: null, savingsPercent: null, equivalentText: '', savingsText: '' };
+            if (!annualProduct || !monthlyProduct) return empty;
+            if (!annualProduct.numeric || !monthlyProduct.numeric) return empty;
+            if (!annualProduct.currency || annualProduct.currency !== monthlyProduct.currency) return empty;
+            const equivalent = monthlyProduct.numeric * 12;
+            if (!(equivalent > 0)) return empty;
+            const raw = 1 - (annualProduct.numeric / equivalent);
+            // Math.floor: no exagerar el descuento. 0 o negativo no se muestra.
+            const percent = Math.floor(raw * 100);
+            const formatted = formatPaywallMoney(equivalent, annualProduct.currency);
+            const result = { equivalent: equivalent, savingsPercent: null, equivalentText: '', savingsText: '' };
+            if (formatted) {
+                result.equivalentText = localizedText(`12 monthly payments: ${formatted}`, `12 monthly payments: ${formatted}`);
+            }
+            if (raw > 0 && percent >= 1) {
+                result.savingsPercent = percent;
+                result.savingsText = localizedText(`Save ${percent}%`, `Save ${percent}%`);
+            }
+            return result;
+        }
+
+        // Trial solo si el producto real trae uno reconocible. Si no, null.
+        function paywallTrialInfo(pkg) {
+            const product = pkg && pkg.webBillingProduct ? pkg.webBillingProduct : null;
+            if (!product) return null;
+            const trial = product.trialInfo || product.freeTrial || (product.price && product.price.trialInfo) || null;
+            if (!trial || typeof trial !== 'object') return null;
+            const duration = typeof trial.period === 'object' && trial.period
+                ? trial.period
+                : (typeof trial.durationDays === 'number' ? { number: trial.durationDays, unit: 'DAY' } : null);
+            if (!duration || typeof duration.number !== 'number' || !(duration.number > 0)) return null;
+            const unit = String(duration.unit || 'DAY').toUpperCase();
+            const labels = {
+                DAY: { en: (n) => `${n} ${n === 1 ? 'day' : 'days'}`, es: (n) => `${n} ${n === 1 ? 'día' : 'días'}` },
+                WEEK: { en: (n) => `${n} ${n === 1 ? 'week' : 'weeks'}`, es: (n) => `${n} ${n === 1 ? 'semana' : 'semanas'}` },
+                MONTH: { en: (n) => `${n} ${n === 1 ? 'month' : 'months'}`, es: (n) => `${n} ${n === 1 ? 'mes' : 'meses'}` }
+            };
+            const shape = labels[unit];
+            if (!shape) return null;
+            return { text: (currentLocale() === 'en' ? shape.en : shape.es)(duration.number) };
+        }
+
+        // Vencimiento absoluto. Se crea UNA vez y nunca se renueva al rerenderizar.
+        function paywallOfferDeadline() {
+            const stored = funnelState.paywallOfferExpiresAt;
+            if (typeof stored === 'number' && Number.isFinite(stored) && stored > 0) {
+                return stored;
+            }
+            const created = Date.now() + PAYWALL_OFFER_DURATION_MS;
+            setState('paywallOfferExpiresAt', created);
+            return created;
+        }
+
+        function paywallOfferRemaining(deadline) {
+            return Math.max(0, (deadline || 0) - Date.now());
+        }
+
+        function paywallOfferExpired(deadline) {
+            return paywallOfferRemaining(deadline) <= 0;
+        }
+
         function renderPaywall(step) {
             const rcConfig = revenuecatConfig();
             const svc = window.BrainyRevenueCat || null;
@@ -6611,9 +7036,13 @@
                     renderRecovery(localizedText('Todavía no hay planes disponibles. Inténtalo de nuevo en unos minutos.', 'No plans are available yet. Try again in a few minutes.'));
                     return;
                 }
+                // Seleccion inicial: MENSUAL, aunque el anual se muestre primero.
+                // Si ya hay seleccion guardada (rerender, volver atras), se respeta.
                 let selectedId = funnelState.selectedPackageId;
                 if (!packages.some((entry) => entry.pkg.identifier === selectedId)) {
-                    const preferred = packages.find((entry) => entry.kind === 'annual') || packages[0];
+                    const preferred = packages.find((entry) => entry.kind === 'monthly')
+                        || packages.find((entry) => entry.kind === 'annual')
+                        || packages[0];
                     selectedId = preferred.pkg.identifier;
                 }
                 const currency = (packages[0].pkg.webBillingProduct &&
@@ -6642,6 +7071,26 @@
                 return '';
             }
 
+            // Producto normalizado + dias reales del periodo, para las
+            // equivalencias daily. annual = 365.25, monthly = 365.25 / 12.
+            function productFacts(pkg, kind) {
+                const price = paywallProductPrice(pkg);
+                const product = pkg.webBillingProduct || {};
+                const unit = product.period && product.period.unit ? product.period.unit : null;
+                const number = product.period && product.period.number ? product.period.number : 1;
+                let days = null;
+                if (unit === 'year') days = 365.25 * number;
+                else if (unit === 'month') days = (365.25 / 12) * number;
+                else if (kind === 'annual') days = 365.25;
+                else if (kind === 'monthly') days = 365.25 / 12;
+                return {
+                    numeric: price.numeric,
+                    currency: price.currency,
+                    formatted: price.formatted,
+                    days: days
+                };
+            }
+
             function priceText(pkg) {
                 const price = pkg.webBillingProduct && pkg.webBillingProduct.price ? pkg.webBillingProduct.price : null;
                 if (!price) {
@@ -6654,57 +7103,228 @@
                 return `${amount} ${price.currency || ''}`.trim();
             }
 
+            // Datos derivados de los productos REALES, una sola vez por render.
+            function offerFacts(data) {
+                const annualEntry = data.packages.find((e) => e.kind === 'annual');
+                const monthlyEntry = data.packages.find((e) => e.kind === 'monthly');
+                return {
+                    annual: annualEntry ? productFacts(annualEntry.pkg, 'annual') : null,
+                    monthly: monthlyEntry ? productFacts(monthlyEntry.pkg, 'monthly') : null,
+                    comparison: paywallAnnualComparison(
+                        annualEntry ? productFacts(annualEntry.pkg, 'annual') : null,
+                        monthlyEntry ? productFacts(monthlyEntry.pkg, 'monthly') : null
+                    )
+                };
+            }
+
+            function selectedEntry(data) {
+                return data.packages.find((entry) => entry.pkg.identifier === data.selectedId) || null;
+            }
+
+            function offerCardHtml(entry, facts, deadline) {
+                const product = entry.kind === 'annual' ? facts.annual : facts.monthly;
+                const sel = entry.pkg.identifier === paywallData.selectedId;
+                const trial = paywallTrialInfo(entry.pkg);
+                // Precio principal: string localizado del SDK. Sin fallback inventado.
+                const mainPrice = product.formatted;
+                const daily = paywallDailyEquivalent(product);
+                const comparison = entry.kind === 'annual' && facts.comparison ? facts.comparison : null;
+                const isAnnual = entry.kind === 'annual';
+                return `
+                    <label class="plan-card ${sel ? 'selected' : ''}" data-pkg="${entry.pkg.identifier}" for="plan-${entry.kind}">
+                        <input class="plan-card-radio" type="radio" name="funnel-plan" id="plan-${entry.kind}"
+                            value="${entry.pkg.identifier}" ${sel ? 'checked' : ''}>
+                        <span class="plan-card-main">
+                            <span class="plan-card-head">
+                                <span class="plan-card-title">${isAnnual ? localizedText('Annual plan', 'Annual plan') : localizedText('Monthly plan', 'Monthly plan')}</span>
+                                ${isAnnual ? `<span class="plan-badge">${localizedText('Most popular', 'Most popular')}</span>` : ''}
+                            </span>
+                            <span class="plan-card-price-row">
+                                <span class="plan-card-price">${mainPrice}</span>
+                                <span class="plan-card-period">${periodLabel(entry.pkg)}</span>
+                            </span>
+                            ${daily ? `<span class="plan-card-daily">${daily}</span>` : ''}
+                            ${comparison && comparison.savingsText ? `<span class="plan-card-save">${comparison.savingsText}</span>` : ''}
+                            ${comparison && comparison.equivalentText ? `<span class="plan-card-compare">${comparison.equivalentText}</span>` : ''}
+                            ${trial ? `<span class="plan-card-trial">${localizedText('Includes trial', 'Includes trial')}: ${trial.text}</span>` : ''}
+                            ${!isAnnual ? `<span class="plan-card-note">${localizedText('Flexible monthly billing', 'Flexible monthly billing')}</span>` : ''}
+                        </span>
+                        <span class="plan-card-state">
+                            <span class="plan-card-check" aria-hidden="true"></span>
+                            ${sel ? `<span class="plan-card-selected-text">${localizedText('Selected', 'Selected')}</span>` : ''}
+                        </span>
+                    </label>`;
+            }
+
+            function disclosureHtml(entry, facts) {
+                const isAnnual = entry && entry.kind === 'annual';
+                const product = isAnnual ? facts.annual : facts.monthly;
+                const trial = entry ? paywallTrialInfo(entry.pkg) : null;
+                const price = product ? (product.formatted || '') : '';
+                const unitWord = isAnnual ? localizedText('year', 'year') : localizedText('month', 'month');
+                const planWord = isAnnual ? localizedText('annual', 'annual') : localizedText('monthly', 'monthly');
+                let base;
+                if (trial) {
+                    base = localizedText(
+                        `By selecting Claim My Plan, you agree to begin a ${trial.text} trial. Unless cancelled before the trial ends, your subscription will automatically renew at ${price} per ${unitWord}.`,
+                        `By selecting Claim My Plan, you agree to begin a ${trial.text} trial. Unless cancelled before the trial ends, your subscription will automatically renew at ${price} per ${unitWord}.`
+                    );
+                } else {
+                    base = localizedText(
+                        `By selecting Claim My Plan, you agree to start a ${planWord} Brainy subscription for ${price} per ${unitWord}. You will be charged today. Your subscription renews automatically at the then-current price unless you cancel before the next renewal date.`,
+                        `By selecting Claim My Plan, you agree to start a ${planWord} Brainy subscription for ${price} per ${unitWord}. You will be charged today. Your subscription renews automatically at the then-current price unless you cancel before the next renewal date.`
+                    );
+                }
+                const manage = localizedText(
+                    'You can manage or cancel your subscription according to the billing provider’s terms.',
+                    'You can manage or cancel your subscription according to the billing provider’s terms.'
+                );
+                return `
+                    <p class="paywall-disclosure">${base} ${manage}</p>
+                    <p class="paywall-legal">
+                        <a href="terms.html" target="_blank" rel="noopener">${localizedText('Terms of Service', 'Terms of Service')}</a>
+                        <span aria-hidden="true">·</span>
+                        <a href="privacy.html" target="_blank" rel="noopener">${localizedText('Privacy Policy', 'Privacy Policy')}</a>
+                        <span aria-hidden="true">·</span>
+                        <a href="support.html" target="_blank" rel="noopener">${localizedText('Support', 'Support')}</a>
+                    </p>`;
+            }
+
+            function secureBlockHtml() {
+                return `
+                    <div class="paywall-secure">
+                        <div class="paywall-secure-head">
+                            <span class="paywall-secure-icon" aria-hidden="true"></span>
+                            <span class="paywall-secure-title">SECURE CHECKOUT</span>
+                        </div>
+                        <p class="paywall-secure-text">${localizedText(
+                            'Your payment is processed securely. You can manage or cancel your subscription through the billing provider.',
+                            'Your payment is processed securely. You can manage or cancel your subscription through the billing provider.'
+                        )}</p>
+                        <ul class="paywall-secure-list">
+                            <li>${localizedText('Secure payment processing', 'Secure payment processing')}</li>
+                            <li>${localizedText('Automatic renewal disclosed before purchase', 'Automatic renewal disclosed before purchase')}</li>
+                        </ul>
+                    </div>`;
+            }
+
             function renderPaywallCards() {
                 const data = paywallData;
                 const checkoutAllowed = hasRealPlan();
-                const taskLabel = `${funnelState.selectedTasks.length} ${funnelState.selectedTasks.length === 1 ? ui('task') : ui('tasks')}`;
-                const routineLabel = `${funnelState.selectedRoutines.length} ${funnelState.selectedRoutines.length === 1 ? ui('routine') : ui('routines')}`;
-                const eggLabel = `${assignedRoutines().length} ${assignedRoutines().length === 1 ? localizedText('compañero', 'companion') : localizedText('compañeros', 'companions')}`;
-                const chips = `<span class="paywall-chip">${taskLabel}</span><span class="paywall-chip">${routineLabel}</span><span class="paywall-chip">${eggLabel}</span>`;
-
-                const cardsHtml = data.packages.map((entry) => {
-                    const sel = entry.pkg.identifier === data.selectedId;
-                    const badge = entry.kind === 'annual' ? `<span class="plan-badge">${localizedText('Recomendado', 'Recommended')}</span>` : '';
-                    const productTitle = entry.pkg.webBillingProduct && entry.pkg.webBillingProduct.title ? ` · ${entry.pkg.webBillingProduct.title}` : '';
-                    return `
-                        <button class="plan-card ${sel ? 'selected' : ''}" type="button" data-pkg="${entry.pkg.identifier}">
-                            <span class="plan-radio ${sel ? 'hl' : ''}"></span>
-                            <span class="plan-info">
-                                <strong>${entry.kind === 'annual' ? localizedText('Plan anual', 'Annual plan') : localizedText('Plan mensual', 'Monthly plan')}${badge}</strong>
-                                <span>${periodLabel(entry.pkg)}${productTitle}</span>
-                            </span>
-                            <span class="plan-price">
-                                <strong>${priceText(entry.pkg)}</strong>
-                                <span>${periodLabel(entry.pkg)}</span>
-                            </span>
-                        </button>`;
-                }).join('');
+                // Orden visual: anual primero (badge), mensual seleccionado.
+                const ordered = data.packages.slice().sort((a, b) => (a.kind === 'annual' ? -1 : 1) - (b.kind === 'annual' ? -1 : 1));
+                const facts = offerFacts(data);
+                const entry = selectedEntry(data);
+                const deadline = paywallOfferDeadline();
+                let expired = paywallOfferExpired(deadline);
 
                 root.innerHTML = `
                     ${backButtonHtml()}
-                    ${cardOpen()}
-                        ${headHtml(step)}
-                        <div class="paywall-summary">${chips}</div>
-                        <div class="plan-cards">${cardsHtml}</div>
-                         <p class="paywall-note">${rcConfig.termsUrl ? localizedText('Al continuar aceptas los términos de Brainy. Puedes cancelar en cualquier momento.', 'By continuing, you accept Brainy’s terms. You can cancel at any time.') : localizedText('Puedes cancelar en cualquier momento desde tu cuenta.', 'You can cancel at any time from your account.')}</p>
-                        <div class="actions">
-                            ${checkoutAllowed
-                                ? `<button class="btn btn-dopamine" type="button" id="purchaseBtn">${localizedText('Activar mi plan →', 'Activate my plan →')}</button>`
-                                : `<button class="btn btn-dopamine" type="button" id="purchaseBtn" disabled>${localizedText('Checkout no disponible en modo demo', 'Checkout unavailable in demo mode')}</button><p class="field-note">${localizedText('Modo demo: no se puede cobrar sin un plan real en el backend.', 'Demo mode: payment is unavailable without a real backend plan.')}</p>`}
+                    ${cardOpen('step-paywall')}
+                        <div class="card-head paywall-head">
+                            <h1>${localizedText('Unlock your personalized Brainy plan', 'Unlock your personalized Brainy plan')}</h1>
+                            <p class="sub">${localizedText('Small daily steps. Visible progress. A plan built for you.', 'Small daily steps. Visible progress. A plan built for you.')}</p>
                         </div>
+                        <div class="paywall-banner">
+                            <span class="paywall-banner-label">${localizedText('THIS OFFER ENDS IN', 'THIS OFFER ENDS IN')}</span>
+                            <span class="paywall-countdown" id="paywallCountdown" data-deadline="${deadline}">
+                                <span class="paywall-countdown-numbers">
+                                    <span class="paywall-countdown-unit"><span class="paywall-countdown-value" id="paywallMinutes">15</span><span class="paywall-countdown-caption">${localizedText('MINUTES', 'MINUTES')}</span></span>
+                                    <span class="paywall-countdown-sep" aria-hidden="true">:</span>
+                                    <span class="paywall-countdown-unit"><span class="paywall-countdown-value" id="paywallSeconds">00</span><span class="paywall-countdown-caption">${localizedText('SECONDS', 'SECONDS')}</span></span>
+                                </span>
+                            </span>
+                        </div>
+                        <p class="sr-only" role="status" aria-live="polite" id="paywallCountdownStatus"></p>
+                        <div class="plan-cards">${ordered.map((e) => offerCardHtml(e, facts, deadline)).join('')}</div>
+                        <p class="paywall-expired" id="paywallExpired" ${expired ? '' : 'hidden'}>${localizedText('This offer has expired.', 'This offer has expired.')}</p>
+                        <div class="actions">
+                            ${checkoutAllowed && !expired
+                                ? `<button class="btn btn-dopamine paywall-cta" type="button" id="purchaseBtn">${localizedText('Claim My Plan', 'Claim My Plan')}</button>`
+                                : `<button class="btn btn-dopamine paywall-cta" type="button" id="purchaseBtn" disabled aria-disabled="true">${expired
+                                    ? localizedText('This offer has expired.', 'This offer has expired.')
+                                    : localizedText('Checkout no disponible en modo demo', 'Checkout unavailable in demo mode')}</button>`}
+                        </div>
+                        ${disclosureHtml(entry, facts)}
+                        ${secureBlockHtml()}
                     </article>`;
 
-                document.querySelectorAll('.plan-card').forEach((card) => {
-                    card.addEventListener('click', () => {
-                        paywallData.selectedId = card.getAttribute('data-pkg');
+                function syncCountdown() {
+                    const node = document.getElementById('paywallCountdown');
+                    if (!node) {
+                        return;
+                    }
+                    const left = paywallOfferRemaining(deadline);
+                    const total = Math.ceil(left / 1000);
+                    const minutes = Math.floor(total / 60);
+                    const seconds = total % 60;
+                    const minutesNode = document.getElementById('paywallMinutes');
+                    const secondsNode = document.getElementById('paywallSeconds');
+                    if (minutesNode) minutesNode.textContent = String(Math.min(15, minutes)).padStart(2, '0');
+                    if (secondsNode) secondsNode.textContent = String(seconds).padStart(2, '0');
+                    const isExpired = left <= 0;
+                    if (isExpired && !expired) {
+                        expired = true;
+                        // Bloquea el CTA: ninguna llamada a purchase puede salir.
+                        const cta = document.getElementById('purchaseBtn');
+                        if (cta) {
+                            cta.disabled = true;
+                            cta.setAttribute('aria-disabled', 'true');
+                            cta.textContent = localizedText('This offer has expired.', 'This offer has expired.');
+                        }
+                        const note = document.getElementById('paywallExpired');
+                        if (note) note.hidden = false;
+                        track('paywall_offer_expired', { offeringId: data.offering.identifier });
+                    }
+                    if (isExpired) {
+                        // Cancelamos el intervalo: no sigue contando.
+                        if (paywallCleanup) {
+                            paywallCleanup();
+                            paywallCleanup = null;
+                        }
+                        return;
+                    }
+                    // Live region solo en hitos, nunca en cada tick.
+                    const status = document.getElementById('paywallCountdownStatus');
+                    if (status) {
+                        const hit = (minutes === 5 && seconds === 0) ? 'five'
+                            : (minutes === 1 && seconds === 0 ? 'one' : null);
+                        const msg = hit === 'five'
+                            ? localizedText('5 minutes left on this offer.', '5 minutes left on this offer.')
+                            : (hit === 'one' ? localizedText('1 minute left on this offer.', '1 minute left on this offer.') : '');
+                        if (msg && status.textContent !== msg) {
+                            status.textContent = msg;
+                        }
+                    }
+                }
+
+                syncCountdown();
+                const timer = setInterval(syncCountdown, PAYWALL_TICK_MS);
+                // Sincroniza el vencimiento entre pestanas.
+                const onStorage = (event) => {
+                    if (event.key !== STORAGE_STATE_KEY) {
+                        return;
+                    }
+                    funnelState = mergeLoadedState(loadState());
+                    syncCountdown();
+                };
+                window.addEventListener('storage', onStorage);
+                paywallCleanup = () => {
+                    clearInterval(timer);
+                    window.removeEventListener('storage', onStorage);
+                };
+
+                document.querySelectorAll('.plan-card-radio').forEach((radio) => {
+                    radio.addEventListener('change', () => {
+                        paywallData.selectedId = radio.value;
                         setState('selectedPackageId', paywallData.selectedId);
-                        const entry = data.packages.find((p) => p.pkg.identifier === paywallData.selectedId);
-                        if (entry) {
+                        const picked = data.packages.find((p) => p.pkg.identifier === paywallData.selectedId);
+                        if (picked) {
                             track('package_selected', {
-                                packageId: entry.pkg.identifier,
+                                packageId: picked.pkg.identifier,
                                 offeringId: data.offering.identifier,
                                 currency: data.currency,
-                                packageType: entry.kind
+                                packageType: picked.kind
                             });
                         }
                         renderPaywallCards();
@@ -6717,12 +7337,31 @@
             }
 
             async function startCheckout() {
+                // Guardas: sin doble compra, sin paquete, sin planId y sin
+                // oferta vencida. La expiracion se comprueba ANTES de tocar el SDK.
                 if (purchaseLock || !paywallData) {
                     return;
                 }
                 const data = paywallData;
                 const entry = data.packages.find((p) => p.pkg.identifier === data.selectedId);
-                if (!entry) {
+                if (!entry || !entry.pkg) {
+                    track('checkout_blocked_no_package', { reason: 'package_missing' });
+                    return;
+                }
+                if (paywallOfferExpired(paywallOfferDeadline())) {
+                    track('checkout_blocked_expired', {
+                        packageId: entry.pkg.identifier,
+                        offeringId: data.offering.identifier,
+                        packageType: entry.kind
+                    });
+                    const cta = document.getElementById('purchaseBtn');
+                    if (cta) {
+                        cta.disabled = true;
+                        cta.setAttribute('aria-disabled', 'true');
+                        cta.textContent = localizedText('This offer has expired.', 'This offer has expired.');
+                    }
+                    const note = document.getElementById('paywallExpired');
+                    if (note) note.hidden = false;
                     return;
                 }
                 if (!hasRealPlan()) {
