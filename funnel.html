@@ -1675,6 +1675,43 @@
             { id: 'calma_regulacion', emoji: '😌', label: 'Calma & Regulación emocional' }
         ];
 
+        // Canonical contract consumed by the mobile app/backend: JS day order,
+        // where 0 is Sunday. Daily routines expand to all seven abbreviations.
+        const CANONICAL_ROUTINE_DAYS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        const ROUTINE_DAY_ALIASES = {
+            dom: 'Dom', domingo: 'Dom', sun: 'Dom', sunday: 'Dom',
+            lun: 'Lun', lunes: 'Lun', mon: 'Lun', monday: 'Lun',
+            mar: 'Mar', martes: 'Mar', tue: 'Mar', tuesday: 'Mar',
+            mié: 'Mié', mie: 'Mié', miércoles: 'Mié', miercoles: 'Mié', wed: 'Mié', wednesday: 'Mié',
+            jue: 'Jue', jueves: 'Jue', thu: 'Jue', thursday: 'Jue',
+            vie: 'Vie', viernes: 'Vie', fri: 'Vie', friday: 'Vie',
+            sáb: 'Sáb', sab: 'Sáb', sábado: 'Sáb', sabado: 'Sáb', sat: 'Sáb', saturday: 'Sáb'
+        };
+        const DAILY_ROUTINE_DAY_VALUES = new Set(['daily', 'everyday', 'every day', 'every_day', 'todos los dias', 'todos los días', 'all', '*']);
+
+        function canonicalRoutineDays(rawDays) {
+            if (!Array.isArray(rawDays) || rawDays.length === 0) {
+                return CANONICAL_ROUTINE_DAYS.slice();
+            }
+            const output = [];
+            for (const rawDay of rawDays) {
+                if (typeof rawDay === 'number' && Number.isFinite(rawDay)) {
+                    const day = CANONICAL_ROUTINE_DAYS[((Math.trunc(rawDay) % 7) + 7) % 7];
+                    if (day && !output.includes(day)) output.push(day);
+                    continue;
+                }
+                if (typeof rawDay !== 'string') continue;
+                const normalized = rawDay.trim().toLowerCase();
+                if (DAILY_ROUTINE_DAY_VALUES.has(normalized)) {
+                    return CANONICAL_ROUTINE_DAYS.slice();
+                }
+                const day = ROUTINE_DAY_ALIASES[normalized] ||
+                    CANONICAL_ROUTINE_DAYS.find((value) => value.toLowerCase() === normalized);
+                if (day && !output.includes(day)) output.push(day);
+            }
+            return output.length > 0 ? output : CANONICAL_ROUTINE_DAYS.slice();
+        }
+
         // Fuente de verdad (confirmada por backend): egg_catalog.id NUMÉRICO 1–8.
         // El funnel SOLO asigna estos 8 huevos comunes; no se crean slugs nuevos.
         // El nombre visible es el canónico del egg_catalog.id. `emoji`/`color` son
@@ -2372,7 +2409,7 @@
                 name: routine.name,
                 title: routine.name,
                 icon: routine.icon || '',
-                days: routine.days || ['daily'],
+                days: canonicalRoutineDays(routine.days),
                 tasks: (routine.tasks || []).map((t) => ({
                     title: t.title,
                     position: t.position
@@ -2536,7 +2573,7 @@
                 return {
                     templateId: r.templateId || r.id,
                     name: r.name || r.title,
-                    days: r.days || ['daily'],
+                    days: canonicalRoutineDays(r.days),
                     icon: r.icon || '',
                     steps: (r.steps || r.tasks || []).map((t) => ({
                         title: t.title,
