@@ -20,6 +20,20 @@
             --danger: #d33c3c;
             --border: rgba(36, 18, 63, 0.12);
             --shadow: 0 24px 70px rgba(36, 18, 63, 0.12);
+
+            /* Editorial funnel tokens (UI redesign) */
+            --funnel-bg: #FAF7F1;
+            --funnel-surface: #FFFFFF;
+            --funnel-text: #242521;
+            --funnel-muted: #6D706A;
+            --funnel-accent: #159875;
+            --funnel-accent-strong: #0E7A5D;
+            --funnel-accent-soft: #DDF5EA;
+            --funnel-border: rgba(36, 37, 33, 0.09);
+            --funnel-radius: 20px;
+            --funnel-shadow: 0 2px 10px rgba(36, 37, 33, 0.04);
+            --funnel-shell-max: 560px;
+            --funnel-serif: Georgia, "Times New Roman", "Iowan Old Style", serif;
         }
 
         * {
@@ -35,52 +49,109 @@
         body {
             min-height: 100vh;
             font-family: Inter, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            color: var(--text);
-            background:
-                radial-gradient(circle at top left, rgba(91, 75, 244, 0.18), transparent 32%),
-                radial-gradient(circle at top right, rgba(242, 201, 76, 0.22), transparent 24%),
-                linear-gradient(180deg, #fffdf8 0%, var(--bg) 55%, #efe8dd 100%);
+            color: var(--funnel-text);
+            background: var(--funnel-bg);
             line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
         .shell {
             position: relative;
             width: 100%;
-            max-width: 560px;
+            max-width: var(--funnel-shell-max);
             margin: 0 auto;
-            padding: 20px 16px 56px;
+            padding: 0 20px calc(56px + env(safe-area-inset-bottom, 0px));
         }
 
-        .funnel-progress {
+        /* ---- Encabezado global: flecha + divisor de dos etapas ---- */
+
+        .funnel-header {
             position: sticky;
             top: 0;
             z-index: 40;
-            padding: 14px 4px 10px;
-            background: linear-gradient(180deg, #fffdf8 0%, rgba(255, 253, 248, 0.9) 70%, transparent 100%);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px 14px;
+            margin: 0 -20px;
+            padding: 10px 20px calc(10px + env(safe-area-inset-top, 0px));
+            background: var(--funnel-bg);
         }
 
-        .funnel-progress-track {
-            height: 10px;
+        .funnel-header[hidden] {
+            display: none;
+        }
+
+        .funnel-header-back {
+            display: flex;
+            align-items: center;
+            flex: 0 0 auto;
+        }
+
+        .funnel-header-back[hidden] {
+            display: none;
+        }
+
+        .funnel-stages {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: end;
+            gap: 12px;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .funnel-stage {
+            min-width: 0;
+        }
+
+        .funnel-stage-name {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            line-height: 1.25;
+            color: var(--funnel-muted);
+            transition: color 0.2s ease;
+        }
+
+        .funnel-stage-track {
+            display: block;
+            margin-top: 6px;
+            height: 6px;
             border-radius: 999px;
-            background: rgba(36, 18, 63, 0.08);
+            background: var(--funnel-accent-soft);
             overflow: hidden;
         }
 
-        .funnel-progress-track span {
+        .funnel-stage-fill {
             display: block;
             height: 100%;
             width: 0%;
             border-radius: inherit;
-            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            background: var(--funnel-accent);
             transition: width 0.35s ease;
+        }
+
+        .funnel-stage[data-state="active"] .funnel-stage-name {
+            color: var(--funnel-text);
+        }
+
+        .funnel-stage[data-state="done"] .funnel-stage-fill,
+        .funnel-stage[data-state="active"] .funnel-stage-fill {
+            background: var(--funnel-accent);
+        }
+
+        .funnel-stage[data-state="idle"] .funnel-stage-fill {
+            background: var(--funnel-accent-soft);
         }
 
         .funnel-progress-label {
             display: block;
-            margin-top: 8px;
-            font-size: 0.8rem;
-            font-weight: 800;
-            color: var(--muted);
+            flex: 0 0 100%;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--funnel-muted);
             text-align: center;
             letter-spacing: 0.02em;
         }
@@ -92,37 +163,45 @@
         .step-top {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 14px;
-            min-height: 46px;
+            min-height: 0;
         }
 
         .back-btn {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 10px 14px;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            padding: 0;
             border: 0;
             border-radius: 999px;
-            background: rgba(36, 18, 63, 0.07);
-            color: var(--text);
+            background: transparent;
+            color: var(--funnel-text);
             font: inherit;
-            font-weight: 800;
             cursor: pointer;
-            transition: transform 0.18s ease, background 0.18s ease;
+            transition: background 0.18s ease, transform 0.18s ease;
         }
 
         .back-btn:hover {
-            transform: translateY(-1px);
-            background: rgba(36, 18, 63, 0.12);
+            background: rgba(36, 37, 33, 0.06);
+        }
+
+        .back-btn:active {
+            transform: scale(0.94);
+        }
+
+        .back-btn svg {
+            width: 22px;
+            height: 22px;
+            display: block;
         }
 
         .panel {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(18px);
-            border-radius: 28px;
-            padding: 26px 24px 30px;
+            background: var(--funnel-surface);
+            border: 1px solid var(--funnel-border);
+            box-shadow: var(--funnel-shadow);
+            border-radius: 24px;
+            padding: 26px 22px 28px;
         }
 
         .eyebrow {
@@ -140,97 +219,181 @@
         }
 
         h1, h2, h3 {
-            letter-spacing: -0.03em;
+            letter-spacing: -0.02em;
+            color: var(--funnel-text);
         }
 
         .card-head h1 {
             margin-top: 14px;
-            font-size: clamp(1.7rem, 6vw, 2.35rem);
-            line-height: 1.08;
-            font-weight: 900;
+            font-size: clamp(1.7rem, 6vw, 2.2rem);
+            line-height: 1.12;
+            font-weight: 800;
         }
 
         .card-head .sub {
             margin-top: 12px;
-            font-size: 1.02rem;
-            line-height: 1.6;
-            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.55;
+            color: var(--funnel-muted);
         }
+
+        /* ---- Pantalla de pregunta ---- */
+
+        .step-question {
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .step-question .card-head {
+            text-align: center;
+        }
+
+        .step-question .card-head h1 {
+            margin-top: 0;
+            font-family: var(--funnel-serif);
+            font-size: clamp(1.9rem, 8.2vw, 2.5rem);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            line-height: 1.12;
+            text-wrap: balance;
+        }
+
+        .step-question .card-head .sub {
+            max-width: 42ch;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 0.98rem;
+        }
+
+        .question-illustration {
+            width: 168px;
+            height: 168px;
+            max-width: 62vw;
+            margin: 0 auto 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 84px 84px 24px 24px;
+            background: linear-gradient(160deg, #E9E4FB 0%, #F3F0FD 60%, #FDF6E4 100%);
+        }
+
+        .question-illustration svg,
+        .question-illustration img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ---- Alternativas ---- */
 
         .options {
             display: grid;
-            gap: 12px;
-            margin-top: 22px;
+            gap: 16px;
+            margin-top: 26px;
         }
 
         .opt {
             display: flex;
+            position: relative;
+            flex-direction: column;
             align-items: center;
-            gap: 14px;
+            justify-content: center;
+            gap: 6px;
             width: 100%;
-            min-height: 56px;
-            padding: 15px 16px;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            background: var(--panel-strong);
-            color: var(--text);
+            min-height: 92px;
+            padding: 18px;
+            border: 1px solid var(--funnel-border);
+            border-radius: var(--funnel-radius);
+            background: var(--funnel-surface);
+            box-shadow: var(--funnel-shadow);
+            color: var(--funnel-text);
             font: inherit;
-            text-align: left;
+            text-align: center;
             cursor: pointer;
             transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
         }
 
         .opt:hover {
-            transform: translateY(-1px);
+            border-color: rgba(21, 152, 117, 0.45);
+            box-shadow: 0 4px 14px rgba(36, 37, 33, 0.06);
+        }
+
+        .opt:focus-visible,
+        .back-btn:focus-visible,
+        .btn:focus-visible,
+        .btn-ghost:focus-visible {
+            outline: 3px solid var(--funnel-accent);
+            outline-offset: 3px;
+        }
+
+        .opt[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .opt.selected {
-            border-color: rgba(91, 75, 244, 0.55);
-            background: rgba(91, 75, 244, 0.07);
-            box-shadow: 0 0 0 3px rgba(91, 75, 244, 0.12);
+            border-color: var(--funnel-accent);
+            background: var(--funnel-accent-soft);
+            box-shadow: var(--funnel-shadow);
         }
 
         .opt-emoji {
-            font-size: 1.7rem;
-            line-height: 1;
-            flex-shrink: 0;
+            display: none;
         }
 
         .opt-body {
-            flex: 1;
+            width: 100%;
             min-width: 0;
         }
 
         .opt-label {
             display: block;
-            font-weight: 800;
-            font-size: 1.02rem;
+            font-weight: 700;
+            font-size: clamp(1.15rem, 4.6vw, 1.32rem);
+            line-height: 1.3;
         }
 
         .opt-desc {
             display: block;
-            margin-top: 2px;
-            font-size: 0.88rem;
-            color: var(--muted);
+            margin-top: 5px;
+            font-size: 0.92rem;
+            line-height: 1.45;
+            color: var(--funnel-muted);
         }
 
-        .opt-check {
-            width: 24px;
-            height: 24px;
+        .opt .opt-check {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 22px;
+            height: 22px;
             border-radius: 999px;
-            border: 2px solid rgba(36, 18, 63, 0.18);
+            border: 2px solid rgba(36, 37, 33, 0.16);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.8rem;
+            font-size: 0.72rem;
             font-weight: 900;
             color: transparent;
             flex-shrink: 0;
+            opacity: 0;
+            transition: opacity 0.18s ease;
+        }
+
+        .opt:hover .opt-check,
+        .opt:focus-visible .opt-check,
+        .opt.selected .opt-check {
+            opacity: 1;
         }
 
         .opt.selected .opt-check {
-            background: var(--accent);
-            border-color: var(--accent);
+            background: var(--funnel-accent);
+            border-color: var(--funnel-accent);
             color: #fff;
         }
 
@@ -345,15 +508,15 @@
         }
 
         .btn-dopamine {
-            background: var(--dopamine);
-            color: var(--text);
-            box-shadow: 0 14px 30px rgba(201, 253, 90, 0.38);
+            background: var(--funnel-accent-strong);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(21, 152, 117, 0.22);
         }
 
         .btn-primary {
-            background: var(--accent);
+            background: var(--funnel-accent-strong);
             color: #fff;
-            box-shadow: 0 14px 30px rgba(91, 75, 244, 0.24);
+            box-shadow: 0 8px 20px rgba(21, 152, 117, 0.22);
         }
 
         .btn-secondary {
@@ -387,27 +550,6 @@
             font-size: 1.02rem;
             line-height: 1.6;
             color: var(--muted);
-        }
-
-        .brand-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 26px;
-        }
-
-        .brand-row svg {
-            width: 40px;
-            height: 40px;
-        }
-
-        .brand-name {
-            font-size: 1.25rem;
-            font-weight: 900;
-        }
-
-        .brand-name span {
-            color: var(--accent);
         }
 
         .mascot-hero {
@@ -832,13 +974,13 @@
             cursor: pointer;
             font-size: 1.2rem;
             font-weight: 900;
-            color: rgba(36, 18, 63, 0.22);
+            color: rgba(36, 37, 33, 0.22);
             transition: background 0.18s ease, color 0.18s ease;
         }
 
         .pick-card.selected .pick-check {
-            background: rgba(91, 75, 244, 0.1);
-            color: var(--accent);
+            background: var(--funnel-accent-soft);
+            color: var(--funnel-accent-strong);
         }
 
         .pick-steps {
@@ -1634,23 +1776,104 @@
             }
         }
 
+        @media (min-width: 720px) {
+            .shell {
+                padding-top: 8px;
+            }
+        }
+
         @media (max-width: 420px) {
-            .panel {
-                padding: 22px 18px 26px;
-                border-radius: 24px;
+            .funnel-header {
+                gap: 8px 10px;
+            }
+
+            .funnel-stages {
+                gap: 10px;
+            }
+
+            .funnel-stage-name {
+                font-size: 0.66rem;
+            }
+
+            .question-illustration {
+                width: 152px;
+                height: 152px;
+                margin-bottom: 18px;
+            }
+
+            .options {
+                gap: 14px;
+                margin-top: 22px;
             }
 
             .opt {
-                padding: 13px 14px;
+                min-height: 88px;
+                padding: 16px 14px;
+            }
+
+            .opt-label {
+                font-size: 1.15rem;
+            }
+        }
+
+        @media (max-width: 340px) {
+            .shell {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .funnel-header {
+                margin: 0 -16px;
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .question-illustration {
+                width: 132px;
+                height: 132px;
+            }
+
+            .step-question .card-head h1 {
+                font-size: 1.75rem;
+            }
+
+            .opt {
+                min-height: 80px;
+                padding: 14px 12px;
+            }
+
+            .opt-label {
+                font-size: 1.05rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
         }
     </style>
 </head>
 <body>
     <main class="shell">
-        <header class="funnel-progress" id="funnelProgress" hidden>
-            <div class="funnel-progress-track"><span id="funnelProgressFill"></span></div>
-            <span class="funnel-progress-label" id="funnelProgressLabel"></span>
+        <header class="funnel-header" id="funnelProgress" hidden>
+            <div class="funnel-header-back" id="funnelBackSlot" hidden></div>
+            <div class="funnel-stages">
+                <div class="funnel-stage" data-stage="profile" data-state="idle">
+                    <span class="funnel-stage-name">Creando tu Perfil</span>
+                    <span class="funnel-stage-track"><span class="funnel-stage-fill" id="funnelProfileFill"></span></span>
+                </div>
+                <div class="funnel-stage" data-stage="plan" data-state="idle">
+                    <span class="funnel-stage-name">Diseñando tu Plan</span>
+                    <span class="funnel-stage-track"><span class="funnel-stage-fill" id="funnelPlanFill"></span></span>
+                </div>
+            </div>
+            <span class="funnel-progress-label" id="funnelProgressLabel" hidden></span>
         </header>
         <div class="funnel-root" id="funnelRoot" role="main"></div>
         <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -2781,19 +3004,94 @@
             }).length;
         }
 
+        // Etapa 1 = perfil (begin + preguntas + interstitials del diagnóstico).
+        // Etapa 2 = diseño del plan (task_select -> handoff).
+        // Ambas se derivan de stepList(); no hay una segunda fuente de verdad.
+        const FUNNEL_STAGES = [
+            { id: 'profile', fillId: 'funnelProfileFill', label: 'Creando tu Perfil' },
+            { id: 'plan', fillId: 'funnelPlanFill', label: 'Diseñando tu Plan' }
+        ];
+
+        function stageIndexOfStep(step) {
+            return step && (step.type === 'question' || step.type === 'interstitial') ? 0 : 1;
+        }
+
+        function stageBounds() {
+            const steps = stepList();
+            let lastProfile = -1;
+            steps.forEach((step, index) => {
+                if (stageIndexOfStep(step) === 0) {
+                    lastProfile = index;
+                }
+            });
+            return { profileEnd: lastProfile, total: steps.length };
+        }
+
+        function stageProgress() {
+            const steps = stepList();
+            const bounds = stageBounds();
+            const profileSpan = Math.max(1, bounds.profileEnd + 1);
+            const planSpan = Math.max(1, bounds.total - profileSpan);
+            const stage = stageIndexOfStep(steps[currentStepIndex]);
+            if (stage === 0) {
+                const byAnswers = (Math.min(profileSpan - 1, answeredCount()) + 1) / profileSpan;
+                const byStep = (currentStepIndex + 1) / profileSpan;
+                return [Math.min(1, Math.max(0.02, byAnswers, byStep)), 0];
+            }
+            const intoPlan = currentStepIndex - profileSpan;
+            const bothDone = currentStepIndex >= steps.length - 1;
+            return [1, bothDone ? 1 : Math.min(0.98, Math.max(0.02, (intoPlan + 1) / planSpan))];
+        }
+
+        // La flecha se mantiene exactamente la que emite backButtonHtml():
+        // solo se mueve al slot del encabezado. Si el paso no la emite,
+        // el encabezado queda sin flecha.
+        function syncHeaderBack() {
+            const slot = document.getElementById('funnelBackSlot');
+            if (!slot) {
+                return;
+            }
+            const source = document.querySelector('#funnelRoot .step-top .back-btn');
+            if (source) {
+                const wrapper = source.closest('.step-top');
+                slot.appendChild(source);
+                if (wrapper) {
+                    wrapper.remove();
+                }
+            }
+            slot.hidden = !slot.querySelector('.back-btn');
+        }
+
+        const funnelBackObserver = new MutationObserver(() => {
+            syncHeaderBack();
+        });
+
         function updateProgress() {
-            const step = stepList()[currentStepIndex];
+            const steps = stepList();
+            const step = steps[currentStepIndex];
             if (step.type === 'begin' || step.type === 'language') {
                 document.getElementById('funnelProgress').hidden = true;
+                syncHeaderBack();
                 return;
             }
             const progress = document.getElementById('funnelProgress');
-            const fill = document.getElementById('funnelProgressFill');
             const label = document.getElementById('funnelProgressLabel');
+            const activeStage = stageIndexOfStep(step);
+            const progressPair = stageProgress();
+            const finished = currentStepIndex >= steps.length - 1;
             progress.hidden = false;
+            document.getElementById(FUNNEL_STAGES[0].fillId).style.width = `${progressPair[0] * 100}%`;
+            document.getElementById(FUNNEL_STAGES[1].fillId).style.width = `${progressPair[1] * 100}%`;
+            progress.querySelectorAll('.funnel-stage').forEach((node, index) => {
+                let state = 'idle';
+                if (finished || index < activeStage) {
+                    state = 'done';
+                } else if (index === activeStage) {
+                    state = 'active';
+                }
+                node.dataset.state = state;
+            });
             const total = QUESTION_KEYS.length;
-            const pct = Math.round((answeredCount() / total) * 100);
-            fill.style.width = `${pct}%`;
             if (step.questionIndex) {
                 label.textContent = currentLocale() === 'en'
                     ? `Question ${step.questionIndex} of ${total}`
@@ -2803,6 +3101,7 @@
                 label.textContent = '';
                 label.hidden = true;
             }
+            syncHeaderBack();
         }
 
         function scrollTop() {
@@ -3420,12 +3719,37 @@
             }
         }
 
+        // Flecha simple. La decision de "se puede volver" no cambia: esta
+        // funcion solo se llama desde los pasos que ya permitian retroceder.
+        const BACK_ARROW_SVG = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M15 4.5 7.5 12l7.5 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
         function backButtonHtml() {
-            return `<div class="step-top"><button class="back-btn" type="button" data-action="back" aria-label="${ui('back')}">${ui('back')}</button></div>`;
+            return `<div class="step-top"><button class="back-btn" type="button" data-action="back" aria-label="${ui('back')}">${BACK_ARROW_SVG}</button></div>`;
         }
 
-        function cardOpen() {
-            return `<article class="panel step">`;
+        function cardOpen(modifier) {
+            return `<article class="panel step${modifier ? ` ${modifier}` : ''}">`;
+        }
+
+        // Ilustraciones por pregunta. Vacio a proposito: hasta que existan
+        // ilustraciones reales, todas las preguntas usan el mismo placeholder.
+        const QUESTION_ILLUSTRATIONS = {};
+
+        const QUESTION_PLACEHOLDER_SVG = `
+            <svg viewBox="0 0 160 160" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMid slice">
+                <circle cx="80" cy="82" r="44" fill="#FFFFFF" opacity="0.72"></circle>
+                <path d="M52 96c0-15 12-27 28-27s28 12 28 27" fill="none" stroke="#C9C0EC" stroke-width="5" stroke-linecap="round"></path>
+                <circle cx="66" cy="74" r="5" fill="#B7ACE2"></circle>
+                <circle cx="94" cy="74" r="5" fill="#B7ACE2"></circle>
+                <path d="M68 90c4 4 8 4 12 0" fill="none" stroke="#B7ACE2" stroke-width="4" stroke-linecap="round"></path>
+            </svg>`;
+
+        function questionIllustrationHtml(step) {
+            const custom = QUESTION_ILLUSTRATIONS[step.id];
+            const inner = custom
+                ? `<img src="${custom.src}" alt="${custom.alt || ''}">`
+                : QUESTION_PLACEHOLDER_SVG;
+            return `<div class="question-illustration" data-question-id="${step.id}">${inner}</div>`;
         }
 
         function headHtml(step) {
@@ -3442,15 +3766,6 @@
             track('funnel_begin', { resumed: hasProgress });
             document.getElementById('funnelRoot').innerHTML = `
                 ${cardOpen()}
-                    <div class="brand-row">
-                        <svg viewBox="0 0 64 64" role="img" aria-label="Brainy">
-                            <rect x="8" y="8" width="48" height="48" rx="14" fill="#C9FD5A"></rect>
-                            <path d="M30 20C26 18 21 21 21 26C18 27 17 31 19 34C18 37 19 42 24 43C25 46 30 48 33 45" stroke="#280D8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M34 20C38 18 43 21 43 26C46 27 47 31 45 34C46 37 45 42 40 43C39 46 34 48 31 45" stroke="#280D8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M32 23V42M27 27H30M34 35H37" stroke="#280D8C" stroke-width="3" stroke-linecap="round"></path>
-                        </svg>
-                        <div class="brand-name">Brain<span>y</span></div>
-                    </div>
                     <div class="mascot-hero">${petStageHtml(4, true).replace('width:128px;height:128px', 'width:150px;height:150px').replace('<span class="sparkle">✨</span>', '')}</div>
                     ${headHtml(step)}
                     <div class="actions">
@@ -3477,7 +3792,6 @@
         function renderLanguage() {
             document.getElementById('funnelRoot').innerHTML = `
                 ${cardOpen()}
-                    <div class="brand-row"><div class="brand-name">Brain<span>y</span></div></div>
                     <div class="card-head">
                         <h1>Elige tu idioma / Choose your language</h1>
                         <p class="sub">Puedes cambiarlo más adelante. / You can change it later.</p>
@@ -3507,7 +3821,7 @@
                 const desc = typeof opt === 'string' ? '' : (opt.desc || '');
                 const emoji = typeof opt === 'string' ? '' : (opt.emoji || '');
                 return `
-                    <button class="opt ${selected(value) ? 'selected' : ''}" type="button" data-opt="${index}">
+                    <button class="opt ${selected(value) ? 'selected' : ''}" type="button" data-opt="${index}" aria-pressed="${selected(value) ? 'true' : 'false'}">
                         ${emoji ? `<span class="opt-emoji">${emoji}</span>` : ''}
                         <span class="opt-body">
                             <span class="opt-label">${label}</span>
@@ -3531,7 +3845,8 @@
 
             document.getElementById('funnelRoot').innerHTML = `
                 ${backButtonHtml()}
-                ${cardOpen()}
+                ${cardOpen('step-question')}
+                    ${questionIllustrationHtml(step)}
                     ${headHtml(step)}
                     <div class="options">${optionsHtml}</div>
                     ${ageHtml}
@@ -3557,10 +3872,15 @@
                         }
                         funnelState[key] = arr;
                         el.classList.toggle('selected');
+                        el.setAttribute('aria-pressed', arr.indexOf(value) > -1 ? 'true' : 'false');
                         nextBtn.disabled = arr.length === 0;
                     } else {
                         funnelState[key] = value;
-                        optionEls.forEach((other) => other.classList.toggle('selected', other === el));
+                        optionEls.forEach((other) => {
+                            const isOn = other === el;
+                            other.classList.toggle('selected', isOn);
+                            other.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+                        });
                         nextBtn.disabled = false;
                         if (step.doubtOption) {
                             const existing = document.getElementById('funnelRoot').querySelector('.note');
@@ -4846,6 +5166,8 @@
                 goBack();
             }
         });
+
+        funnelBackObserver.observe(document.getElementById('funnelRoot'), { childList: true, subtree: true });
 
         loadFunnelData().then(() => {
             hydrateSelections();
