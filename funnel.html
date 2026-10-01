@@ -1660,6 +1660,15 @@
     <script src="assets/qrcode.min.js"></script>
     <script src="assets/funnel-identity.js"></script>
     <script src="assets/revenuecat.js"></script>
+    <!-- SANDBOX CONFIG: public RevenueCat Web Billing sandbox key. Remove or
+         replace with the production public key to disable sandbox billing. -->
+    <script>
+        window.__BRAINY_FUNNEL_CONFIG__ = {
+            revenuecatWebApiKey: 'strp_sb_mozjaozAfCdAQiBTzzSUnwQD',
+            revenuecatOfferingId: 'web_default',
+            revenuecatEntitlementId: 'brainy Pro'
+        };
+    </script>
     <script>
         const STORAGE_STATE_KEY = 'brainy_funnel_state';
         const STORAGE_STEP_KEY = 'brainy_funnel_step';
