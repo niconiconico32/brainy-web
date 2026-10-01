@@ -137,8 +137,16 @@ function testStepOrderUnchanged() {
   // good_hands es una insercion permitida: al quitarla, el orden debe ser
   // identico a main.
   const mine = ids(html);
-  assert.equal(mine.filter((id) => id.includes("'good_hands'")).length, 1, 'good_hands debe existir una sola vez');
-  assert.deepEqual(mine.filter((id) => !id.includes("'good_hands'")), ids(base), 'el orden de pasos cambio');
+  // Inserciones permitidas: al quitarlas, el orden debe ser identico a main.
+  const inserted = ['good_hands', 'not_alone'];
+  for (const id of inserted) {
+    assert.equal(mine.filter((line) => line.includes(`'${id}'`)).length, 1, `${id} debe existir una sola vez`);
+  }
+  assert.deepEqual(
+    mine.filter((line) => !inserted.some((id) => line.includes(`'${id}'`))),
+    ids(base),
+    'el orden de pasos cambio'
+  );
   // good_hands es un interstitial nuevo: al quitarlo los tipos deben coincidir.
   const types = (src) => {
     const out = [];
@@ -146,7 +154,7 @@ function testStepOrderUnchanged() {
     for (const line of src.split('\n')) {
       const id = /^\s{16}id: '([^']+)',$/.exec(line);
       if (id) {
-        skip = id[1] === 'good_hands';
+        skip = id[1] === 'good_hands' || id[1] === 'not_alone';
         if (skip) continue;
       }
       if (skip) continue;
