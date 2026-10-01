@@ -25,6 +25,7 @@ const VIEWPORTS = [
 const STEPS = {
   single: 3,
   multi: 10,
+  five: 4,
   plan: 34
 };
 
@@ -68,7 +69,7 @@ async function shot(page, file) {
   console.log(`  ${file}`);
 }
 
-async function measure(page, label) {
+async function measure(page, label, opts = {}) {
   const report = await page.evaluate(() => {
     const doc = document.documentElement;
     const overflow = doc.scrollWidth - doc.clientWidth;
@@ -99,6 +100,8 @@ async function measure(page, label) {
     return {
       scrollWidth: doc.scrollWidth,
       clientWidth: doc.clientWidth,
+      pageHeight: doc.scrollHeight,
+      viewportHeight: window.innerHeight,
       overflow,
       headerVisible: header ? !header.hidden : false,
       stages,
@@ -115,6 +118,12 @@ async function measure(page, label) {
   });
   const problems = [];
   if (report.overflow > 0) problems.push(`overflow horizontal ${report.overflow}px`);
+  // En desktop una pantalla de pregunta debe caber sin scroll. En mobile el
+  // scroll vertical es natural y las listas largas (task/routine select)
+  // scrollean por diseno.
+  if (opts.requireNoScroll && report.pageHeight > report.viewportHeight) {
+    problems.push(`desborda verticalmente ${report.pageHeight - report.viewportHeight}px`);
+  }
   if (report.backVisible && report.backSize !== '44x44') problems.push(`flecha ${report.backSize}`);
   if (report.arrowStageCollision !== null && report.arrowStageCollision > 0) problems.push('flecha pisa el progreso');
   for (const opt of report.options) {
@@ -124,6 +133,37 @@ async function measure(page, label) {
   }
   console.log(`  [${label}] ${problems.length ? 'PROBLEMAS: ' + problems.join(' | ') : 'ok'}`);
   return { report, problems };
+}
+
+async function walkAndCheckArrows(page, base) {
+  await openAtStep(page, base, 1);
+  await page.evaluate(() => {
+    const locale = document.querySelector('[data-locale="en"]');
+    if (locale) locale.click();
+  });
+  await page.waitForTimeout(400);
+  await page.evaluate(() => {
+    const start = document.getElementById('startBtn');
+    if (start) start.click();
+  });
+  await page.waitForTimeout(400);
+  const counts = [];
+  for (let i = 0; i < 5; i += 1) {
+    counts.push(await page.evaluate(() => document.querySelectorAll('.funnel-header .back-btn').length));
+    await page.evaluate(() => {
+      const option = document.querySelector('.opt');
+      if (option) option.click();
+    });
+    await page.waitForTimeout(120);
+    const next = await page.$('#nextBtn');
+    if (next && await next.isEnabled()) await next.click();
+    await page.waitForTimeout(350);
+  }
+  const unique = [...new Set(counts)];
+  if (unique.length !== 1 || unique[0] !== 1) {
+    problems.push(`la flecha se acumula al avanzar: ${counts.join(',')}`);
+  }
+  return counts;
 }
 
 async function main() {
@@ -144,9 +184,12 @@ async function main() {
       page.on('pageerror', (err) => errors.push(String(err)));
 
       console.log(`\n${viewport.name}`);
+      await walkAndCheckArrows(page, base);
       for (const [label, stepIndex] of Object.entries(STEPS)) {
         await openAtStep(page, base, stepIndex);
-        const { problems: found } = await measure(page, `${viewport.name}/${label}`);
+        const { problems: found } = await measure(page, `${viewport.name}/${label}`, {
+          requireNoScroll: label === 'five' && viewport.width >= 768
+        });
         problems.push(...found);
         if (label === 'plan') {
           const ok = await page.evaluate(() => {

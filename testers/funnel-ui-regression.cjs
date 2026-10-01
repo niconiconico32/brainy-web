@@ -56,11 +56,14 @@ function testNoTopLogo() {
 
 function testBackButtonPreserved() {
   assert.ok(html.includes('data-action="back"'), 'la flecha debe conservar data-action="back"');
-  assert.ok(html.includes("aria-label=\"${ui('back')}\""), 'la flecha debe conservar su aria-label localizado');
+  assert.ok(html.includes("button.setAttribute('aria-label', ui('back'))"), 'la flecha debe conservar su aria-label localizado');
   assert.ok(/const BACK_ARROW_SVG = '<svg/.test(html), 'la flecha debe ser un SVG inline');
-  assert.equal(html.includes('>${ui(\'back\')}</button>'), false, 'la flecha ya no debe usar texto como icono');
-  assert.ok(html.includes('funnelBackObserver.observe('), 'la flecha debe seguir enganchada al slot del encabezado');
-  assert.ok(html.includes('.back-btn:focus-visible'), 'la flecha debe tener focus-visible');
+  assert.equal(html.includes('id="funnelBackBtn"'), true, 'debe existir un unico boton de flecha en el encabezado');
+  assert.equal((html.match(/id="funnelBackBtn"/g) || []).length, 1, 'la flecha debe ser un unico boton persistente');
+  assert.equal(/MutationObserver/.test(html), false, 'no debe mover nodos: nada de MutationObserver ni appendChild de la flecha');
+  assert.equal(/funnelBackSlot/.test(html), false, 'no debe quedar el slot que acumulaba flechas');
+  assert.ok(html.includes("return `<div class=\"step-top\" ${BACK_SLOT_MARKER} hidden"), 'backButtonHtml debe marcar que se puede volver');
+  assert.ok(/\.opt:focus-visible/.test(html) && /\.back-btn:focus-visible/.test(html), 'debe haber focus-visible');
   assert.ok(/\.back-btn \{[^}]*width: 44px/.test(html), 'la flecha debe tener area tactil de 44px');
 }
 
@@ -68,6 +71,7 @@ function testQuestionPlaceholder() {
   assert.ok(html.includes('class="question-illustration"'), 'falta el contenedor .question-illustration');
   assert.ok(html.includes('const QUESTION_ILLUSTRATIONS = {}'), 'falta el mapping por question id');
   assert.ok(html.includes('function questionIllustrationHtml(step)'), 'falta el fallback de ilustracion');
+  assert.ok(html.includes("const QUESTION_PLACEHOLDER_LOGO = 'assets/logomain.png'"), 'debe usar assets/logomain.png como imagen base');
   assert.equal(/placeholder/i.test(html.split('QUESTION_PLACEHOLDER_SVG')[1] || ''), false, 'no debe verse el texto "placeholder"');
   const order = ['${questionIllustrationHtml(step)}', '${headHtml(step)}', '<div class="options">'];
   let cursor = -1;
@@ -108,6 +112,12 @@ function testHeaderHiddenUntilProfile() {
   );
 }
 
+function testCompactLayout() {
+  assert.ok(/\.question-illustration \{[^}]*width: 104px/.test(html), 'la ilustracion debe ser pequena');
+  assert.ok(/\.opt \{[^}]*min-height: 64px/.test(html), 'las opciones deben ser compactas');
+  assert.ok(!/\.opt \{[^}]*min-height: (9[2-9]|[1-9][0-9]{2})px/.test(html), 'las opciones no deben volver a ser mas altas de 64px');
+}
+
 function testBackendCallsUnchanged() {
   const base = baseFile('funnel.html');
   const net = (src) => (src.match(/fetch\([^\n]*/g) || []).map((line) => line.trim()).sort();
@@ -129,7 +139,7 @@ function testForbiddenFilesUntouched() {
   const supabaseChanged = changed.filter((file) => file.startsWith('supabase/'));
   assert.deepEqual(supabaseChanged, [], 'se modificaron Edge Functions');
   const scopeOk = changed.every((file) =>
-    file === 'funnel.html' || file === 'package.json' || file.startsWith('testers/'));
+    file === 'funnel.html' || file === 'package.json' || file.startsWith('testers/') || file.startsWith('captures/'));
   assert.equal(scopeOk, true, `archivos fuera de alcance: ${changed.join(', ')}`);
 }
 
@@ -143,6 +153,7 @@ async function main() {
     ['valores de opciones intactos', testOptionValuesUnchanged],
     ['orden de pasos intacto', testStepOrderUnchanged],
     ['encabezado oculto en begin/language', testHeaderHiddenUntilProfile],
+    ['layout compacto', testCompactLayout],
     ['llamadas backend intactas', testBackendCallsUnchanged],
     ['archivos prohibidos intactos', testForbiddenFilesUntouched]
   ];
