@@ -62,9 +62,9 @@ finalizar después de verificar el entitlement server-side.
     {
       "templateId": "string",
       "name": "string",
-      "days": ["daily"],
+      "days": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
       "icon": "string",
-      "tasks": [ { "title": "string", "position": 1 } ],
+      "steps": [ { "title": "string", "duration": 5 } ],
       "egg": { "catalogId": 6 }
     }
   ],
@@ -86,6 +86,10 @@ Reglas garantizadas por el funnel:
 - **Selección real del usuario**: 1–3 tareas y 1–5 rutinas. El payload
   representa exactamente lo elegido; **no existe una regla de “6 hábitos”**.
 - `metadata.{tasksCount,routinesCount,totalSelectedCount}` son counts explícitos.
+- `routines[].days` usa las abreviaturas canónicas `Dom`, `Lun`, `Mar`, `Mié`,
+  `Jue`, `Vie`, `Sáb`; una rutina diaria se expande a los siete días.
+- `routines[].steps` es el único campo de pasos que consume el backend; el
+  payload no envía `routines[].tasks`.
 - `difficulty` se **normaliza** en `buildUserPlanPayload`:
   `low → easy`, `medium → moderate`, `high → hard`. Nunca se envía `"medium"`.
 - `duration` siempre es `number` (> 0). Si falta, se usa
