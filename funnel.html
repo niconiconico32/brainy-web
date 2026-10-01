@@ -290,6 +290,177 @@
             object-fit: contain;
         }
 
+        /* ---- Pantalla "You're in good hands." ---- */
+
+        .step-good-hands {
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .step-good-hands .card-head {
+            text-align: center;
+        }
+
+        .step-good-hands .card-head h1 {
+            margin-top: 0;
+            font-family: var(--funnel-serif);
+            font-size: clamp(1.6rem, 7vw, 2.2rem);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            line-height: 1.12;
+            text-wrap: balance;
+        }
+
+        .good-hands-sub {
+            max-width: 34ch;
+            margin: 12px auto 0;
+            font-size: 0.98rem;
+            line-height: 1.5;
+            color: var(--funnel-muted);
+            text-wrap: pretty;
+        }
+
+        /* Composicion responsiva: se escala con el contenedor, no con el
+           viewport, asi que no depende de posiciones absolutas fijas. */
+        .good-hands-figure {
+            position: relative;
+            width: min(100%, 320px);
+            aspect-ratio: 1 / 1;
+            margin: 28px auto 0;
+        }
+
+        .good-hands-orbit {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            border: 1.5px solid rgba(21, 152, 117, 0.26);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Orbitas discontinuas: se recorta un tramo con un conic-gradient
+           para simular el borde punteado de la referencia. */
+        .good-hands-orbit--1 {
+            width: 58%;
+            height: 58%;
+            border-color: transparent;
+            background: conic-gradient(from 20deg,
+                rgba(21, 152, 117, 0.30) 0deg 108deg,
+                transparent 108deg 190deg,
+                rgba(21, 152, 117, 0.30) 190deg 300deg,
+                transparent 300deg 360deg);
+            -webkit-mask: radial-gradient(circle closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
+            mask: radial-gradient(circle closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
+        }
+
+        .good-hands-orbit--2 {
+            width: 78%;
+            height: 78%;
+            border-color: transparent;
+            background: conic-gradient(from 120deg,
+                rgba(21, 152, 117, 0.24) 0deg 132deg,
+                transparent 132deg 250deg,
+                rgba(21, 152, 117, 0.24) 250deg 336deg,
+                transparent 336deg 360deg);
+            -webkit-mask: radial-gradient(circle closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
+            mask: radial-gradient(circle closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
+        }
+
+        .good-hands-orbit--3 {
+            width: 97%;
+            height: 97%;
+            border-color: transparent;
+            background: conic-gradient(from 260deg,
+                rgba(21, 152, 117, 0.20) 0deg 100deg,
+                transparent 100deg 200deg,
+                rgba(21, 152, 117, 0.20) 200deg 310deg,
+                transparent 310deg 360deg);
+            -webkit-mask: radial-gradient(circle closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
+            mask: radial-gradient(circle closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
+        }
+
+        .good-hands-avatar {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(150deg, #E6E1F8 0%, #EFF7F2 100%);
+            box-shadow: inset 0 0 0 1px rgba(36, 37, 33, 0.06);
+        }
+
+        /* El centro manda: el doble que los avatares externos. */
+        .good-hands-avatar--center {
+            top: 50%;
+            left: 50%;
+            width: 27%;
+            height: 27%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(150deg, #E9E4FB 0%, #F6F1DC 100%);
+            box-shadow: inset 0 0 0 1px rgba(36, 37, 33, 0.07);
+        }
+
+        .good-hands-avatar:not(.good-hands-avatar--center) {
+            width: 11%;
+            height: 11%;
+        }
+
+        .good-hands-avatar[data-size="12"] {
+            width: 9.5%;
+            height: 9.5%;
+        }
+
+        .good-hands-avatar[data-size="13"] {
+            width: 10.5%;
+            height: 10.5%;
+        }
+
+        .good-hands-avatar[data-size="14"] {
+            width: 11.5%;
+            height: 11.5%;
+        }
+
+        .good-hands-avatar[data-size="15"] {
+            width: 12.5%;
+            height: 12.5%;
+        }
+
+        /* Ocho avatares en dos anillos, avoiding el centro. */
+        .good-hands-avatar--1 { top: 20.0%; left: 35.0%; }
+        .good-hands-avatar--2 { top: 14.5%; left: 57.5%; }
+        .good-hands-avatar--3 { top: 30.0%; left: 76.5%; }
+        .good-hands-avatar--4 { top: 52.0%; left: 79.5%; }
+        .good-hands-avatar--5 { top: 71.0%; left: 65.0%; }
+        .good-hands-avatar--6 { top: 76.5%; left: 41.0%; }
+        .good-hands-avatar--7 { top: 60.0%; left: 24.0%; }
+        .good-hands-avatar--8 { top: 38.0%; left: 15.5%; }
+
+        .step-good-hands .actions {
+            margin-top: 26px;
+        }
+
+        @media (max-width: 420px) {
+            .good-hands-figure {
+                width: min(100%, 264px);
+                margin-top: 22px;
+            }
+
+            .good-hands-sub {
+                font-size: 0.94rem;
+            }
+        }
+
+        @media (max-width: 340px) {
+            .good-hands-figure {
+                width: min(100%, 224px);
+                margin-top: 18px;
+            }
+
+            .step-good-hands .card-head h1 {
+                font-size: 1.5rem;
+            }
+        }
+
         /* ---- Alternativas ---- */
 
         .options {
@@ -2422,6 +2593,15 @@
                 ]
             },
             {
+                id: 'good_hands',
+                type: 'interstitial',
+                afterKey: 'nq10_phone',
+                variant: 'good_hands',
+                headline: 'You’re in good hands.',
+                body: 'Brainy uses your answers to personalize the guidance and plan shown next.',
+                cta: 'Continue →'
+            },
+            {
                 id: 'nq11',
                 type: 'question',
                 questionIndex: 11,
@@ -3009,9 +3189,38 @@
             return !/^(sk|rk|rp|whsec|tok|req)_/i.test(key) && !/(secret|restricted)/i.test(key);
         }
 
+        // Reordena los pasos que declaran afterKey para que queden anclados al
+        // key de la pregunta, no a una posicion numerica fragil.
+        function orderStepsByAnchor(steps) {
+            const anchored = steps.filter((step) => step.afterKey);
+            if (!anchored.length) {
+                return steps;
+            }
+            const result = [];
+            const pending = anchored.slice();
+            const emit = (step) => {
+                result.push(step);
+                // Un paso ancla se inserta una sola vez, justo despues de su key.
+                const index = step.key ? pending.findIndex((a) => a.afterKey === step.key) : -1;
+                if (index > -1) {
+                    result.push(pending.splice(index, 1)[0]);
+                }
+            };
+            // Los pasos anclados ya viven en la lista: se emiten solo desde su
+            // key para no duplicarlos.
+            steps.forEach((step) => {
+                if (!step.afterKey) {
+                    emit(step);
+                }
+            });
+            // Cualquier ancla sin key coincidente se emite al final, sin duplicar.
+            result.push(...pending);
+            return result;
+        }
+
         function stepList() {
             const checkout = funnelWebCheckout();
-            return FUNNEL_STEPS.filter((step) => {
+            return orderStepsByAnchor(FUNNEL_STEPS.filter((step) => {
                 if (!checkout) {
                     return step.type !== 'paywall' && step.type !== 'success';
                 }
@@ -3019,7 +3228,7 @@
                     return false;
                 }
                 return true;
-            });
+            }));
         }
 
         function mergeLoadedState(raw) {
@@ -4019,10 +4228,47 @@
             });
         }
 
+        // Ilustracion decorativa: 1 circulo central dominante + 8 avatares
+        // externos con tamanos variados sobre 3 orbitas discontinuas.
+        // Sin SVG/img para poder sustituir cada placeholder por una imagen.
+        function goodHandsOrbitsHtml() {
+            const rings = [1, 2, 3]
+                .map((n) => `<span class="good-hands-orbit good-hands-orbit--${n}"></span>`)
+                .join('');
+            const sizes = [15, 13, 14, 12, 15, 13, 14, 12];
+            const avatars = sizes
+                .map((size, i) => `<span class="good-hands-avatar good-hands-avatar--${i + 1}" data-size="${size}"></span>`)
+                .join('');
+            return `
+                <div class="good-hands-figure" aria-hidden="true">
+                    ${rings}
+                    <span class="good-hands-avatar good-hands-avatar--center"></span>
+                    ${avatars}
+                </div>`;
+        }
+
         function renderInterstitial(step) {
             const isMethod = step.id === 'interstitial_2';
             const isCurves = step.id === 'interstitial_3';
+            const isGoodHands = step.variant === 'good_hands';
             const backHtml = backButtonHtml();
+
+            if (isGoodHands) {
+                document.getElementById('funnelRoot').innerHTML = `
+                    ${backHtml}
+                    ${cardOpen('step-good-hands')}
+                        <div class="card-head">
+                            <h1>${step.headline}</h1>
+                            <p class="good-hands-sub">${step.body}</p>
+                        </div>
+                        ${goodHandsOrbitsHtml()}
+                        <div class="actions">
+                            <button class="btn btn-dopamine" type="button" data-action="next" id="nextBtn">${step.cta}</button>
+                        </div>
+                    </article>`;
+                document.getElementById('nextBtn').addEventListener('click', goNext);
+                return;
+            }
 
             let extra = '';
             if (isMethod) {
