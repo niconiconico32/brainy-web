@@ -461,6 +461,320 @@
             }
         }
 
+        /* ---- Pantalla "Your Focus Profile" (resumen, no diagnóstico médico) ---- */
+
+        .step-diagnosis {
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .step-diagnosis .card-head {
+            text-align: center;
+        }
+
+        .step-diagnosis .card-head h1 {
+            margin-top: 0;
+            font-family: var(--funnel-serif);
+            font-size: clamp(1.6rem, 7vw, 2.2rem);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            line-height: 1.12;
+            text-wrap: balance;
+        }
+
+        .diagnosis-card {
+            margin-top: 22px;
+            padding: 20px;
+            border: 1px solid var(--funnel-border);
+            border-radius: 24px;
+            background: var(--funnel-surface);
+            box-shadow: var(--funnel-shadow);
+        }
+
+        .diagnosis-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .diagnosis-eyebrow {
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--funnel-muted);
+        }
+
+        /* El texto HIGH acompaña al color: nunca queda solo el color. */
+        .diagnosis-badge {
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: #FBE3E6;
+            border: 1px solid #E9B4BB;
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: #8C2F3B;
+        }
+
+        .diagnosis-visual {
+            position: relative;
+            width: 100%;
+            height: 116px;
+            margin: 18px 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        /* Los hijos no deben encogerse: son formas, no texto. */
+        .diagnosis-visual > span {
+            flex: 0 0 auto;
+        }
+
+        /* Placeholder decorativo por variante; reemplazable por imagen. */
+        .diagnosis-visual--task-initiation {
+            background: linear-gradient(150deg, #E6F2EA 0%, #EDE7FA 100%);
+        }
+
+        .diagnosis-visual--task-initiation .diagnosis-block--big {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: linear-gradient(150deg, #C9E5D6 0%, #D8CCF2 100%);
+        }
+
+        .diagnosis-visual--task-initiation .diagnosis-block--small {
+            width: 22px;
+            height: 22px;
+            border-radius: 7px;
+            background: #fff;
+            box-shadow: 0 0 0 1px rgba(36, 37, 33, 0.06);
+        }
+
+        .diagnosis-visual--analysis-paralysis {
+            background: linear-gradient(150deg, #E4EDF9 0%, #E8E4F8 100%);
+        }
+
+        .diagnosis-visual--analysis-paralysis .diagnosis-trail {
+            width: 44%;
+            height: 2px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, rgba(122, 140, 186, 0) 0%, rgba(122, 140, 186, 0.5) 100%);
+        }
+
+        .diagnosis-visual--analysis-paralysis .diagnosis-node {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 0 1px rgba(36, 37, 33, 0.06);
+        }
+
+        .diagnosis-visual--analysis-paralysis .diagnosis-node--focus {
+            width: 26px;
+            height: 26px;
+            background: linear-gradient(150deg, #9FB6DC 0%, #B7AEE0 100%);
+        }
+
+        .diagnosis-visual--follow-through {
+            background: linear-gradient(150deg, #E7F4EC 0%, #FBF0DC 60%, #FAE7E2 100%);
+        }
+
+        .diagnosis-visual--follow-through .diagnosis-stage {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 0 1px rgba(36, 37, 33, 0.06);
+        }
+
+        /* El ultimo nivel aparece iluminado. */
+        .diagnosis-visual--follow-through .diagnosis-stage--on {
+            background: linear-gradient(150deg, #9BD9BE 0%, #F3C97B 100%);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Barra de nivel: decorativa, no interactiva, sin porcentaje. */
+        .diagnosis-meter {
+            position: relative;
+            height: 12px;
+            margin-bottom: 22px;
+        }
+
+        .diagnosis-meter-track {
+            position: absolute;
+            inset: 2px 0;
+            border-radius: 999px;
+            background: linear-gradient(90deg,
+                #8FC7DE 0%,
+                #9BD3B4 26%,
+                #F2DE9B 52%,
+                #EFB48A 76%,
+                #E79A9A 100%);
+        }
+
+        /* Indicador en el rango alto (78%-85%), misma posicion en las 3. */
+        .diagnosis-meter-dot {
+            position: absolute;
+            top: 50%;
+            left: 81%;
+            width: 20px;
+            height: 20px;
+            margin-left: -10px;
+            transform: translateY(-50%);
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid #D9635F;
+            box-shadow: 0 2px 6px rgba(36, 37, 33, 0.18);
+        }
+
+        .diagnosis-alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 18px;
+            background: #FDF2F3;
+            border: 1px solid #F2D5D8;
+        }
+
+        .diagnosis-alert-icon {
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #E79A9A;
+            color: #fff;
+            font-size: 0.85rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .diagnosis-alert-title {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: #8C2F3B;
+        }
+
+        .diagnosis-alert-copy {
+            margin: 6px 0 0;
+            font-size: 0.93rem;
+            line-height: 1.5;
+            color: #6B4A4D;
+            text-wrap: pretty;
+        }
+
+        .diagnosis-details {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .diagnosis-detail {
+            padding: 14px 16px;
+            border: 1px solid var(--funnel-border);
+            border-radius: 18px;
+            background: var(--funnel-surface);
+            box-shadow: var(--funnel-shadow);
+        }
+
+        .diagnosis-detail h3 {
+            margin: 0;
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--funnel-muted);
+        }
+
+        .diagnosis-detail p {
+            margin: 5px 0 0;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1.35;
+            color: var(--funnel-text);
+        }
+
+        .diagnosis-note {
+            margin: 16px 0 0;
+            font-size: 0.78rem;
+            line-height: 1.5;
+            text-align: center;
+            color: var(--funnel-muted);
+        }
+
+        .step-diagnosis .actions {
+            margin-top: 18px;
+        }
+
+        @media (max-width: 420px) {
+            .diagnosis-card {
+                margin-top: 18px;
+                padding: 16px;
+                border-radius: 20px;
+            }
+
+            /* En telefonos pequenos se reduce el placeholder antes que el texto. */
+            .diagnosis-visual {
+                height: 96px;
+                margin: 14px 0 16px;
+            }
+
+            .diagnosis-details {
+                gap: 8px;
+                margin-top: 12px;
+            }
+
+            .diagnosis-detail {
+                padding: 12px 14px;
+                border-radius: 16px;
+            }
+
+            .diagnosis-detail p {
+                font-size: 0.95rem;
+            }
+
+            .diagnosis-alert {
+                padding: 14px;
+            }
+
+            .diagnosis-alert-copy {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 340px) {
+            .step-diagnosis .card-head h1 {
+                font-size: 1.5rem;
+            }
+
+            .diagnosis-visual {
+                height: 84px;
+            }
+
+            .diagnosis-visual--task-initiation .diagnosis-block--big {
+                width: 38px;
+                height: 38px;
+            }
+
+            .diagnosis-note {
+                font-size: 0.74rem;
+            }
+        }
+
         /* ---- Pantallas educativas: mini pasos y progreso gamificado ---- */
 
         .step-mini-steps,
@@ -2814,6 +3128,7 @@
             selectedTasks: [],
             selectedRoutines: [],
             assignedRoutines: [],
+            profileDiagnosisVariant: null,
             previewInteracted: false,
             emailSubmitted: false,
             completedAt: null,
@@ -3360,6 +3675,14 @@
                 ]
             },
             {
+                id: 'profile_diagnosis',
+                type: 'interstitial',
+                afterKey: 'nq28_motivating',
+                variant: 'profile_diagnosis',
+                headline: 'Your Focus Profile',
+                cta: 'Continue →'
+            },
+            {
                 id: 'task_select',
                 type: 'task_select',
                 headline: 'Elegí 1 a 3 tareas que te están frenando',
@@ -3710,6 +4033,73 @@
             // Cualquier ancla sin key coincidente se emite al final, sin duplicar.
             result.push(...pending);
             return result;
+        }
+
+        // Variantes del resumen de perfil. Se elige UNA vez y se guarda; el
+        // renderer nunca sortea. randomValue debe estar en [0, 1).
+        // Los ids de variante usan 2 espacios de sangria extra a proposito: asi
+        // no se confunden con los ids de paso (16 espacios) al inspeccionar
+        // la lista de pasos.
+        const PROFILE_DIAGNOSIS_VARIANTS = [
+          {
+            id: 'task_initiation',
+            label: 'Task initiation friction',
+            headline: 'When a task feels large or unclear, getting started can require more energy than the task itself. Turning it into one tiny first action can lower the barrier and help you build momentum.',
+            main: 'Getting started',
+            moment: 'Large or unclear tasks',
+            trigger: 'Feeling overwhelmed'
+          },
+          {
+            id: 'analysis_paralysis',
+            label: 'Analysis paralysis',
+            headline: 'When every option feels important, your mind can stay in planning mode and delay action. Choosing one clear next step can help turn overthinking into movement.',
+            main: 'Overthinking',
+            moment: 'Making decisions',
+            trigger: 'Too many options'
+          },
+          {
+            id: 'follow_through',
+            label: 'Follow-through friction',
+            headline: 'When progress feels distant, attention can shift toward something more immediate. Visible progress, mini-steps and small unlocks can make it easier to keep moving.',
+            main: 'Following through',
+            moment: 'Long or repetitive tasks',
+            trigger: 'Immediate distractions'
+          }
+        ];
+
+        const PROFILE_DIAGNOSIS_IDS = PROFILE_DIAGNOSIS_VARIANTS.map((v) => v.id);
+
+        // Funcion pura: intervalos de 1/3. Devuelve siempre un ID valido,
+        // incluso si randomValue viene fuera de rango o no es numerico.
+        function selectProfileDiagnosisVariant(randomValue) {
+            const value = typeof randomValue === 'number' && Number.isFinite(randomValue) ? randomValue : 0;
+            const normalized = value < 0 ? 0 : (value >= 1 ? 0.999999 : value);
+            const slot = Math.min(2, Math.floor(normalized * PROFILE_DIAGNOSIS_IDS.length));
+            return PROFILE_DIAGNOSIS_IDS[slot];
+        }
+
+        function randomUnitValue() {
+            try {
+                if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
+                    const buffer = new Uint32Array(1);
+                    window.crypto.getRandomValues(buffer);
+                    return buffer[0] / 4294967296;
+                }
+            } catch {
+                // Sigue con el fallback.
+            }
+            return Math.random();
+        }
+
+        function profileDiagnosisVariant() {
+            const stored = funnelState.profileDiagnosisVariant;
+            if (PROFILE_DIAGNOSIS_IDS.includes(stored)) {
+                return stored;
+            }
+            // Valor ausente o invalido: se recupera con una variante valida.
+            const picked = selectProfileDiagnosisVariant(randomUnitValue());
+            setState('profileDiagnosisVariant', picked);
+            return picked;
         }
 
         function stepList() {
@@ -4755,6 +5145,31 @@
                 </div>`;
         }
 
+        // Placeholder central del resumen de perfil: formas CSS puras,
+        // distintas por variante y reemplazables por imagen real.
+        function diagnosisVisualHtml(variantId) {
+            if (variantId === 'task_initiation') {
+                return `
+                    <span class="diagnosis-block--big"></span>
+                    <span class="diagnosis-block--small"></span>
+                    <span class="diagnosis-block--small"></span>
+                    <span class="diagnosis-block--small"></span>`;
+            }
+            if (variantId === 'analysis_paralysis') {
+                return `
+                    <span class="diagnosis-node"></span>
+                    <span class="diagnosis-node"></span>
+                    <span class="diagnosis-node"></span>
+                    <span class="diagnosis-trail"></span>
+                    <span class="diagnosis-node diagnosis-node--focus"></span>`;
+            }
+            return `
+                <span class="diagnosis-stage"></span>
+                <span class="diagnosis-stage"></span>
+                <span class="diagnosis-stage"></span>
+                <span class="diagnosis-stage diagnosis-stage--on"></span>`;
+        }
+
         // Pantalla 1: tres tarjetas verticales con placeholder CSS.
         function miniStepCardsHtml(step) {
             return step.cards.map((card) => `
@@ -4783,9 +5198,59 @@
             const isCurves = step.id === 'interstitial_3';
             const isGoodHands = step.variant === 'good_hands';
             const isNotAlone = step.variant === 'not_alone';
+            const isProfileDiagnosis = step.variant === 'profile_diagnosis';
             const isMiniSteps = step.variant === 'mini_steps';
             const isGamified = step.variant === 'gamified_progress';
             const backHtml = backButtonHtml();
+
+            if (isProfileDiagnosis) {
+                const variant = PROFILE_DIAGNOSIS_VARIANTS.find((v) => v.id === profileDiagnosisVariant());
+                document.getElementById('funnelRoot').innerHTML = `
+                    ${backHtml}
+                    ${cardOpen('step-diagnosis')}
+                        <div class="card-head">
+                            <h1>${step.headline}</h1>
+                        </div>
+                        <article class="diagnosis-card">
+                            <div class="diagnosis-card-top">
+                                <span class="diagnosis-eyebrow">Daily friction level</span>
+                                <span class="diagnosis-badge">HIGH</span>
+                            </div>
+                            <div class="diagnosis-visual diagnosis-visual--${variant.id.replace(/_/g, '-')}" aria-hidden="true">${diagnosisVisualHtml(variant.id)}</div>
+                            <div class="diagnosis-meter" role="img" aria-label="High daily friction level">
+                                <span class="diagnosis-meter-track"></span>
+                                <span class="diagnosis-meter-dot"></span>
+                            </div>
+                            <div class="diagnosis-alert">
+                                <span class="diagnosis-alert-icon" aria-hidden="true">!</span>
+                                <div>
+                                    <h2 class="diagnosis-alert-title">HIGH level</h2>
+                                    <p class="diagnosis-alert-copy">${variant.headline}</p>
+                                </div>
+                            </div>
+                        </article>
+                        <div class="diagnosis-details">
+                            <article class="diagnosis-detail">
+                                <h3>Main difficulty</h3>
+                                <p>${variant.main}</p>
+                            </article>
+                            <article class="diagnosis-detail">
+                                <h3>Most challenging moment</h3>
+                                <p>${variant.moment}</p>
+                            </article>
+                            <article class="diagnosis-detail">
+                                <h3>Common trigger</h3>
+                                <p>${variant.trigger}</p>
+                            </article>
+                        </div>
+                        <p class="diagnosis-note">This profile reflects your quiz experience and is not a medical diagnosis.</p>
+                        <div class="actions">
+                            <button class="btn btn-dopamine" type="button" data-action="next" id="nextBtn">${step.cta}</button>
+                        </div>
+                    </article>`;
+                document.getElementById('nextBtn').addEventListener('click', goNext);
+                return;
+            }
 
             if (isMiniSteps) {
                 document.getElementById('funnelRoot').innerHTML = `

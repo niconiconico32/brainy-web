@@ -132,7 +132,7 @@ function testQuestionCopyUnchanged() {
 }
 
 // Pantallas informativas insertadas por diseño: se permiten, pero solo ellas.
-const INSERTED_IDS = ['good_hands', 'not_alone', 'mini_steps_science', 'gamified_progress_science'];
+const INSERTED_IDS = ['good_hands', 'not_alone', 'mini_steps_science', 'gamified_progress_science', 'profile_diagnosis'];
 
 function testStepOrderUnchanged() {
   const base = baseFile('funnel.html');

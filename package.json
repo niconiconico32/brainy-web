@@ -13,6 +13,7 @@
     "test:good-hands": "node testers/good-hands-regression.cjs",
     "test:not-alone": "node testers/not-alone-regression.cjs",
     "test:science-screens": "node testers/science-screens-regression.cjs",
+    "test:profile-diagnosis": "node testers/profile-diagnosis-regression.cjs",
     "cleanup:funnel-plans": "node testers/cleanup-funnel-plans.cjs"
   },
   "dependencies": {
