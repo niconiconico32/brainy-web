@@ -23,6 +23,7 @@ const VIEWPORTS = [
 ];
 
 const STEPS = {
+  begin: 1,
   single: 3,
   multi: 10,
   five: 4,
@@ -191,7 +192,15 @@ async function main() {
           requireNoScroll: label === 'five' && viewport.width >= 768
         });
         problems.push(...found);
-        if (label === 'plan') {
+        if (label === 'begin') {
+          // La pantalla de inicio no tiene opciones: se valida el CTA y el legal.
+          const ok = await page.evaluate(() => {
+            const cta = document.getElementById('startBtn');
+            const legal = document.querySelector('.begin-legal');
+            return !!cta && cta.tagName === 'BUTTON' && !!legal && legal.textContent.trim().length > 20;
+          });
+          if (!ok) problems.push(`${viewport.name}/${label}: falta el CTA o el aviso legal`);
+        } else if (label === 'plan') {
           const ok = await page.evaluate(() => {
             const pick = document.querySelector('.pick-check');
             return !!pick && pick.tagName === 'BUTTON' && !!document.getElementById('nextBtn');

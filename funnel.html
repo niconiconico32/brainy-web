@@ -34,6 +34,8 @@
             --funnel-shadow: 0 2px 10px rgba(36, 37, 33, 0.04);
             --funnel-shell-max: 560px;
             --funnel-serif: Georgia, "Times New Roman", "Iowan Old Style", serif;
+            --begin-bg: #EDE9DF;
+            --begin-muted: #5F625C;
         }
 
         * {
@@ -552,14 +554,78 @@
             color: var(--muted);
         }
 
-        .mascot-hero {
-            text-align: center;
-            margin: 8px 0 4px;
+        /* ---- Pantalla de inicio: fondo plano, copy arriba, CTA abajo ---- */
+
+        .begin-screen {
+            display: flex;
+            width: 100%;
+            max-width: 560px;
+            margin: 0 auto;
+            flex-direction: column;
+            min-height: calc(100vh - 56px - env(safe-area-inset-bottom, 0px));
+            padding: 28px 0 24px;
         }
 
-        .mascot-hero .egg,
-        .mascot-hero .pet {
-            margin: 0 auto;
+        /* El fondo plano cubre toda la pantalla, no solo la columna. */
+        body.begin-active {
+            background: var(--begin-bg);
+        }
+
+        .begin-top h1,
+        .begin-title {
+            margin: 0;
+            font-family: var(--funnel-serif);
+            font-size: clamp(1.75rem, 7.4vw, 2.35rem);
+            font-weight: 700;
+            line-height: 1.12;
+            letter-spacing: -0.01em;
+            text-wrap: balance;
+        }
+
+        .begin-sub {
+            margin: 12px 0 0;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--begin-muted);
+            text-wrap: pretty;
+        }
+
+        .begin-mid {
+            flex: 1 1 auto;
+            min-height: 24px;
+        }
+
+        .begin-bottom {
+            display: grid;
+            gap: 10px;
+        }
+
+        .begin-cta {
+            width: 100%;
+        }
+
+        .begin-legal {
+            margin: 2px 0 0;
+            font-size: 0.78rem;
+            line-height: 1.5;
+            text-align: center;
+            color: var(--begin-muted);
+        }
+
+        .begin-legal a {
+            color: inherit;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .begin-legal a:hover {
+            color: var(--funnel-text);
+        }
+
+        .begin-legal a:focus-visible {
+            outline: 2px solid var(--funnel-accent);
+            outline-offset: 2px;
+            border-radius: 4px;
         }
 
         .pet-stage {
@@ -1726,13 +1792,6 @@
             animation: spin 0.8s linear infinite;
         }
 
-        .footer-note {
-            margin-top: 18px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--muted);
-        }
-
         .toast {
             position: fixed;
             left: 50%;
@@ -1794,6 +1853,16 @@
 
             .funnel-root > .step {
                 margin-block: auto;
+            }
+
+            /* En desktop la columna tiene padding lateral: para que el fondo
+               plano sea continuo, la pantalla de inicio lo lleva de sobra. */
+            .begin-screen {
+                width: calc(100% + 40px);
+                margin-inline: -20px;
+                padding-inline: 40px;
+                max-width: 640px;
+                min-height: calc(100vh - 64px - env(safe-area-inset-bottom, 0px));
             }
         }
 
@@ -2209,9 +2278,8 @@
             {
                 id: 'begin',
                 type: 'begin',
-                eyebrow: 'Brainy',
-                headline: 'Vamos a construir el sistema de tu mente',
-                sub: 'Unos minutos, una serie de preguntas. Al final, una mascota que empieza a crecer con cada paso pequeño que des.'
+                headline: 'Hecho para cerebros que piensan diferente',
+                sub: 'Da el primer paso para vencer la procrastinación y la paralisis por análisis.'
             },
             {
                 id: 'nq01',
@@ -2705,8 +2773,8 @@
 
         const STEP_COPY = {
             begin: {
-                es: { headline: 'Vamos a construir el sistema de tu mente', sub: 'Unos minutos, una serie de preguntas. Al final, una mascota que empieza a crecer con cada paso pequeño que des.' },
-                en: { headline: "Let's build your personal brain system", sub: 'A few minutes, a series of questions. At the end, you will have a companion that grows with every small step you take.' }
+                es: { headline: 'Hecho para cerebros que piensan diferente', sub: 'Da el primer paso para vencer la procrastinación y la paralisis por análisis.' },
+                en: { headline: 'Made for brains that think different', sub: 'Take the first step to beat procrastination and analysis paralysis.' }
             },
             nq01: {
                 es: { headline: '¿Con qué género te identificas?', options: ['Femenino', 'Masculino'] },
@@ -2880,10 +2948,10 @@
 
         const UI_COPY = {
             es: {
-                languageHeadline: 'Elige tu idioma', languageSub: 'Puedes cambiarlo más adelante.', spanish: 'Español', english: 'English', start: 'Comenzar →', restart: 'Empezar de nuevo', saved: 'Tu progreso se guarda automáticamente en este dispositivo.', back: '‹ Volver', next: 'Siguiente →', age: '¿Qué edad tienes?', agePlaceholder: 'Ej.: 25', ageError: 'Necesitamos tu edad para personalizar los ejemplos.', emailError: 'Ingresa un email válido para guardar tu plan.', emailNote: 'Usaremos este correo para preparar tu cuenta y vincular tu plan.', optin: 'Quiero recibir novedades, consejos y ofertas de Brainy.', today: 'Hoy', companion: 'TU COMPAÑERO', mission: 'TU MISIÓN', divided: 'Brainy lo divide en:', smallSteps: 'Los pasos pequeños también cuentan.', selectAll: 'Selecciona todas las opciones que correspondan.', loadingArea: 'Enfocando tu área', loadingTime: 'Ajustando el ritmo a tu tiempo', task: 'tarea', tasks: 'tareas', routine: 'rutina', routines: 'rutinas', maxOnly: 'Solo {max}. Selecciona una elegida para cambiarla.', selected: 'Elegiste', minimum: 'mínimo', upTo: 'hasta', steps: 'pasos', tapToSee: 'toca para ver', select: 'Seleccionar', noData: 'No se pudieron cargar los datos. Recarga la página o inténtalo de nuevo.', noTasks: 'No hay tareas seleccionadas.', noRoutines: 'No hay rutinas seleccionadas.'
+                languageHeadline: 'Elige tu idioma', languageSub: 'Puedes cambiarlo más adelante.', spanish: 'Español', english: 'English', start: 'Iniciar', restart: 'Empezar de nuevo', saved: 'Tu progreso se guarda automáticamente en este dispositivo.', back: '‹ Volver', next: 'Siguiente →', age: '¿Qué edad tienes?', agePlaceholder: 'Ej.: 25', ageError: 'Necesitamos tu edad para personalizar los ejemplos.', emailError: 'Ingresa un email válido para guardar tu plan.', emailNote: 'Usaremos este correo para preparar tu cuenta y vincular tu plan.', optin: 'Quiero recibir novedades, consejos y ofertas de Brainy.', today: 'Hoy', companion: 'TU COMPAÑERO', mission: 'TU MISIÓN', divided: 'Brainy lo divide en:', smallSteps: 'Los pasos pequeños también cuentan.', selectAll: 'Selecciona todas las opciones que correspondan.', loadingArea: 'Enfocando tu área', loadingTime: 'Ajustando el ritmo a tu tiempo', task: 'tarea', tasks: 'tareas', routine: 'rutina', routines: 'rutinas', maxOnly: 'Solo {max}. Selecciona una elegida para cambiarla.', selected: 'Elegiste', minimum: 'mínimo', upTo: 'hasta', steps: 'pasos', tapToSee: 'toca para ver', select: 'Seleccionar', noData: 'No se pudieron cargar los datos. Recarga la página o inténtalo de nuevo.', noTasks: 'No hay tareas seleccionadas.', noRoutines: 'No hay rutinas seleccionadas.'
             },
             en: {
-                languageHeadline: 'Choose your language', languageSub: 'You can change it later.', spanish: 'Español', english: 'English', start: 'Start →', restart: 'Start over', saved: 'Your progress is saved automatically on this device.', back: '‹ Back', next: 'Next →', age: 'How old are you?', agePlaceholder: 'e.g. 25', ageError: 'We need your age to tailor the examples.', emailError: 'Enter a valid email to save your plan.', emailNote: 'We will use this email to prepare your account and link your plan.', optin: 'I want to receive Brainy news, tips, and offers.', today: 'Today', companion: 'YOUR COMPANION', mission: 'YOUR MISSION', divided: 'Brainy breaks it down into:', smallSteps: 'Small steps count too.', selectAll: 'Select all that apply.', loadingArea: 'Focusing on your area', loadingTime: 'Adjusting the pace to your time', task: 'task', tasks: 'tasks', routine: 'routine', routines: 'routines', maxOnly: 'Only {max}. Select one you chose to replace it.', selected: 'Selected', minimum: 'minimum', upTo: 'up to', steps: 'steps', tapToSee: 'tap to view', select: 'Select', noData: 'We could not load the data. Reload the page or try again.', noTasks: 'No tasks selected.', noRoutines: 'No routines selected.'
+                languageHeadline: 'Choose your language', languageSub: 'You can change it later.', spanish: 'Español', english: 'English', start: 'Get started', restart: 'Start over', saved: 'Your progress is saved automatically on this device.', back: '‹ Back', next: 'Next →', age: 'How old are you?', agePlaceholder: 'e.g. 25', ageError: 'We need your age to tailor the examples.', emailError: 'Enter a valid email to save your plan.', emailNote: 'We will use this email to prepare your account and link your plan.', optin: 'I want to receive Brainy news, tips, and offers.', today: 'Today', companion: 'YOUR COMPANION', mission: 'YOUR MISSION', divided: 'Brainy breaks it down into:', smallSteps: 'Small steps count too.', selectAll: 'Select all that apply.', loadingArea: 'Focusing on your area', loadingTime: 'Adjusting the pace to your time', task: 'task', tasks: 'tasks', routine: 'routine', routines: 'routines', maxOnly: 'Only {max}. Select one you chose to replace it.', selected: 'Selected', minimum: 'minimum', upTo: 'up to', steps: 'steps', tapToSee: 'tap to view', select: 'Select', noData: 'We could not load the data. Reload the page or try again.', noTasks: 'No tasks selected.', noRoutines: 'No routines selected.'
             }
         };
 
@@ -3762,18 +3830,31 @@
                 </div>`;
         }
 
+        // Aviso legal bajo el CTA. Términos y Privacidad enlazan a las paginas
+// existentes; la politica de reembolso todavia no tiene pagina, asi que
+// se muestra como texto plano en vez de dejar un enlace roto.
+        function beginLegalHtml() {
+            const prefix = localizedText('Al continuar aceptas nuestros ', 'By continuing you accept our ');
+            const comma = ', ';
+            const and = localizedText(' y ', ' and ');
+            return `${prefix}<a href="terms.html" target="_blank" rel="noopener">${localizedText('Términos de Uso', 'Terms of Use')}</a>${comma}<a href="privacy.html" target="_blank" rel="noopener">${localizedText('Política de Privacidad', 'Privacy Policy')}</a>${and}${localizedText('Política de Reembolso', 'Refund Policy')}.`;
+        }
+
         function renderBegin(step) {
             const hasProgress = answeredCount() > 0;
             track('funnel_begin', { resumed: hasProgress });
             document.getElementById('funnelRoot').innerHTML = `
-                ${cardOpen()}
-                    <div class="mascot-hero">${petStageHtml(4, true).replace('width:128px;height:128px', 'width:150px;height:150px').replace('<span class="sparkle">✨</span>', '')}</div>
-                    ${headHtml(step)}
-                    <div class="actions">
-                        <button class="btn btn-dopamine" type="button" data-action="start" id="startBtn">${ui('start')}</button>
-                        ${hasProgress ? `<button class="btn btn-ghost" type="button" data-action="reset">${ui('restart')}</button>` : ''}
+                <article class="begin-screen">
+                    <div class="begin-top">
+                        <h1 class="begin-title">${step.headline}</h1>
+                        <p class="begin-sub">${step.sub}</p>
                     </div>
-                    <p class="footer-note">${ui('saved')}</p>
+                    <div class="begin-mid" aria-hidden="true"></div>
+                    <div class="begin-bottom">
+                        <button class="btn btn-dopamine begin-cta" type="button" data-action="start" id="startBtn">${ui('start')}</button>
+                        ${hasProgress ? `<button class="btn btn-ghost begin-cta" type="button" data-action="reset">${ui('restart')}</button>` : ''}
+                        <p class="begin-legal">${beginLegalHtml()}</p>
+                    </div>
                 </article>`;
             document.addEventListener('click', handleBeginClick);
         }
@@ -5114,6 +5195,7 @@
             advancing = false;
             const rawStep = stepList()[currentStepIndex];
             const step = localizedStep(rawStep);
+            document.body.classList.toggle('begin-active', step.type === 'begin');
             document.title = step.questionIndex
                 ? (currentLocale() === 'en' ? `Brainy — Question ${step.questionIndex} of ${QUESTION_KEYS.length}` : `Brainy — Pregunta ${step.questionIndex} de ${QUESTION_KEYS.length}`)
                 : (currentLocale() === 'en' ? 'Brainy — Your system and companion' : 'Brainy — Tu sistema y tu mascota');

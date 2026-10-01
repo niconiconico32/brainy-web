@@ -88,12 +88,49 @@ function testOptionsAreButtons() {
   assert.ok(html.includes('.opt {'), 'deben seguir estilos de .opt');
 }
 
+function stepBlocks(src, type) {
+  const steps = /const FUNNEL_STEPS = \[[\s\S]*?\n        \];/.exec(src);
+  assert.ok(steps, 'no se encontro FUNNEL_STEPS');
+  const blocks = [];
+  const re = /\{\s*id: '[^']+',[\s\S]*?\n            \}/g;
+  let match = re.exec(steps[0]);
+  while (match) {
+    if (new RegExp(`type: '${type}'`).test(match[0])) blocks.push(match[0]);
+    match = re.exec(steps[0]);
+  }
+  return blocks;
+}
+
 function testOptionValuesUnchanged() {
   const base = baseFile('funnel.html');
-  const block = /const FUNNEL_STEPS = \[[\s\S]*?\n        \];/.exec(html);
-  const baseBlock = /const FUNNEL_STEPS = \[[\s\S]*?\n        \];/.exec(base);
-  assert.ok(block && baseBlock, 'no se encontro FUNNEL_STEPS');
-  assert.equal(block[0], baseBlock[0], 'FUNNEL_STEPS cambio: copy, IDs, valores u orden de pasos');
+  // Solo se permite cambiar el copy de la pantalla de inicio (begin).
+  const questions = stepBlocks(html, 'question');
+  const baseQuestions = stepBlocks(base, 'question');
+  assert.equal(questions.length, baseQuestions.length, 'cambio la cantidad de preguntas');
+  assert.deepEqual(questions, baseQuestions, 'cambio el copy, los IDs o los valores de una pregunta');
+  assert.equal(
+    stepBlocks(html, 'interstitial').join('\n'),
+    stepBlocks(base, 'interstitial').join('\n'),
+    'cambio el copy de un interstitial'
+  );
+  assert.deepEqual(
+    stepBlocks(html, 'task_select').concat(stepBlocks(html, 'routine_select')).join('\n'),
+    stepBlocks(base, 'task_select').concat(stepBlocks(base, 'routine_select')).join('\n'),
+    'cambio task_select o routine_select'
+  );
+}
+
+function testQuestionCopyUnchanged() {
+  const base = baseFile('funnel.html');
+  const headline = (src) => (src.match(/headline: '[^']*'/g) || []).filter((line, i) => true);
+  const baseOnly = headline(base);
+  const mineOnly = headline(html).filter((line) => !baseOnly.includes(line));
+  const allowed = [
+    'Hecho para cerebros que piensan diferente',
+    'Made for brains that think different'
+  ];
+  const unexpected = mineOnly.filter((line) => !allowed.some((a) => line.includes(a)));
+  assert.deepEqual(unexpected, [], `headline nuevo inesperado: ${unexpected.join(', ')}`);
 }
 
 function testStepOrderUnchanged() {
@@ -110,6 +147,19 @@ function testHeaderHiddenUntilProfile() {
     /if \(step\.type === 'begin' \|\| step\.type === 'language'\) \{\s*document\.getElementById\('funnelProgress'\)\.hidden = true;/.test(html),
     'begin/language deben ocultar el encabezado'
   );
+}
+
+function testBeginScreen() {
+  assert.ok(html.includes('Hecho para cerebros que piensan diferente'), 'falta el titulo de la pantalla de inicio');
+  assert.ok(html.includes('Da el primer paso para vencer la procrastinación y la paralisis por análisis.'), 'falta el subtitulo');
+  assert.ok(html.includes("start: 'Iniciar'"), 'el CTA debe decir Iniciar');
+  assert.ok(html.includes('class="begin-top"') && html.includes('class="begin-bottom"'), 'debe separar copy arriba y CTA abajo');
+  assert.ok(/\.begin-mid \{[^}]*flex: 1 1 auto/.test(html), 'el medio debe ser el espacio vacio flexible');
+  assert.ok(html.includes('body.begin-active') && html.includes("--begin-bg:"), 'debe tener fondo de color plano');
+  assert.ok(html.includes('Términos de Uso') && html.includes('Política de Privacidad') && html.includes('Política de Reembolso'), 'falta el aviso legal');
+  assert.ok(html.includes('href="terms.html"') && html.includes('href="privacy.html"'), 'los enlaces legales deben apuntar a paginas existentes');
+  assert.equal(/\.mascot-hero/.test(html), false, 'la pantalla de inicio ya no usa la mascota');
+  assert.equal(/\.footer-note/.test(html), false, 'la pantalla de inicio ya no usa footer-note');
 }
 
 function testCompactLayout() {
@@ -151,8 +201,10 @@ async function main() {
     ['placeholder de ilustracion', testQuestionPlaceholder],
     ['opciones son botones', testOptionsAreButtons],
     ['valores de opciones intactos', testOptionValuesUnchanged],
+    ['copy de preguntas contra main', testQuestionCopyUnchanged],
     ['orden de pasos intacto', testStepOrderUnchanged],
     ['encabezado oculto en begin/language', testHeaderHiddenUntilProfile],
+    ['pantalla de inicio', testBeginScreen],
     ['layout compacto', testCompactLayout],
     ['llamadas backend intactas', testBackendCallsUnchanged],
     ['archivos prohibidos intactos', testForbiddenFilesUntouched]
