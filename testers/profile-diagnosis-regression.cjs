@@ -65,22 +65,24 @@ async function main() {
     check('2. es el ultimo paso de Creando tu Perfil', async () => {
       const r = await page.evaluate(() => {
         const l = stepList();
-        const isProfile = (s) => s.type === 'question' || s.type === 'interstitial';
+        // Por etapa, no por tipo: plan_personalization_loading es interstitial
+        // pero abre la etapa 2.
         let last = -1;
-        l.forEach((s, i) => { if (isProfile(s)) last = i; });
-        return { last: l[last].id, diagStage: isProfile(l.find((s) => s.id === 'profile_diagnosis')) };
+        l.forEach((s, i) => { if (stageIndexOfStep(s) === 0) last = i; });
+        return { last: l[last].id, diagStage: stageIndexOfStep(l.find((s) => s.id === 'profile_diagnosis')) };
       });
       assert.equal(r.last, STEP, 'el diagnostico debe ser el ultimo de la etapa 1');
-      assert.equal(r.diagStage, true, 'debe seguir contando como paso de Creando tu Perfil');
+      assert.equal(r.diagStage, 0, 'debe seguir contando como paso de Creando tu Perfil');
     });
 
     check('3. el siguiente paso es el primero de Disenando tu Plan', async () => {
       const r = await page.evaluate(() => {
         const l = stepList();
         const i = l.findIndex((s) => s.id === 'profile_diagnosis');
-        return { next: l[i + 1].id, prev: l[i - 1].id };
+        return { next: l[i + 1].id, prev: l[i - 1].id, nextStage: stageIndexOfStep(l[i + 1]) };
       });
-      assert.equal(r.next, 'task_select', 'la frontera de la etapa 2 no debe cambiar');
+      assert.equal(r.next, 'plan_personalization_loading', 'la etapa 2 arranca con la pantalla de generacion');
+      assert.equal(r.nextStage, 1);
       assert.equal(r.prev, 'nq28', 'debe venir tras la ultima pregunta de perfil');
     });
 
@@ -256,7 +258,7 @@ async function main() {
           h: (document.querySelector('.step h1') || {}).textContent,
           stage: [...document.querySelectorAll('.funnel-stage')].map((n) => n.dataset.state)
         }));
-        assert.match(r.h, /1 to 3 tasks/, `Continue nollego a task_select desde ${v}`);
+        assert.match(r.h, /personalized plan/, `Continue no entro a la etapa 2 desde ${v}`);
         assert.deepEqual(r.stage, ['done', 'active']);
       }
     });
@@ -402,7 +404,7 @@ async function main() {
       assert.notEqual(outline, '0px', 'el boton debe tener focus-visible');
       await page.keyboard.press('Enter');
       await page.waitForTimeout(420);
-      assert.match(await page.evaluate(() => (document.querySelector('.step h1') || {}).textContent || ''), /1 to 3 tasks/);
+      assert.match(await page.evaluate(() => (document.querySelector('.step h1') || {}).textContent || ''), /personalized plan/);
     });
 
     check('24. un clic produce exactamente una transicion', async () => {
@@ -417,7 +419,7 @@ async function main() {
           rendered: document.querySelectorAll('.step').length
         }));
         assert.equal(before, STEP);
-        assert.equal(after.id, 'task_select', `un clic avanzo de mas o de menos en ${v}`);
+        assert.equal(after.id, 'plan_personalization_loading', 'un clic avanzo de mas o de menos');
         assert.equal(after.delta, (await page.evaluate((s) => stepList().findIndex((x) => x.id === s), STEP)) + 1,
           'el indice debe avanzar exactamente una posicion');
         assert.equal(after.rendered, 1, 'solo un paso renderizado, sin duplicados');

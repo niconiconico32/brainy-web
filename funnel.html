@@ -461,6 +461,301 @@
             }
         }
 
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+
+        /* ---- Pantalla de generacion del plan ---- */
+
+        .step-plan-loading {
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+            padding: 0;
+            border-radius: 0;
+        }
+
+        .step-plan-loading .card-head {
+            text-align: center;
+        }
+
+        .step-plan-loading .card-head h1 {
+            margin-top: 0;
+            font-family: var(--funnel-serif);
+            font-size: clamp(1.5rem, 6.6vw, 2.1rem);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            line-height: 1.14;
+            text-wrap: balance;
+        }
+
+        .plan-loading-bars {
+            display: grid;
+            gap: 18px;
+            margin-top: 26px;
+        }
+
+        .plan-bar-label {
+            font-size: 0.92rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--funnel-text);
+        }
+
+        .plan-bar-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .plan-bar-value {
+            flex: 0 0 auto;
+            font-size: 0.82rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            color: var(--funnel-muted);
+        }
+
+        .plan-bar-track {
+            height: 14px;
+            border-radius: 999px;
+            background: rgba(36, 37, 33, 0.07);
+            overflow: hidden;
+        }
+
+        .plan-bar-fill {
+            display: block;
+            height: 100%;
+            width: 0%;
+            border-radius: inherit;
+            transition: width 0.1s linear;
+        }
+
+        [data-plan-reduced-motion="true"] .plan-bar-fill {
+            transition: none;
+        }
+
+        /* Cada barra con su propio color: menta, amarillo, acento. */
+        .plan-bar--bar1 .plan-bar-fill {
+            background: linear-gradient(90deg, #B9E3CE 0%, #159875 100%);
+        }
+
+        .plan-bar--bar2 .plan-bar-fill {
+            background: linear-gradient(90deg, #F6E2A8 0%, #E8B84B 100%);
+        }
+
+        .plan-bar--bar3 .plan-bar-fill {
+            background: linear-gradient(90deg, #A9DCC6 0%, #0E7A5D 100%);
+        }
+
+        .plan-bar-track[data-complete="true"] {
+            box-shadow: 0 0 0 2px var(--funnel-accent-soft);
+        }
+
+        .step-plan-loading [data-program-focus]:focus {
+            outline: none;
+        }
+
+        /* CTA bloqueado: legible, sin parecer accion disponible. */
+        .step-plan-loading .btn[disabled] {
+            background: #E7E5DE;
+            color: #8A8C86;
+            box-shadow: none;
+            opacity: 1;
+        }
+
+        .plan-loading-lock {
+            margin: 8px 0 0;
+            font-size: 0.78rem;
+            line-height: 1.4;
+            text-align: center;
+            color: var(--funnel-muted);
+        }
+
+        /* ---- Testimoniales provisionales (decorativos) ---- */
+
+        .testimonials {
+            margin-top: 26px;
+        }
+
+        .testimonials__track {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 2px 20px 8px;
+            margin: 0 -20px;
+            scrollbar-width: none;
+        }
+
+        .testimonials__track::-webkit-scrollbar {
+            display: none;
+        }
+
+        .testimonial-placeholder {
+            flex: 0 0 78%;
+            scroll-snap-align: center;
+            padding: 16px;
+            border: 1px solid var(--funnel-border);
+            border-radius: 20px;
+            background: var(--funnel-surface);
+            box-shadow: var(--funnel-shadow);
+        }
+
+        .testimonial-placeholder__head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .testimonial-placeholder__avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(150deg, #E6E1F8 0%, #EFF6F1 100%);
+        }
+
+        .testimonial-placeholder__stars {
+            display: inline-flex;
+            gap: 3px;
+        }
+
+        .testimonial-placeholder__stars span {
+            width: 9px;
+            height: 9px;
+            border-radius: 2px;
+            background: #F1DFA8;
+        }
+
+        .testimonial-placeholder__line {
+            display: block;
+            height: 8px;
+            margin-bottom: 7px;
+            border-radius: 999px;
+            background: rgba(36, 37, 33, 0.08);
+        }
+
+        .testimonial-placeholder__line--short {
+            width: 62%;
+        }
+
+        .testimonial-placeholder__name {
+            display: block;
+            width: 38%;
+            height: 7px;
+            margin-top: 10px;
+            border-radius: 999px;
+            background: rgba(36, 37, 33, 0.05);
+        }
+
+        /* ---- Modal de pregunta emergente ---- */
+
+        .plan-dialog {
+            /* Centrado explicito: el UA lo ancla arriba en algunos motores. */
+            position: fixed;
+            inset: 0;
+            margin: auto;
+            width: min(92vw, 380px);
+            max-height: 88vh;
+            overflow-y: auto;
+            padding: 26px 22px 22px;
+            border: 0;
+            border-radius: 24px;
+            background: var(--funnel-surface);
+            color: var(--funnel-text);
+            box-shadow: 0 24px 60px rgba(36, 37, 33, 0.22);
+        }
+
+        .plan-dialog::backdrop {
+            background: rgba(36, 37, 33, 0.42);
+        }
+
+        .plan-dialog-title {
+            margin: 0;
+            font-family: var(--funnel-serif);
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.3;
+            text-wrap: balance;
+        }
+
+        .plan-dialog-options {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Yes y No: mismo peso visual, ninguna jerarquia moral. */
+        .plan-dialog-option {
+            width: 100%;
+            min-height: 48px;
+            padding: 12px 16px;
+            border: 1px solid var(--funnel-border);
+            border-radius: 16px;
+            background: var(--funnel-surface);
+            color: var(--funnel-text);
+            font: inherit;
+            font-size: 1.02rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .plan-dialog-option:hover {
+            border-color: rgba(21, 152, 117, 0.45);
+        }
+
+        .plan-dialog-option:focus-visible {
+            outline: 3px solid var(--funnel-accent);
+            outline-offset: 3px;
+        }
+
+        .plan-dialog-option[disabled] {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 420px) {
+            .plan-loading-bars {
+                gap: 16px;
+                margin-top: 22px;
+            }
+
+            .testimonial-placeholder {
+                flex-basis: 82%;
+            }
+        }
+
+        @media (max-width: 340px) {
+            .plan-bar-track {
+                height: 12px;
+            }
+
+            .plan-bar-label {
+                font-size: 0.86rem;
+            }
+
+            /* El shell pasa a 16px de padding: el carril debe seguirlo o
+               desborda horizontalmente. */
+            .testimonials__track {
+                margin: 0 -16px;
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+        }
+
         /* ---- Pantalla "Your Focus Profile" (resumen, no diagnóstico médico) ---- */
 
         .step-diagnosis {
@@ -3129,6 +3424,7 @@
             selectedRoutines: [],
             assignedRoutines: [],
             profileDiagnosisVariant: null,
+            planPersonalizationProgress: null,
             previewInteracted: false,
             emailSubmitted: false,
             completedAt: null,
@@ -3683,6 +3979,15 @@
                 cta: 'Continue →'
             },
             {
+                id: 'plan_personalization_loading',
+                type: 'interstitial',
+                afterId: 'profile_diagnosis',
+                variant: 'plan_loading',
+                stage: 1,
+                headline: 'Creating your personalized plan',
+                cta: 'Continue →'
+            },
+            {
                 id: 'task_select',
                 type: 'task_select',
                 headline: 'Elegí 1 a 3 tareas que te están frenando',
@@ -3997,46 +4302,72 @@
 
         // Reordena los pasos que declaran afterKey para que queden anclados al
         // key de la pregunta, no a una posicion numerica fragil.
+        // Reordena los pasos anclados sin duplicar la lista. Soporta:
+        // afterKey / beforeKey (por key de respuesta) y afterId (por id de
+        // paso), para encadenar pantallas informativas.
         function orderStepsByAnchor(steps) {
-            const anchored = steps.filter((step) => step.afterKey || step.beforeKey);
+            const anchored = steps.filter((step) => step.afterKey || step.beforeKey || step.afterId);
             if (!anchored.length) {
                 return steps;
             }
             const result = [];
             const pending = anchored.slice();
-            // Un ancla se consume una sola vez, por key y no por posicion.
-            const take = (key, field) => {
-                const index = key ? pending.findIndex((a) => a[field] === key) : -1;
+
+            // Consume un ancla una sola vez: un ancla puede colgar de una key
+            // de respuesta o del id de un paso.
+            const takeBy = (value, field) => {
+                const index = value ? pending.findIndex((a) => a[field] === value) : -1;
                 return index > -1 ? pending.splice(index, 1)[0] : null;
             };
+            // Un paso puede tener varias anclas beforeKey sobre la misma key.
+            const takeAllBy = (value, field) => {
+                const found = [];
+                let next = takeBy(value, field);
+                while (next) {
+                    found.push(next);
+                    next = takeBy(value, field);
+                }
+                return found;
+            };
+            // Emite un paso y todo lo que se ancla a el.
+            const emit = (step) => {
+                result.push(step);
+                for (const child of takeAllBy(step.id, 'afterId')) {
+                    emit(child);
+                }
+                const after = takeBy(step.key, 'afterKey');
+                if (after) {
+                    emit(after);
+                }
+            };
+
             steps.forEach((step) => {
-                // Los pasos anclados ya viven en la lista: se emiten solo desde
-                // su key para no duplicarlos.
-                if (step.afterKey || step.beforeKey) {
+                // Los pasos anclados ya viven en la lista: se emiten desde su
+                // ancla para no duplicarlos.
+                if (step.afterKey || step.beforeKey || step.afterId) {
                     return;
                 }
-                const before = take(step.key, 'beforeKey');
-                if (before) {
-                    // Varios anclajes antes de la misma key conservan su orden.
-                    let next = before;
-                    while (next) {
-                        result.push(next);
-                        next = take(step.key, 'beforeKey');
-                    }
+                for (const child of takeAllBy(step.id, 'afterId')) {
+                    emit(child);
+                }
+                for (const child of takeAllBy(step.key, 'beforeKey')) {
+                    emit(child);
                 }
                 result.push(step);
-                const after = take(step.key, 'afterKey');
+                const after = takeBy(step.key, 'afterKey');
                 if (after) {
-                    result.push(after);
+                    emit(after);
                 }
             });
-            // Cualquier ancla sin key coincidente se emite al final, sin duplicar.
-            result.push(...pending);
+
+            // Cualquier ancla sin key/id coincidente se emite al final.
+            while (pending.length) {
+                emit(pending.shift());
+            }
             return result;
         }
 
-        // Variantes del resumen de perfil. Se elige UNA vez y se guarda; el
-        // renderer nunca sortea. randomValue debe estar en [0, 1).
+        // Variantes del resumen de perfil.
         // Los ids de variante usan 2 espacios de sangria extra a proposito: asi
         // no se confunden con los ids de paso (16 espacios) al inspeccionar
         // la lista de pasos.
@@ -4067,6 +4398,8 @@
           }
         ];
 
+        // Seleccion de variante del resumen de perfil. Se elige UNA vez y se
+        // guarda; el renderer nunca sortea. randomValue debe estar en [0, 1).
         const PROFILE_DIAGNOSIS_IDS = PROFILE_DIAGNOSIS_VARIANTS.map((v) => v.id);
 
         // Funcion pura: intervalos de 1/3. Devuelve siempre un ID valido,
@@ -4100,6 +4433,99 @@
             const picked = selectProfileDiagnosisVariant(randomUnitValue());
             setState('profileDiagnosisVariant', picked);
             return picked;
+        }
+
+        // --- Generacion del plan: maquina de estados + reloj testeable ---
+        //
+        // El reloj es un objeto con propiedades mutables para que las pruebas
+        // puedan inyectar un reloj falso determinista.
+        const PLAN_LOADING_CLOCK = {
+            now: () => (window.performance && window.performance.now
+                ? window.performance.now()
+                : Date.now()),
+            raf: (cb) => window.requestAnimationFrame(cb),
+            cancelRaf: (id) => window.cancelAnimationFrame(id),
+            reducedMotion: () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+        };
+
+        const PLAN_LOADING_MS = 3000;
+        const PLAN_LOADING_PHASES = [
+            'bar_1_running', 'question_1', 'bar_2_running', 'question_2', 'bar_3_running', 'ready'
+        ];
+
+        const PLAN_LOADING_QUESTIONS = {
+            question_1: {
+                title: 'Are you generally rushed in the mornings?',
+                yes: 'Yes',
+                no: 'No'
+            },
+            question_2: {
+                title: 'Would you like to learn a new science-based method for developing new healthy habits?',
+                yes: 'Yes',
+                no: 'No'
+            }
+        };
+
+        const PLAN_LOADING_BARS = [
+            { key: 'bar1', label: 'Understanding your patterns' },
+            { key: 'bar2', label: 'Designing your mini-steps' },
+            { key: 'bar3', label: 'Building your Brainy plan' }
+        ];
+
+        // Sana un objeto persistido. La fase NO se toma como verdad: se deriva
+        // de las barras y las respuestas, siempre en el punto mas temprano
+        // consistente. Asi ningun valor invalido puede montar una fase por
+        // delante de lo que realmente serespondio.
+        function sanitizePlanLoadingProgress(raw) {
+            const source = raw && typeof raw === 'object' ? raw : {};
+            const clamp = (v) => {
+                const n = typeof v === 'number' && Number.isFinite(v) ? v : 0;
+                return Math.max(0, Math.min(100, Math.round(n)));
+            };
+            const bool = (v) => (v === true || v === false ? v : null);
+            const progress = {
+                phase: 'bar_1_running',
+                bar1: clamp(source.bar1),
+                bar2: clamp(source.bar2),
+                bar3: clamp(source.bar3),
+                rushedMornings: bool(source.rushedMornings),
+                wantsScienceBasedMethod: bool(source.wantsScienceBasedMethod)
+            };
+            if (progress.rushedMornings === null) {
+                progress.phase = progress.bar1 >= 100 ? 'question_1' : 'bar_1_running';
+            } else if (progress.wantsScienceBasedMethod === null) {
+                progress.phase = progress.bar2 >= 100 ? 'question_2' : 'bar_2_running';
+            } else {
+                progress.phase = progress.bar3 >= 100 ? 'ready' : 'bar_3_running';
+            }
+            if (progress.phase === 'ready') {
+                progress.bar1 = 100;
+                progress.bar2 = 100;
+                progress.bar3 = 100;
+            }
+            return progress;
+        }
+
+        function patchPlanLoading(partial) {
+            const current = planLoadingProgress();
+            return sanitizePlanLoadingProgress(Object.assign({}, current, partial));
+        }
+
+        function planLoadingProgress() {
+            return sanitizePlanLoadingProgress(funnelState.planPersonalizationProgress);
+        }
+
+        function savePlanLoadingProgress(progress) {
+            setState('planPersonalizationProgress', sanitizePlanLoadingProgress(progress));
+        }
+
+        function isPlanLoadingReady(progress) {
+            return progress.phase === 'ready'
+                && progress.bar1 === 100
+                && progress.bar2 === 100
+                && progress.bar3 === 100
+                && progress.rushedMornings !== null
+                && progress.wantsScienceBasedMethod !== null;
         }
 
         function stepList() {
@@ -4165,12 +4591,19 @@
             localStorage.setItem(STORAGE_STEP_KEY, String(currentStepIndex));
         }
 
+        let cancelPlanLoadingRunners = null;
+
         function clearTimers() {
             stepTimers.forEach((timer) => {
                 clearTimeout(timer);
                 clearInterval(timer);
             });
             stepTimers = [];
+            // Las barras de plan_personalization_loading usan requestAnimationFrame.
+            if (cancelPlanLoadingRunners) {
+                cancelPlanLoadingRunners();
+                cancelPlanLoadingRunners = null;
+            }
         }
 
         function answeredCount() {
@@ -4192,6 +4625,9 @@
         ];
 
         function stageIndexOfStep(step) {
+            if (step && typeof step.stage === 'number') {
+                return step.stage;
+            }
             return step && (step.type === 'question' || step.type === 'interstitial') ? 0 : 1;
         }
 
@@ -5145,6 +5581,330 @@
                 </div>`;
         }
 
+        // --- Pantalla de generacion del plan ---
+        //
+        // Runtime NO persistido: progreso activo por barra y el id del frame.
+        const planLoadingRuntime = { frame: null, startedAt: 0, accumulated: 0, active: null, dialog: null };
+
+        function planLoadingBarsHtml(progress) {
+            const done = isPlanLoadingReady(progress);
+            return `
+                <div class="plan-loading-bars">
+                    ${PLAN_LOADING_BARS.map((bar) => {
+                        const value = Math.max(0, Math.min(100, progress[bar.key] || 0));
+                        return `
+                            <div class="plan-bar plan-bar--${bar.key}" data-bar="${bar.key}">
+                                <div class="plan-bar-head">
+                                    <span class="plan-bar-label">${bar.label}</span>
+                                    <span class="plan-bar-value">${Math.round(value)}%</span>
+                                </div>
+                                <div class="plan-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                    aria-valuenow="${Math.round(value)}" aria-label="${bar.label}"${done ? ' data-complete="true"' : ''}>
+                                    <span class="plan-bar-fill" style="width: ${value}%"></span>
+                                </div>
+                            </div>`;
+                    }).join('')}
+                </div>
+                <p class="sr-only" id="planLoadingStatus" role="status" aria-live="polite"></p>`;
+        }
+
+        function planLoadingTestimonialsHtml() {
+            const card = `
+                <div class="testimonial-placeholder">
+                    <div class="testimonial-placeholder__head">
+                        <span class="testimonial-placeholder__avatar"></span>
+                        <span class="testimonial-placeholder__stars">
+                            <span></span><span></span><span></span><span></span><span></span>
+                        </span>
+                    </div>
+                    <span class="testimonial-placeholder__line"></span>
+                    <span class="testimonial-placeholder__line testimonial-placeholder__line--short"></span>
+                    <span class="testimonial-placeholder__name"></span>
+                </div>`;
+            return `
+                <div class="testimonials" aria-hidden="true">
+                    <div class="testimonials__track">${card}${card}${card}</div>
+                </div>`;
+        }
+
+        function planLoadingAnnounce(message) {
+            const status = document.getElementById('planLoadingStatus');
+            if (status) {
+                status.textContent = message;
+            }
+        }
+
+        function syncPlanLoadingView(progress) {
+            const ready = isPlanLoadingReady(progress);
+            PLAN_LOADING_BARS.forEach((bar) => {
+                const value = Math.max(0, Math.min(100, progress[bar.key] || 0));
+                const root = document.querySelector(`[data-bar="${bar.key}"]`);
+                if (!root) {
+                    return;
+                }
+                const track = root.querySelector('.plan-bar-track');
+                const fill = root.querySelector('.plan-bar-fill');
+                const label = root.querySelector('.plan-bar-value');
+                track.setAttribute('aria-valuenow', String(Math.round(value)));
+                if (value >= 100) {
+                    track.setAttribute('data-complete', 'true');
+                }
+                fill.style.width = `${value}%`;
+                label.textContent = `${Math.round(value)}%`;
+                root.dataset.state = value >= 100 ? 'complete' : (value > 0 ? 'running' : 'idle');
+            });
+            const cta = document.getElementById('nextBtn');
+            if (cta) {
+                cta.disabled = !ready;
+                cta.setAttribute('aria-disabled', String(!ready));
+            }
+            const lock = document.getElementById('planLoadingLock');
+            if (lock) {
+                lock.hidden = ready;
+            }
+        }
+
+        // Avanza una barra con rAF + reloj inyectable. Solo el tiempo visible
+        // cuenta: con la pestaña oculta el frame se cancela.
+        function startPlanLoadingBar(barKey) {
+            stopPlanLoadingBar();
+            const progress = planLoadingProgress();
+            const startPct = Math.max(0, Math.min(100, progress[barKey] || 0));
+            if (startPct >= 100) {
+                return;
+            }
+            planLoadingRuntime.accumulated = 0;
+            planLoadingRuntime.startedAt = PLAN_LOADING_CLOCK.now();
+            planLoadingRuntime.active = barKey;
+            const tick = () => {
+                if (planLoadingRuntime.active !== barKey) {
+                    return;
+                }
+                const current = planLoadingProgress();
+                const base = Math.max(0, Math.min(100, current[barKey] || 0));
+                // Progreso ABSOLUTO a partir del tiempo activo acumulado: si se
+                // sumara el delta sobre el valor ya alcanzado, cada frame
+                // aceleraria la barra.
+                const active = (PLAN_LOADING_CLOCK.now() - planLoadingRuntime.startedAt) + planLoadingRuntime.accumulated;
+                // Se completa solo al agotar los 3000 ms reales: floor evita
+                // que el redondeo muestre 100% antes de tiempo.
+                const completed = active >= PLAN_LOADING_MS;
+                const target = Math.min(100, (active / PLAN_LOADING_MS) * 100);
+                // Monotono: nunca retrocede, nunca pasa de 100.
+                const rounded = completed ? 100 : Math.max(base, Math.floor(target));
+                if (rounded > base) {
+                    const update = {};
+                    update[barKey] = rounded;
+                    savePlanLoadingProgress(patchPlanLoading(update));
+                    syncPlanLoadingView(planLoadingProgress());
+                }
+                if (completed) {
+                    completePlanLoadingBar(barKey);
+                    return;
+                }
+                planLoadingRuntime.frame = PLAN_LOADING_CLOCK.raf(tick);
+            };
+            planLoadingRuntime.frame = PLAN_LOADING_CLOCK.raf(tick);
+            cancelPlanLoadingRunners = stopPlanLoadingBar;
+        }
+
+        function stopPlanLoadingBar() {
+            if (planLoadingRuntime.frame !== null) {
+                PLAN_LOADING_CLOCK.cancelRaf(planLoadingRuntime.frame);
+                planLoadingRuntime.frame = null;
+            }
+            planLoadingRuntime.active = null;
+        }
+
+        // Pausa sin perder el porcentaje: guarda el tiempo ya consumido.
+        function pausePlanLoadingBar() {
+            if (!planLoadingRuntime.active || planLoadingRuntime.frame === null) {
+                return;
+            }
+            planLoadingRuntime.accumulated += PLAN_LOADING_CLOCK.now() - planLoadingRuntime.startedAt;
+            PLAN_LOADING_CLOCK.cancelRaf(planLoadingRuntime.frame);
+            planLoadingRuntime.frame = null;
+        }
+
+        function resumePlanLoadingBar() {
+            const phase = planLoadingProgress().phase;
+            const barKey = phase === 'bar_1_running' ? 'bar1'
+                : (phase === 'bar_2_running' ? 'bar2' : (phase === 'bar_3_running' ? 'bar3' : null));
+            if (barKey && planLoadingRuntime.active !== barKey) {
+                const saved = planLoadingRuntime.accumulated;
+                planLoadingRuntime.accumulated = saved;
+                startPlanLoadingBar(barKey);
+            }
+        }
+
+        function completePlanLoadingBar(barKey) {
+            const nextPhase = barKey === 'bar1' ? 'question_1'
+                : (barKey === 'bar2' ? 'question_2' : 'ready');
+            const update = { phase: nextPhase };
+            update[barKey] = 100;
+            savePlanLoadingProgress(patchPlanLoading(update));
+            stopPlanLoadingBar();
+            syncPlanLoadingView(planLoadingProgress());
+            if (nextPhase === 'ready') {
+                planLoadingAnnounce('Your plan is ready.');
+            } else {
+                planLoadingAnnounce(`${PLAN_LOADING_BARS.find((b) => b.key === barKey).label} complete.`);
+            }
+            if (nextPhase === 'question_1' || nextPhase === 'question_2') {
+                openPlanLoadingDialog(nextPhase);
+            }
+        }
+
+        // Modal accesible con <dialog>.showModal(): foco atrapado, fondo
+        // inerte. No se cierra con Escape ni con click en backdrop.
+        function openPlanLoadingDialog(phase) {
+            if (planLoadingRuntime.dialog) {
+                return;
+            }
+            const question = PLAN_LOADING_QUESTIONS[phase];
+            if (!question) {
+                return;
+            }
+            const dialog = document.createElement('dialog');
+            dialog.className = 'plan-dialog';
+            dialog.setAttribute('aria-labelledby', 'planDialogTitle');
+            dialog.innerHTML = `
+                <h2 class="plan-dialog-title" id="planDialogTitle">${question.title}</h2>
+                <div class="plan-dialog-options">
+                    <button class="plan-dialog-option" type="button" data-plan-answer="yes">${question.yes}</button>
+                    <button class="plan-dialog-option" type="button" data-plan-answer="no">${question.no}</button>
+                </div>`;
+            document.body.appendChild(dialog);
+            planLoadingRuntime.dialog = dialog;
+            dialog.addEventListener('cancel', (event) => {
+                // Sin respuesta no se cierra.
+                event.preventDefault();
+            });
+            // Trampa de foco explicita: el ciclo nativo de <dialog> puede caer
+            // en body al tabular mas alla del ultimo control.
+            dialog.addEventListener('keydown', (event) => {
+                if (event.key !== 'Tab') {
+                    return;
+                }
+                const options = [...dialog.querySelectorAll('[data-plan-answer]:not([disabled])')];
+                if (!options.length) {
+                    return;
+                }
+                event.preventDefault();
+                const index = options.indexOf(document.activeElement);
+                const step = event.shiftKey ? -1 : 1;
+                options[(index + step + options.length) % options.length].focus();
+            });
+            dialog.querySelectorAll('[data-plan-answer]').forEach((button) => {
+                button.addEventListener('click', () => {
+                    // Exactamente una respuesta: el resto queda inutilizable.
+                    if (dialog.dataset.answered === 'true') {
+                        return;
+                    }
+                    dialog.dataset.answered = 'true';
+                    const isYes = button.dataset.planAnswer === 'yes';
+                    dialog.querySelectorAll('[data-plan-answer]').forEach((other) => {
+                        other.disabled = true;
+                    });
+                    const patch = phase === 'question_1'
+                        ? { rushedMornings: isYes, phase: 'bar_2_running' }
+                        : { wantsScienceBasedMethod: isYes, phase: 'bar_3_running' };
+                    savePlanLoadingProgress(patchPlanLoading(patch));
+                    if (typeof dialog.close === 'function') {
+                        dialog.close();
+                    } else {
+                        dialog.removeAttribute('open');
+                        dialog.remove();
+                    }
+                    dialog.remove();
+                    planLoadingRuntime.dialog = null;
+                    // El foco vuelve al contenido logico de la pantalla.
+                    const heading = document.querySelector('.step-plan-loading h1');
+                    if (heading) {
+                        heading.setAttribute('tabindex', '-1');
+                        // Marca de foco programatico: no es un control, asi que no
+                        // debe mostrar anillo.
+                        heading.setAttribute('data-program-focus', 'true');
+                        heading.focus();
+                    }
+                    const after = planLoadingProgress();
+                    if (after.phase === 'bar_2_running') {
+                        startPlanLoadingBar('bar2');
+                    } else if (after.phase === 'bar_3_running') {
+                        startPlanLoadingBar('bar3');
+                    }
+                    syncPlanLoadingView(after);
+                });
+            });
+            if (typeof dialog.showModal === 'function') {
+                dialog.showModal();
+            } else {
+                dialog.setAttribute('open', '');
+            }
+            const first = dialog.querySelector('[data-plan-answer]');
+            if (first) {
+                first.focus();
+            }
+        }
+
+        function renderPlanLoading(step) {
+            const progress = planLoadingProgress();
+            if (!funnelState.planPersonalizationProgress) {
+                savePlanLoadingProgress(progress);
+            }
+
+            document.getElementById('funnelRoot').innerHTML = `
+                ${backButtonHtml()}
+                ${cardOpen('step-plan-loading')}
+                    <div class="card-head">
+                        <h1>${step.headline}</h1>
+                    </div>
+                    ${planLoadingBarsHtml(progress)}
+                    ${planLoadingTestimonialsHtml()}
+                    <div class="actions">
+                        <button class="btn btn-dopamine" type="button" data-action="next" id="nextBtn" disabled
+                            aria-disabled="true">${step.cta}</button>
+                        <p class="plan-loading-lock" id="planLoadingLock">Complete the three steps above to continue.</p>
+                    </div>
+                </article>`;
+            // Con reduced-motion se mantiene la duracion logica de 3s pero sin
+            // transiciones visuales innecesarias (CSS desactiva el width).
+            document.documentElement.dataset.planReducedMotion = PLAN_LOADING_CLOCK.reducedMotion() ? 'true' : 'false';
+            syncPlanLoadingView(planLoadingProgress());
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                // Un solo avance y solo cuando la maquina esta en ready.
+                if (isPlanLoadingReady(planLoadingProgress())) {
+                    goNext();
+                }
+            });
+            // Continua exactamente donde estaba: nunca reinicia barras.
+            if (progress.phase === 'bar_1_running') {
+                startPlanLoadingBar('bar1');
+            } else if (progress.phase === 'bar_2_running') {
+                startPlanLoadingBar('bar2');
+            } else if (progress.phase === 'bar_3_running') {
+                startPlanLoadingBar('bar3');
+            } else if (progress.phase === 'question_1' || progress.phase === 'question_2') {
+                openPlanLoadingDialog(progress.phase);
+            }
+            const onVisibility = () => {
+                if (document.hidden) {
+                    pausePlanLoadingBar();
+                } else {
+                    resumePlanLoadingBar();
+                }
+            };
+            document.addEventListener('visibilitychange', onVisibility);
+            cancelPlanLoadingRunners = () => {
+                stopPlanLoadingBar();
+                document.removeEventListener('visibilitychange', onVisibility);
+                if (planLoadingRuntime.dialog) {
+                    planLoadingRuntime.dialog.remove();
+                    planLoadingRuntime.dialog = null;
+                }
+            };
+        }
+
         // Placeholder central del resumen de perfil: formas CSS puras,
         // distintas por variante y reemplazables por imagen real.
         function diagnosisVisualHtml(variantId) {
@@ -5198,10 +5958,16 @@
             const isCurves = step.id === 'interstitial_3';
             const isGoodHands = step.variant === 'good_hands';
             const isNotAlone = step.variant === 'not_alone';
+            const isPlanLoading = step.variant === 'plan_loading';
             const isProfileDiagnosis = step.variant === 'profile_diagnosis';
             const isMiniSteps = step.variant === 'mini_steps';
             const isGamified = step.variant === 'gamified_progress';
             const backHtml = backButtonHtml();
+
+            if (isPlanLoading) {
+                renderPlanLoading(step);
+                return;
+            }
 
             if (isProfileDiagnosis) {
                 const variant = PROFILE_DIAGNOSIS_VARIANTS.find((v) => v.id === profileDiagnosisVariant());
