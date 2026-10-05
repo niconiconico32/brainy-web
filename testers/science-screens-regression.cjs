@@ -234,17 +234,56 @@ async function main() {
       assert.ok(text.includes('research suggests'), 'debe attributable la evidencia');
     });
 
-    check('13. no existen imagenes ni fuentes externas nuevas', async () => {
+    check('13. sin imagenes ni fuentes externas nuevas', async () => {
       const html = fs.readFileSync(path.join(ROOT, 'funnel.html'), 'utf8');
       assert.equal(/mini-step-card[^}]*(https?:|base64)/.test(html), false);
       assert.equal(/gamification-(diagram|label|core)[^}]*(https?:|base64)/.test(html), false);
       await at(page, base, GAM);
-      const r = await page.evaluate(() => ({
-        remotes: [...document.querySelectorAll('img')].map((i) => i.src).filter((s) => /^https?:|base64|^data:/.test(s)),
-        deco: document.querySelectorAll('.gamification-diagram img, .gamification-diagram svg').length
-      }));
+      // El nucleo ahora lleva una imagen LOCAL (assets/brainymap.png). Lo que
+      // no se permite es una fuente remota ni base64.
+      const r = await page.evaluate(() => {
+        const base = location.origin;
+        const imgs = [...document.querySelectorAll('.gamification-diagram img, .gamification-diagram svg')];
+        return {
+          remotes: [...document.querySelectorAll('img')].map((i) => i.src)
+            .filter((s) => !s.startsWith(base) || /^data:/.test(s)),
+          deco: imgs.length,
+          todasLocales: imgs.every((i) => (i.getAttribute('src') || '').startsWith('assets/')),
+          cargadas: imgs.every((i) => i.tagName !== 'IMG' || i.naturalWidth > 0)
+        };
+      });
       assert.deepEqual(r.remotes, []);
-      assert.equal(r.deco, 0);
+      assert.deepEqual(r.deco, 1, 'el nucleo debe tener exactamente una imagen');
+      assert.equal(r.todasLocales, true, 'la imagen debe ser local');
+      assert.equal(r.cargadas, true, 'la imagen debe cargar');
+    });
+
+    check('13b. los glifos tienen emoji y la imagen no se deforma', async () => {
+      await at(page, base, MINI);
+      const mini = await page.evaluate(() => [...document.querySelectorAll('.mini-step-card-glyph')]
+        .map((n) => n.textContent.trim()));
+      assert.equal(mini.length, 3);
+      mini.forEach((g, i) => assert.ok(g && g.length > 0, `glifo ${i + 1} sin emoji`));
+      assert.equal(new Set(mini).size, 3, 'los emojis deben ser distintos');
+
+      await at(page, base, GAM);
+      const gam = await page.evaluate(() => {
+        const img = document.querySelector('.gamification-core-image');
+        const core = document.querySelector('.gamification-core-placeholder');
+        const ir = img.getBoundingClientRect();
+        const cr = core.getBoundingClientRect();
+        return {
+          nota: document.querySelector('.explain-note-glyph').textContent.trim(),
+          notaDistinta: document.querySelector('.explain-note-glyph').textContent.trim().length > 0,
+          ratio: ir.width / ir.height,
+          natural: img.naturalWidth / img.naturalHeight,
+          // La imagen debe sobresalir del circulo, no quedar dentro.
+          sobresale: ir.width > cr.width && ir.top < cr.top
+        };
+      });
+      assert.ok(gam.notaDistinta, 'el circulo de la nota necesita un emoji');
+      assert.ok(Math.abs(gam.ratio - gam.natural) < 0.02, 'la imagen del nucleo esta deformada');
+      assert.equal(gam.sobresale, true, 'la imagen debe sobresalir sobre el circulo');
     });
 
     check('14. sin overflow horizontal en mobile', async () => {

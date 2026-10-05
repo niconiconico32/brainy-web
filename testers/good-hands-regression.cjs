@@ -128,8 +128,10 @@ async function main() {
 
     check('8. sin imagenes remotas, base64 ni datos personales', async () => {
       assert.equal(/good-hands[^}]*(https?:|\/\/|base64)/.test(html), false, 'la ilustracion no debe usar assets remotos');
+      // img.src siempre es absoluta, asi que un asset local del propio sitio
+      // tambien empieza por http://. Lo remoto es lo de otro origen.
       const remotes = await page.evaluate(() => [...document.querySelectorAll('img')]
-        .map((i) => i.src).filter((s) => /^https?:/.test(s)));
+        .map((i) => i.src).filter((s) => new URL(s, location.href).origin !== location.origin));
       assert.deepEqual(remotes, []);
       // Solo la pantalla nueva: MellowFlow ya existe en nq24_expert y no se toca.
       const mine = await page.evaluate(() => document.getElementById('funnelRoot').textContent);

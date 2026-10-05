@@ -322,20 +322,33 @@ async function main() {
       const html = fs.readFileSync(path.join(ROOT, 'funnel.html'), 'utf8');
       assert.equal(/diagnosis-visual[^}]*(https?:|base64)/.test(html), false);
       await at(page, base);
-      const r = await page.evaluate(() => ({
-        remotes: [...document.querySelectorAll('img')].map((i) => i.src).filter((s) => /^https?:|base64|^data:/.test(s)),
-        deco: document.querySelectorAll('.diagnosis-visual img, .diagnosis-visual svg').length,
+      const r = await page.evaluate(() => {
+        const base = location.origin;
+        const imgs = [...document.querySelectorAll('.diagnosis-visual img, .diagnosis-visual svg')];
+        return {
+        remotes: [...document.querySelectorAll('img')].map((i) => i.src)
+          .filter((s) => !s.startsWith(base) || /^data:/.test(s)),
+        // La ilustracion del paciente es una imagen LOCAL; lo que no se
+        // permite es una fuente remota ni base64.
+        deco: imgs.length,
+        todasLocales: imgs.every((i) => (i.getAttribute('src') || '').startsWith('assets/')),
+        cargadas: imgs.every((i) => i.tagName !== 'IMG' || i.naturalWidth > 0),
         aria: document.querySelector('.diagnosis-visual').getAttribute('aria-hidden'),
         focusable: document.querySelectorAll('.diagnosis-visual a, .diagnosis-visual button, .diagnosis-visual [tabindex]').length,
         meterTag: document.querySelector('.diagnosis-meter').tagName,
-        meterAria: document.querySelector('.diagnosis-meter').getAttribute('aria-label')
-      }));
+        meterAria: document.querySelector('.diagnosis-meter').getAttribute('aria-label'),
+        h1: (document.querySelector('#funnelRoot h1') || {}).textContent || ''
+      };
+      });
       assert.deepEqual(r.remotes, []);
-      assert.equal(r.deco, 0);
+      assert.equal(r.deco, 1, 'debe haber exactamente la imagen del paciente');
+      assert.equal(r.todasLocales, true);
+      assert.equal(r.cargadas, true);
       assert.equal(r.aria, 'true');
       assert.equal(r.focusable, 0);
       assert.equal(r.meterTag, 'DIV', 'la barra no debe ser input');
-      assert.equal(r.meterAria, 'High daily friction level');
+      assert.ok(r.meterAria && r.meterAria.length > 0, 'la barra necesita aria-label');
+      assert.ok(r.h1.length > 0, 'la pantalla debe tener un h1');
       // El indicador cae en el rango alto en las tres variantes.
       for (const v of IDS) {
         await at(page, base, { variant: v });

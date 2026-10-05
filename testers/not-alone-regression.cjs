@@ -18,13 +18,21 @@ function serve() {
     const file = path.resolve(ROOT, rel);
     if (!file.startsWith(ROOT + path.sep)) return res.writeHead(403).end();
     try {
+      // Leer ANTES de escribir cabeceras: si el archivo falta, writeHead(200)
+      // ya habria enviado la respuesta y el 404 reventaba el servidor.
+      const body = fs.readFileSync(file);
       const type = file.endsWith('.html') ? 'text/html'
         : file.endsWith('.json') ? 'application/json'
-        : file.endsWith('.png') ? 'image/png' : 'application/javascript';
+        : file.endsWith('.png') ? 'image/png'
+        : file.endsWith('.jpg') || file.endsWith('.jpeg') ? 'image/jpeg'
+        : 'application/javascript';
       res.writeHead(200, { 'Content-Type': type });
-      res.end(fs.readFileSync(file));
+      res.end(body);
     } catch {
-      res.writeHead(404).end();
+      if (!res.headersSent) {
+        res.writeHead(404);
+      }
+      res.end();
     }
   });
   return new Promise((r) => server.listen(0, '127.0.0.1', () => r(server)));
@@ -149,11 +157,77 @@ async function main() {
       assert.equal(/[0-9](\.\d)?\s*\/\s*5/.test(text), false, 'no debe haber puntuacion');
     });
 
-    check('11. no existen imagenes remotas', async () => {
-      const remotes = await page.evaluate(() => [...document.querySelectorAll('img')]
-        .map((i) => i.src).filter((s) => /^https?:|base64|^data:/.test(s)));
-      assert.deepEqual(remotes, []);
-      assert.equal(await page.evaluate(() => document.querySelectorAll('.social-proof-figure img, .social-proof-figure svg').length), 0);
+    check('11. las fotos de avatar son locales y decorativas', async () => {
+      const r = await page.evaluate(() => {
+        const markup = socialProofAvatarsHtml();
+        const photos = [...markup.matchAll(/<img class="social-proof-avatar-photo" src="([^"]*)" alt="([^"]*)"/g)];
+        return {
+          // i.src es absoluto: hay que compararlo contra el origen de la pagina.
+          remotes: [...document.querySelectorAll('img')].map((i) => i.src)
+            .filter((src) => !src.startsWith(location.origin) || /^data:|base64/.test(src)),
+          svgs: document.querySelectorAll('.social-proof-figure svg').length,
+          circles: document.querySelectorAll('.social-proof-avatar').length,
+          // Se valida el markup generado: no depende de que el archivo exista.
+          generated: photos.length,
+          sources: photos.map((m) => m[1]),
+          alts: [...new Set(photos.map((m) => m[2]))],
+          focusable: markup.match(/tabindex|<button|<a /g) || []
+        };
+      });
+      assert.deepEqual(r.remotes, [], 'ninguna imagen remota');
+      assert.equal(r.svgs, 0, 'solo <img>, nada de svg embebido');
+      assert.equal(r.circles, 10, '1 centro + 9 externos en el DOM');
+      assert.equal(r.generated, 10, 'el markup genera 10 fotos');
+      assert.deepEqual(r.alts, [''], 'alt vacio: la figura es decorativa');
+      assert.deepEqual(r.focusable, [], 'nada enfocable dentro de la ilustracion');
+      for (const src of r.sources) {
+        assert.match(src, /^assets\//, `ruta local: ${src}`);
+        assert.equal(/^https?:|^\/\//.test(src), false);
+      }
+    });
+
+    check('11b. el fallback al gradiente funciona si la foto no existe', async () => {
+      // Ruta inexistente: los circulos deben conservar su gradiente.
+      await at(page, base, NEW_ID);
+      const broken = await page.evaluate(async () => {
+        document.querySelectorAll('.social-proof-avatar-photo')
+          .forEach((i) => { i.src = 'assets/no-existe-esta-foto.jpg'; });
+        await new Promise((r) => setTimeout(r, 700));
+        return {
+          photos: document.querySelectorAll('.social-proof-avatar-photo').length,
+          avatars: document.querySelectorAll('.social-proof-avatar').length,
+          backgrounds: [...document.querySelectorAll('.social-proof-avatar')]
+            .filter((a) => /gradient/.test(getComputedStyle(a).backgroundImage)).length
+        };
+      });
+      assert.equal(broken.photos, 0, 'las imagenes fallidas se eliminan');
+      assert.equal(broken.avatars, 10, 'los 10 circulos siguen en pantalla');
+      assert.equal(broken.backgrounds, 10, 'todos vuelven al gradiente placeholder');
+    });
+
+    check('11c. la foto por defecto es configurable por circulo', async () => {
+      const r = await page.evaluate(() => ({
+        hasDefault: typeof SOCIAL_PROOF_DEFAULT_AVATAR === 'string' && SOCIAL_PROOF_DEFAULT_AVATAR.length > 0,
+        slots: Object.keys(SOCIAL_PROOF_AVATARS).sort(),
+        resolvedCenter: socialProofAvatarPhoto('center').includes(SOCIAL_PROOF_DEFAULT_AVATAR),
+        resolvedOne: socialProofAvatarPhoto(1).includes(SOCIAL_PROOF_DEFAULT_AVATAR),
+        // Un nombre con comillas no debe romper el HTML: se comprueba el
+        // escapado sobre un valor directo, sin mutar la constante.
+        escapes: (() => {
+          const clean = socialProofAvatarPhoto('center');
+          const dirty = socialProofAvatarPhoto('center', 'assets/a".jpg');
+          return {
+            limpio: new RegExp(`src="${SOCIAL_PROOF_DEFAULT_AVATAR.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"`).test(clean),
+            escapado: /&quot;/.test(dirty) && !/src="assets\/a"\.jpg"/.test(dirty)
+          };
+        })()
+      }));
+      assert.equal(r.hasDefault, true, 'debe existir un archivo por defecto');
+      assert.deepEqual(r.slots, ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'center']);
+      assert.equal(r.resolvedCenter, true);
+      assert.equal(r.resolvedOne, true);
+      assert.equal(r.escapes.limpio, true);
+      assert.equal(r.escapes.escapado, true, 'las comillas se escapan');
     });
 
     check('12. la composicion decorativa no recibe foco', async () => {

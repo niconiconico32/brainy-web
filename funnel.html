@@ -38,15 +38,18 @@
             --begin-muted: #5F625C;
         }
 
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
+
         html {
             -webkit-text-size-adjust: 100%;
         }
+
 
         body {
             min-height: 100vh;
@@ -57,6 +60,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
+
         .shell {
             position: relative;
             width: 100%;
@@ -64,6 +68,7 @@
             margin: 0 auto;
             padding: 0 20px calc(56px + env(safe-area-inset-bottom, 0px));
         }
+
 
         /* ---- Encabezado global: flecha + divisor de dos etapas ---- */
 
@@ -80,9 +85,11 @@
             background: var(--funnel-bg);
         }
 
+
         .funnel-header[hidden] {
             display: none;
         }
+
 
         .funnel-header-back {
             display: flex;
@@ -90,9 +97,11 @@
             flex: 0 0 auto;
         }
 
+
         .funnel-header-back[hidden] {
             display: none;
         }
+
 
         .funnel-stages {
             display: grid;
@@ -103,9 +112,11 @@
             min-width: 0;
         }
 
+
         .funnel-stage {
             min-width: 0;
         }
+
 
         .funnel-stage-name {
             display: block;
@@ -117,6 +128,7 @@
             transition: color 0.2s ease;
         }
 
+
         .funnel-stage-track {
             display: block;
             margin-top: 6px;
@@ -125,6 +137,7 @@
             background: var(--funnel-accent-soft);
             overflow: hidden;
         }
+
 
         .funnel-stage-fill {
             display: block;
@@ -135,18 +148,22 @@
             transition: width 0.35s ease;
         }
 
+
         .funnel-stage[data-state="active"] .funnel-stage-name {
             color: var(--funnel-text);
         }
+
 
         .funnel-stage[data-state="done"] .funnel-stage-fill,
         .funnel-stage[data-state="active"] .funnel-stage-fill {
             background: var(--funnel-accent);
         }
 
+
         .funnel-stage[data-state="idle"] .funnel-stage-fill {
             background: var(--funnel-accent-soft);
         }
+
 
         .funnel-progress-label {
             display: block;
@@ -158,15 +175,18 @@
             letter-spacing: 0.02em;
         }
 
+
         .funnel-root > .step {
             animation: fadeUp 0.35s ease both;
         }
+
 
         .step-top {
             display: flex;
             align-items: flex-start;
             min-height: 0;
         }
+
 
         .back-btn {
             display: inline-flex;
@@ -184,19 +204,23 @@
             transition: background 0.18s ease, transform 0.18s ease;
         }
 
+
         .back-btn:hover {
             background: rgba(36, 37, 33, 0.06);
         }
 
+
         .back-btn:active {
             transform: scale(0.94);
         }
+
 
         .back-btn svg {
             width: 22px;
             height: 22px;
             display: block;
         }
+
 
         .panel {
             background: var(--funnel-surface);
@@ -205,6 +229,7 @@
             border-radius: 24px;
             padding: 26px 22px 28px;
         }
+
 
         .eyebrow {
             display: inline-flex;
@@ -220,10 +245,12 @@
             text-transform: uppercase;
         }
 
+
         h1, h2, h3 {
             letter-spacing: -0.02em;
             color: var(--funnel-text);
         }
+
 
         .card-head h1 {
             margin-top: 14px;
@@ -232,12 +259,14 @@
             font-weight: 800;
         }
 
+
         .card-head .sub {
             margin-top: 12px;
             font-size: 1rem;
             line-height: 1.55;
             color: var(--funnel-muted);
         }
+
 
         /* ---- Pantalla de pregunta ---- */
 
@@ -249,9 +278,11 @@
             border-radius: 0;
         }
 
+
         .step-question .card-head {
             text-align: center;
         }
+
 
         .step-question .card-head h1 {
             margin-top: 0;
@@ -263,6 +294,7 @@
             text-wrap: balance;
         }
 
+
         .step-question .card-head .sub {
             max-width: 44ch;
             margin-left: auto;
@@ -270,6 +302,7 @@
             margin-top: 10px;
             font-size: 0.94rem;
         }
+
 
         .question-illustration {
             width: 104px;
@@ -283,12 +316,14 @@
             background: linear-gradient(160deg, #E9E4FB 0%, #F3F0FD 60%, #FDF6E4 100%);
         }
 
+
         .question-illustration img {
             display: block;
             width: 78%;
             height: 78%;
             object-fit: contain;
         }
+
 
         /* ---- Pantalla "You're in good hands." ---- */
 
@@ -300,9 +335,11 @@
             border-radius: 0;
         }
 
+
         .step-good-hands .card-head {
             text-align: center;
         }
+
 
         .step-good-hands .card-head h1 {
             margin-top: 0;
@@ -314,6 +351,7 @@
             text-wrap: balance;
         }
 
+
         .good-hands-sub {
             max-width: 34ch;
             margin: 12px auto 0;
@@ -322,6 +360,7 @@
             color: var(--funnel-muted);
             text-wrap: pretty;
         }
+
 
         /* Composicion responsiva: se escala con el contenedor, no con el
            viewport, asi que no depende de posiciones absolutas fijas. */
@@ -332,6 +371,7 @@
             margin: 28px auto 0;
         }
 
+
         .good-hands-orbit {
             position: absolute;
             top: 50%;
@@ -340,6 +380,7 @@
             border-radius: 50%;
             transform: translate(-50%, -50%);
         }
+
 
         /* Orbitas discontinuas: se recorta un tramo con un conic-gradient
            para simular el borde punteado de la referencia. */
@@ -356,6 +397,7 @@
             mask: radial-gradient(circle closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
         }
 
+
         .good-hands-orbit--2 {
             width: 78%;
             height: 78%;
@@ -368,6 +410,7 @@
             -webkit-mask: radial-gradient(circle closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
             mask: radial-gradient(circle closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
         }
+
 
         .good-hands-orbit--3 {
             width: 97%;
@@ -382,12 +425,41 @@
             mask: radial-gradient(circle closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
         }
 
+
         .good-hands-avatar {
             position: absolute;
             border-radius: 50%;
             background: linear-gradient(150deg, #E6E1F8 0%, #EFF7F2 100%);
             box-shadow: inset 0 0 0 1px rgba(36, 37, 33, 0.06);
+            overflow: hidden;
         }
+
+
+        /* Foto del avatar: cubre el circulo y recorta el rostro. */
+        .good-hands-avatar-photo {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Rostros en circulos muy pequenos: se recorta hacia arriba. */
+            object-position: 50% 26%;
+        }
+
+
+        .social-proof-avatar-photo {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Rostros en circulos muy pequenos: se recorta hacia arriba. */
+            object-position: 50% 26%;
+        }
+
+
+        .social-proof-avatar {
+            overflow: hidden;
+        }
+
 
         /* El centro manda: el doble que los avatares externos. */
         .good-hands-avatar--center {
@@ -400,30 +472,36 @@
             box-shadow: inset 0 0 0 1px rgba(36, 37, 33, 0.07);
         }
 
+
         .good-hands-avatar:not(.good-hands-avatar--center) {
             width: 11%;
             height: 11%;
         }
+
 
         .good-hands-avatar[data-size="12"] {
             width: 9.5%;
             height: 9.5%;
         }
 
+
         .good-hands-avatar[data-size="13"] {
             width: 10.5%;
             height: 10.5%;
         }
+
 
         .good-hands-avatar[data-size="14"] {
             width: 11.5%;
             height: 11.5%;
         }
 
+
         .good-hands-avatar[data-size="15"] {
             width: 12.5%;
             height: 12.5%;
         }
+
 
         /* Ocho avatares en dos anillos, avoiding el centro. */
         .good-hands-avatar--1 { top: 20.0%; left: 35.0%; }
@@ -439,6 +517,7 @@
             margin-top: 26px;
         }
 
+
         @media (max-width: 420px) {
             .good-hands-figure {
                 width: min(100%, 264px);
@@ -450,6 +529,7 @@
             }
         }
 
+
         @media (max-width: 340px) {
             .good-hands-figure {
                 width: min(100%, 224px);
@@ -460,6 +540,7 @@
                 font-size: 1.5rem;
             }
         }
+
 
         .sr-only {
             position: absolute;
@@ -474,6 +555,7 @@
         }
 
 
+
         /* ---- Pantalla de generacion del plan ---- */
 
         .step-plan-loading {
@@ -484,9 +566,11 @@
             border-radius: 0;
         }
 
+
         .step-plan-loading .card-head {
             text-align: center;
         }
+
 
         .step-plan-loading .card-head h1 {
             margin-top: 0;
@@ -498,11 +582,13 @@
             text-wrap: balance;
         }
 
+
         .plan-loading-bars {
             display: grid;
             gap: 18px;
             margin-top: 26px;
         }
+
 
         .plan-bar-label {
             font-size: 0.92rem;
@@ -510,6 +596,7 @@
             line-height: 1.3;
             color: var(--funnel-text);
         }
+
 
         .plan-bar-head {
             display: flex;
@@ -519,6 +606,7 @@
             margin-bottom: 8px;
         }
 
+
         .plan-bar-value {
             flex: 0 0 auto;
             font-size: 0.82rem;
@@ -527,12 +615,14 @@
             color: var(--funnel-muted);
         }
 
+
         .plan-bar-track {
             height: 14px;
             border-radius: 999px;
             background: rgba(36, 37, 33, 0.07);
             overflow: hidden;
         }
+
 
         .plan-bar-fill {
             display: block;
@@ -542,30 +632,37 @@
             transition: width 0.1s linear;
         }
 
+
         [data-plan-reduced-motion="true"] .plan-bar-fill {
             transition: none;
         }
+
 
         /* Cada barra con su propio color: menta, amarillo, acento. */
         .plan-bar--bar1 .plan-bar-fill {
             background: linear-gradient(90deg, #B9E3CE 0%, #159875 100%);
         }
 
+
         .plan-bar--bar2 .plan-bar-fill {
             background: linear-gradient(90deg, #F6E2A8 0%, #E8B84B 100%);
         }
+
 
         .plan-bar--bar3 .plan-bar-fill {
             background: linear-gradient(90deg, #A9DCC6 0%, #0E7A5D 100%);
         }
 
+
         .plan-bar-track[data-complete="true"] {
             box-shadow: 0 0 0 2px var(--funnel-accent-soft);
         }
 
+
         .step-plan-loading [data-program-focus]:focus {
             outline: none;
         }
+
 
         /* CTA bloqueado: legible, sin parecer accion disponible. */
         .step-plan-loading .btn[disabled] {
@@ -575,6 +672,7 @@
             opacity: 1;
         }
 
+
         .plan-loading-lock {
             margin: 8px 0 0;
             font-size: 0.78rem;
@@ -583,11 +681,13 @@
             color: var(--funnel-muted);
         }
 
+
         /* ---- Testimoniales provisionales (decorativos) ---- */
 
         .testimonials {
             margin-top: 26px;
         }
+
 
         .testimonials__track {
             display: flex;
@@ -599,13 +699,16 @@
             scrollbar-width: none;
         }
 
+
         .testimonials__track::-webkit-scrollbar {
             display: none;
         }
 
-        .testimonial-placeholder {
+
+        .testimonial-card {
             flex: 0 0 78%;
             scroll-snap-align: center;
+            margin: 0;
             padding: 16px;
             border: 1px solid var(--funnel-border);
             border-radius: 20px;
@@ -613,52 +716,47 @@
             box-shadow: var(--funnel-shadow);
         }
 
-        .testimonial-placeholder__head {
+
+        .testimonial-card__head {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 12px;
         }
 
-        .testimonial-placeholder__avatar {
+
+        .testimonial-card__avatar {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: linear-gradient(150deg, #E6E1F8 0%, #EFF6F1 100%);
+            object-fit: cover;
+            flex-shrink: 0;
         }
 
-        .testimonial-placeholder__stars {
-            display: inline-flex;
-            gap: 3px;
+
+        .testimonial-card__stars {
+            font-size: 0.8rem;
+            letter-spacing: 0.08em;
+            color: #C79A2E;
         }
 
-        .testimonial-placeholder__stars span {
-            width: 9px;
-            height: 9px;
-            border-radius: 2px;
-            background: #F1DFA8;
+
+        .testimonial-card__quote {
+            margin: 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--funnel-text);
+            text-wrap: pretty;
         }
 
-        .testimonial-placeholder__line {
-            display: block;
-            height: 8px;
-            margin-bottom: 7px;
-            border-radius: 999px;
-            background: rgba(36, 37, 33, 0.08);
-        }
 
-        .testimonial-placeholder__line--short {
-            width: 62%;
-        }
-
-        .testimonial-placeholder__name {
-            display: block;
-            width: 38%;
-            height: 7px;
+        .testimonial-card__name {
             margin-top: 10px;
-            border-radius: 999px;
-            background: rgba(36, 37, 33, 0.05);
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--funnel-muted);
         }
+
 
         /* ---- Modal de pregunta emergente ---- */
 
@@ -678,9 +776,11 @@
             box-shadow: 0 24px 60px rgba(36, 37, 33, 0.22);
         }
 
+
         .plan-dialog::backdrop {
             background: rgba(36, 37, 33, 0.42);
         }
+
 
         .plan-dialog-title {
             margin: 0;
@@ -691,11 +791,13 @@
             text-wrap: balance;
         }
 
+
         .plan-dialog-options {
             display: grid;
             gap: 10px;
             margin-top: 20px;
         }
+
 
         /* Yes y No: mismo peso visual, ninguna jerarquia moral. */
         .plan-dialog-option {
@@ -713,19 +815,23 @@
             transition: border-color 0.18s ease, background 0.18s ease;
         }
 
+
         .plan-dialog-option:hover {
             border-color: rgba(21, 152, 117, 0.45);
         }
+
 
         .plan-dialog-option:focus-visible {
             outline: 3px solid var(--funnel-accent);
             outline-offset: 3px;
         }
 
+
         .plan-dialog-option[disabled] {
             opacity: 0.55;
             cursor: not-allowed;
         }
+
 
         @media (max-width: 420px) {
             .plan-loading-bars {
@@ -733,10 +839,11 @@
                 margin-top: 22px;
             }
 
-            .testimonial-placeholder {
+            .testimonial-card {
                 flex-basis: 82%;
             }
         }
+
 
         @media (max-width: 340px) {
             .plan-bar-track {
@@ -756,6 +863,7 @@
             }
         }
 
+
         /* ---- Pantalla "Your Focus Profile" (resumen, no diagnóstico médico) ---- */
 
         .step-diagnosis {
@@ -766,9 +874,11 @@
             border-radius: 0;
         }
 
+
         .step-diagnosis .card-head {
             text-align: center;
         }
+
 
         .step-diagnosis .card-head h1 {
             margin-top: 0;
@@ -780,6 +890,7 @@
             text-wrap: balance;
         }
 
+
         .diagnosis-card {
             margin-top: 22px;
             padding: 20px;
@@ -789,12 +900,14 @@
             box-shadow: var(--funnel-shadow);
         }
 
+
         .diagnosis-card-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 10px;
         }
+
 
         .diagnosis-eyebrow {
             font-size: 0.74rem;
@@ -803,6 +916,7 @@
             text-transform: uppercase;
             color: var(--funnel-muted);
         }
+
 
         /* El texto HIGH acompaña al color: nunca queda solo el color. */
         .diagnosis-badge {
@@ -816,11 +930,13 @@
             color: #8C2F3B;
         }
 
+
         .diagnosis-visual {
             position: relative;
             width: 100%;
             height: 116px;
-            margin: 18px 0 20px;
+            /* Margen extra arriba: la foto sobresale por ese lado. */
+            margin: 74px 0 20px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -829,15 +945,45 @@
             overflow: hidden;
         }
 
+
         /* Los hijos no deben encogerse: son formas, no texto. */
         .diagnosis-visual > span {
             flex: 0 0 auto;
         }
 
+
+        /* Ilustracion del paciente: se ve completa y sobresale por encima del
+           recuadro. Por eso esta variante no recorta nada. */
+        .diagnosis-visual--photo {
+            overflow: visible;
+        }
+
+
+        .diagnosis-visual-photo {
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: auto;
+            height: 190px;
+            max-width: 132%;
+            object-fit: contain;
+            object-position: 50% 100%;
+            pointer-events: none;
+        }
+
+
+        /* Con foto presente, las formas de placeholder quedan ocultas. */
+        .diagnosis-visual--photo > span {
+            display: none;
+        }
+
+
         /* Placeholder decorativo por variante; reemplazable por imagen. */
         .diagnosis-visual--task-initiation {
             background: linear-gradient(150deg, #E6F2EA 0%, #EDE7FA 100%);
         }
+
 
         .diagnosis-visual--task-initiation .diagnosis-block--big {
             width: 46px;
@@ -845,6 +991,7 @@
             border-radius: 12px;
             background: linear-gradient(150deg, #C9E5D6 0%, #D8CCF2 100%);
         }
+
 
         .diagnosis-visual--task-initiation .diagnosis-block--small {
             width: 22px;
@@ -854,9 +1001,11 @@
             box-shadow: 0 0 0 1px rgba(36, 37, 33, 0.06);
         }
 
+
         .diagnosis-visual--analysis-paralysis {
             background: linear-gradient(150deg, #E4EDF9 0%, #E8E4F8 100%);
         }
+
 
         .diagnosis-visual--analysis-paralysis .diagnosis-trail {
             width: 44%;
@@ -864,6 +1013,7 @@
             border-radius: 999px;
             background: linear-gradient(90deg, rgba(122, 140, 186, 0) 0%, rgba(122, 140, 186, 0.5) 100%);
         }
+
 
         .diagnosis-visual--analysis-paralysis .diagnosis-node {
             width: 15px;
@@ -873,15 +1023,18 @@
             box-shadow: 0 0 0 1px rgba(36, 37, 33, 0.06);
         }
 
+
         .diagnosis-visual--analysis-paralysis .diagnosis-node--focus {
             width: 26px;
             height: 26px;
             background: linear-gradient(150deg, #9FB6DC 0%, #B7AEE0 100%);
         }
 
+
         .diagnosis-visual--follow-through {
             background: linear-gradient(150deg, #E7F4EC 0%, #FBF0DC 60%, #FAE7E2 100%);
         }
+
 
         .diagnosis-visual--follow-through .diagnosis-stage {
             width: 20px;
@@ -891,11 +1044,13 @@
             box-shadow: 0 0 0 1px rgba(36, 37, 33, 0.06);
         }
 
+
         /* El ultimo nivel aparece iluminado. */
         .diagnosis-visual--follow-through .diagnosis-stage--on {
             background: linear-gradient(150deg, #9BD9BE 0%, #F3C97B 100%);
             box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.8);
         }
+
 
         /* Barra de nivel: decorativa, no interactiva, sin porcentaje. */
         .diagnosis-meter {
@@ -903,6 +1058,7 @@
             height: 12px;
             margin-bottom: 22px;
         }
+
 
         .diagnosis-meter-track {
             position: absolute;
@@ -915,6 +1071,7 @@
                 #EFB48A 76%,
                 #E79A9A 100%);
         }
+
 
         /* Indicador en el rango alto (78%-85%), misma posicion en las 3. */
         .diagnosis-meter-dot {
@@ -931,6 +1088,7 @@
             box-shadow: 0 2px 6px rgba(36, 37, 33, 0.18);
         }
 
+
         .diagnosis-alert {
             display: flex;
             align-items: flex-start;
@@ -940,6 +1098,7 @@
             background: #FDF2F3;
             border: 1px solid #F2D5D8;
         }
+
 
         .diagnosis-alert-icon {
             flex: 0 0 auto;
@@ -956,6 +1115,7 @@
             line-height: 1;
         }
 
+
         .diagnosis-alert-title {
             margin: 0;
             font-size: 1.05rem;
@@ -963,6 +1123,7 @@
             letter-spacing: -0.01em;
             color: #8C2F3B;
         }
+
 
         .diagnosis-alert-copy {
             margin: 6px 0 0;
@@ -972,11 +1133,13 @@
             text-wrap: pretty;
         }
 
+
         .diagnosis-details {
             display: grid;
             gap: 10px;
             margin-top: 14px;
         }
+
 
         .diagnosis-detail {
             padding: 14px 16px;
@@ -985,6 +1148,7 @@
             background: var(--funnel-surface);
             box-shadow: var(--funnel-shadow);
         }
+
 
         .diagnosis-detail h3 {
             margin: 0;
@@ -995,6 +1159,7 @@
             color: var(--funnel-muted);
         }
 
+
         .diagnosis-detail p {
             margin: 5px 0 0;
             font-size: 1rem;
@@ -1002,6 +1167,7 @@
             line-height: 1.35;
             color: var(--funnel-text);
         }
+
 
         .diagnosis-note {
             margin: 16px 0 0;
@@ -1011,9 +1177,11 @@
             color: var(--funnel-muted);
         }
 
+
         .step-diagnosis .actions {
             margin-top: 18px;
         }
+
 
         @media (max-width: 420px) {
             .diagnosis-card {
@@ -1025,7 +1193,7 @@
             /* En telefonos pequenos se reduce el placeholder antes que el texto. */
             .diagnosis-visual {
                 height: 96px;
-                margin: 14px 0 16px;
+                margin: 58px 0 16px;
             }
 
             .diagnosis-details {
@@ -1051,6 +1219,7 @@
             }
         }
 
+
         @media (max-width: 340px) {
             .step-diagnosis .card-head h1 {
                 font-size: 1.5rem;
@@ -1070,6 +1239,7 @@
             }
         }
 
+
         /* ---- Pantallas educativas: mini pasos y progreso gamificado ---- */
 
         .step-mini-steps,
@@ -1081,10 +1251,12 @@
             border-radius: 0;
         }
 
+
         .step-mini-steps .card-head,
         .step-gamified .card-head {
             text-align: center;
         }
+
 
         .step-mini-steps .card-head h1,
         .step-gamified .card-head h1 {
@@ -1097,6 +1269,7 @@
             text-wrap: balance;
         }
 
+
         .explain-sub {
             max-width: 44ch;
             margin: 12px auto 0;
@@ -1106,6 +1279,7 @@
             text-wrap: pretty;
         }
 
+
         /* ---- Pantalla 1: tres tarjetas ---- */
 
         .mini-step-list {
@@ -1113,6 +1287,7 @@
             gap: 14px;
             margin-top: 24px;
         }
+
 
         .mini-step-card {
             padding: 20px 18px 20px 20px;
@@ -1123,12 +1298,14 @@
             text-align: left;
         }
 
+
         .mini-step-card h3 {
             margin: 0;
             font-size: 1.08rem;
             font-weight: 700;
             letter-spacing: -0.01em;
         }
+
 
         .mini-step-card p {
             margin: 6px 0 0;
@@ -1137,26 +1314,34 @@
             color: var(--funnel-muted);
         }
 
-        /* Placeholder grafico por tarjeta: solo CSS, reemplazable por imagen. */
+
+        /* Glifo con emoji: la caja sigue marcando la ritmo de la tarjeta. */
         .mini-step-card-glyph {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             width: 40px;
             height: 40px;
             margin-bottom: 14px;
             border-radius: 12px;
             background: linear-gradient(150deg, #E6E1F8 0%, #EFF6F1 100%);
             box-shadow: inset 0 0 0 1px rgba(36, 37, 33, 0.05);
+            font-size: 1.25rem;
+            line-height: 1;
         }
+
 
         .mini-step-card--next-move .mini-step-card-glyph {
             border-radius: 50%;
             background: linear-gradient(150deg, #DDF1E7 0%, #F7EDD6 100%);
         }
 
+
         .mini-step-card--momentum .mini-step-card-glyph {
             border-radius: 12px 20px 12px 20px;
             background: linear-gradient(150deg, #F8E3E4 0%, #E1ECF8 100%);
         }
+
 
         /* ---- Pantalla 2: diagrama ---- */
 
@@ -1167,6 +1352,7 @@
             aspect-ratio: 1 / 1;
             margin: 24px auto 0;
         }
+
 
         .gamification-orbit {
             position: absolute;
@@ -1181,6 +1367,7 @@
             mask: radial-gradient(circle closest-side, transparent calc(100% - 1.5px), #000 calc(100% - 1.5px));
         }
 
+
         .gamification-orbit--1 {
             width: 46%;
             height: 46%;
@@ -1190,6 +1377,7 @@
                 rgba(21, 152, 117, 0.30) 210deg 330deg,
                 transparent 330deg 360deg);
         }
+
 
         .gamification-orbit--2 {
             width: 68%;
@@ -1201,7 +1389,9 @@
                 transparent 350deg 360deg);
         }
 
-        /* Nucleo dominante con placeholder propio. */
+
+        /* Nucleo dominante. La imagen se coloca encima y sobresale un poco
+           sobre el circulo: el circulo queda como base, no como recorte. */
         .gamification-core-placeholder {
             position: absolute;
             top: 50%;
@@ -1213,6 +1403,25 @@
             background: linear-gradient(150deg, #E4DEF9 0%, #EFF6F1 100%);
             box-shadow: 0 0 0 3px #fff, 0 4px 14px rgba(36, 37, 33, 0.07);
         }
+
+
+        .gamification-core-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            /* Mas grande que el circulo y desplazada hacia arriba: sobresale.
+               height:auto + aspect-ratio evitan que el atributo height del
+               <img> estire la imagen. */
+            width: 132%;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            transform: translate(-50%, -56%);
+            display: block;
+            object-fit: contain;
+            pointer-events: none;
+            filter: drop-shadow(0 6px 12px rgba(36, 18, 63, 0.16));
+        }
+
 
         /* Etiquetas flotantes: dentro del contenedor, nunca fuera del viewport. */
         .gamification-label {
@@ -1230,8 +1439,11 @@
             white-space: nowrap;
         }
 
+
         .gamification-label--step { top: 2%; left: 6%; }
-        .gamification-label--progress { top: 46%; right: 2%; }
+        /* La imagen del nucleo crece hacia arriba y hacia los lados: esta etiqueta
+           baja para no quedar debajo de ella. */
+        .gamification-label--progress { top: 68%; right: 2%; }
         .gamification-label--reward { bottom: 2%; right: 10%; }
 
         /* Tarjeta informativa, sin persona ni atribucion. */
@@ -1248,14 +1460,21 @@
             box-shadow: var(--funnel-shadow);
         }
 
+
         .explain-note-glyph {
             flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             width: 40px;
             height: 40px;
             border-radius: 50%;
             background: linear-gradient(150deg, #DDF1E7 0%, #E6E1F8 100%);
             box-shadow: inset 0 0 0 1px rgba(36, 37, 33, 0.05);
+            font-size: 1.2rem;
+            line-height: 1;
         }
+
 
         .explain-note h3 {
             margin: 0;
@@ -1264,6 +1483,7 @@
             line-height: 1.3;
         }
 
+
         .explain-note p {
             margin: 4px 0 0;
             font-size: 0.92rem;
@@ -1271,10 +1491,12 @@
             color: var(--funnel-muted);
         }
 
+
         .step-mini-steps .actions,
         .step-gamified .actions {
             margin-top: 22px;
         }
+
 
         @media (max-width: 420px) {
             .mini-step-list {
@@ -1297,6 +1519,7 @@
                 width: 34px;
                 height: 34px;
                 margin-bottom: 0;
+                font-size: 1.05rem;
             }
 
             .mini-step-card h3 {
@@ -1324,6 +1547,7 @@
             }
         }
 
+
         @media (max-width: 340px) {
             .step-mini-steps .card-head h1,
             .step-gamified .card-head h1 {
@@ -1347,8 +1571,10 @@
             .explain-note-glyph {
                 width: 32px;
                 height: 32px;
+                font-size: 1rem;
             }
         }
+
 
         /* ---- Pantalla "You're not alone." ---- */
 
@@ -1360,9 +1586,11 @@
             border-radius: 0;
         }
 
+
         .step-not-alone .card-head {
             text-align: center;
         }
+
 
         .step-not-alone .card-head h1 {
             margin-top: 0;
@@ -1374,6 +1602,7 @@
             text-wrap: balance;
         }
 
+
         .not-alone-sub {
             max-width: 38ch;
             margin: 12px auto 0;
@@ -1382,6 +1611,7 @@
             color: var(--funnel-muted);
             text-wrap: pretty;
         }
+
 
         /* Nube responsiva dentro de un contenedor: se escala con el ancho
            disponible, no con coordenadas del viewport. */
@@ -1392,12 +1622,14 @@
             margin: 24px auto 0;
         }
 
+
         .social-proof-avatar {
             position: absolute;
             border-radius: 50%;
             background: linear-gradient(150deg, #E9E4FB 0%, #F6F1DC 100%);
             box-shadow: 0 0 0 3px #fff, 0 2px 8px rgba(36, 37, 33, 0.06);
         }
+
 
         /* El centro domina; los 9 externos son claramente menores. */
         .social-proof-avatar--center {
@@ -1409,10 +1641,12 @@
             background: linear-gradient(150deg, #E4DEF9 0%, #EFF6F1 100%);
         }
 
+
         .social-proof-avatar:not(.social-proof-avatar--center) {
             width: 13%;
             height: 13%;
         }
+
 
         /* Gradientes suaves distintos para diferenciar cada placeholder. */
         .social-proof-avatar--lavanda { background: linear-gradient(150deg, #E6E1F8 0%, #F1EDFB 100%); }
@@ -1447,6 +1681,7 @@
             text-align: center;
         }
 
+
         .not-alone-card p {
             font-size: clamp(1.02rem, 4.2vw, 1.14rem);
             line-height: 1.5;
@@ -1454,6 +1689,7 @@
             color: var(--funnel-text);
             text-wrap: pretty;
         }
+
 
         .not-alone-quote {
             position: absolute;
@@ -1467,6 +1703,7 @@
             pointer-events: none;
         }
 
+
         .not-alone-quote--end {
             top: auto;
             bottom: 4px;
@@ -1474,9 +1711,11 @@
             right: 20px;
         }
 
+
         .step-not-alone .actions {
             margin-top: 22px;
         }
+
 
         @media (max-width: 420px) {
             .social-proof-figure {
@@ -1499,6 +1738,7 @@
             }
         }
 
+
         @media (max-width: 340px) {
             .social-proof-figure {
                 width: min(100%, 214px);
@@ -1514,6 +1754,7 @@
             }
         }
 
+
         /* ---- Alternativas ---- */
 
         .options {
@@ -1521,6 +1762,7 @@
             gap: 10px;
             margin-top: 18px;
         }
+
 
         .opt {
             display: flex;
@@ -1543,10 +1785,12 @@
             transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
         }
 
+
         .opt:hover {
             border-color: rgba(21, 152, 117, 0.45);
             box-shadow: 0 4px 14px rgba(36, 37, 33, 0.06);
         }
+
 
         .opt:focus-visible,
         .back-btn:focus-visible,
@@ -1556,10 +1800,12 @@
             outline-offset: 3px;
         }
 
+
         .opt[disabled] {
             opacity: 0.5;
             cursor: not-allowed;
         }
+
 
         .opt.selected {
             border-color: var(--funnel-accent);
@@ -1567,14 +1813,17 @@
             box-shadow: var(--funnel-shadow);
         }
 
+
         .opt-emoji {
             display: none;
         }
+
 
         .opt-body {
             width: 100%;
             min-width: 0;
         }
+
 
         .opt-label {
             display: block;
@@ -1583,6 +1832,7 @@
             line-height: 1.28;
         }
 
+
         .opt-desc {
             display: block;
             margin-top: 5px;
@@ -1590,6 +1840,7 @@
             line-height: 1.45;
             color: var(--funnel-muted);
         }
+
 
         .opt .opt-check {
             position: absolute;
@@ -1611,17 +1862,20 @@
             transition: opacity 0.18s ease;
         }
 
+
         .opt:hover .opt-check,
         .opt:focus-visible .opt-check,
         .opt.selected .opt-check {
             opacity: 1;
         }
 
+
         .opt.selected .opt-check {
             background: var(--funnel-accent);
             border-color: var(--funnel-accent);
             color: #fff;
         }
+
 
         .note {
             margin-top: 16px;
@@ -1635,13 +1889,16 @@
             animation: fadeUp 0.3s ease both;
         }
 
+
         .field {
             margin-top: 16px;
         }
 
+
         .field:first-child {
             margin-top: 0;
         }
+
 
         label {
             display: block;
@@ -1649,6 +1906,7 @@
             font-size: 0.95rem;
             margin-bottom: 8px;
         }
+
 
         input[type="text"],
         input[type="number"],
@@ -1664,6 +1922,7 @@
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
+
         input[type="text"]:focus,
         input[type="number"]:focus,
         input[type="email"]:focus {
@@ -1672,6 +1931,7 @@
             box-shadow: 0 0 0 4px rgba(91, 75, 244, 0.14);
         }
 
+
         .field-error {
             margin-top: 8px;
             font-size: 0.85rem;
@@ -1679,6 +1939,7 @@
             color: var(--danger);
             display: none;
         }
+
 
         .check {
             display: flex;
@@ -1691,6 +1952,7 @@
             cursor: pointer;
         }
 
+
         .check input {
             width: 20px;
             height: 20px;
@@ -1699,11 +1961,13 @@
             flex-shrink: 0;
         }
 
+
         .actions {
             display: grid;
             gap: 12px;
             margin-top: 18px;
         }
+
 
         .btn {
             display: inline-flex;
@@ -1722,9 +1986,11 @@
             transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, opacity 0.18s ease;
         }
 
+
         .btn:hover {
             transform: translateY(-1px);
         }
+
 
         .btn[disabled] {
             opacity: 0.45;
@@ -1733,11 +1999,13 @@
             box-shadow: none;
         }
 
+
         .btn-dopamine {
             background: var(--funnel-accent-strong);
             color: #fff;
             box-shadow: 0 8px 20px rgba(21, 152, 117, 0.22);
         }
+
 
         .btn-primary {
             background: var(--funnel-accent-strong);
@@ -1745,10 +2013,12 @@
             box-shadow: 0 8px 20px rgba(21, 152, 117, 0.22);
         }
 
+
         .btn-secondary {
             background: rgba(36, 18, 63, 0.08);
             color: var(--text);
         }
+
 
         .btn-ghost {
             background: transparent;
@@ -1756,9 +2026,11 @@
             box-shadow: none;
         }
 
+
         .btn-ghost:hover {
             background: rgba(36, 18, 63, 0.06);
         }
+
 
         .lead {
             margin-top: 18px;
@@ -1767,9 +2039,11 @@
             color: var(--muted);
         }
 
+
         .lead + .actions {
             margin-top: 26px;
         }
+
 
         .body-copy {
             margin-top: 16px;
@@ -1777,6 +2051,7 @@
             line-height: 1.6;
             color: var(--muted);
         }
+
 
         /* ---- Pantalla de inicio: fondo plano, copy arriba, CTA abajo ---- */
 
@@ -1790,10 +2065,20 @@
             padding: 28px 0 24px;
         }
 
-        /* El fondo plano cubre toda la pantalla, no solo la columna. */
+
+        /* La imagen cubre toda la pantalla, no solo la columna. El color queda
+           como respaldo si la imagen no carga.
+           El degradado va como primera capa: se pinta encima de la foto y
+           oscurece solo la parte baja, donde viven el CTA y el legal. */
         body.begin-active {
-            background: var(--begin-bg);
+            background-color: var(--begin-bg);
+            background-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.55) 78%, rgba(0, 0, 0, 0.78) 100%),
+                url('assets/backgroundBegin.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
         }
+
 
         .begin-top h1,
         .begin-title {
@@ -1806,35 +2091,51 @@
             text-wrap: balance;
         }
 
+
+        /* Titulo y subtitulo centrados sobre la imagen de fondo. */
+        .begin-title {
+            text-align: center;
+        }
+
+
         .begin-sub {
-            margin: 12px 0 0;
+            margin: 12px auto 0;
+            max-width: 30ch;
             font-size: 1rem;
             line-height: 1.5;
             color: var(--begin-muted);
+            text-align: center;
             text-wrap: pretty;
         }
+
 
         .begin-mid {
             flex: 1 1 auto;
             min-height: 24px;
         }
 
+
         .begin-bottom {
             display: grid;
             gap: 10px;
         }
 
+
         .begin-cta {
             width: 100%;
         }
 
+
+        /* El legal cae sobre el velo oscuro del fondo: necesita tono claro. */
         .begin-legal {
             margin: 2px 0 0;
             font-size: 0.78rem;
             line-height: 1.5;
             text-align: center;
-            color: var(--begin-muted);
+            color: rgba(255, 255, 255, 0.82);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         }
+
 
         .begin-legal a {
             color: inherit;
@@ -1842,9 +2143,11 @@
             text-underline-offset: 2px;
         }
 
+
         .begin-legal a:hover {
-            color: var(--funnel-text);
+            color: #fff;
         }
+
 
         .begin-legal a:focus-visible {
             outline: 2px solid var(--funnel-accent);
@@ -1852,12 +2155,14 @@
             border-radius: 4px;
         }
 
+
         .pet-stage {
-            position: relative;
-            width: 168px;
-            height: 168px;
-            margin: 0 auto;
+           position: relative;
+           width: 200px;
+           height: 200px;
+           margin: 0 auto;
         }
+
 
         .egg {
             position: absolute;
@@ -1872,6 +2177,7 @@
             transition: transform 0.4s ease, opacity 0.4s ease;
         }
 
+
         .egg::before,
         .egg::after {
             content: "";
@@ -1882,15 +2188,18 @@
             background: rgba(91, 75, 244, 0.18);
         }
 
+
         .egg::before {
             top: 44%;
             left: 26%;
         }
 
+
         .egg::after {
             top: 58%;
             right: 24%;
         }
+
 
         .egg.cracked::after {
             background: linear-gradient(135deg, rgba(36, 18, 63, 0.4) 0 2px, transparent 2px 100%);
@@ -1902,6 +2211,7 @@
             transform: rotate(18deg);
         }
 
+
         .pet {
             position: absolute;
             left: 50%;
@@ -1912,26 +2222,34 @@
             transition: transform 0.45s ease, opacity 0.45s ease, filter 0.45s ease;
         }
 
-        .pet svg {
+
+        .pet svg,
+        .pet img {
             display: block;
-            width: 150px;
-            height: 150px;
+            width: 180px;
+            height: 180px;
+            max-width: 100%;
+            object-fit: contain;
         }
+
 
         .pet-stage[data-stage="1"] .pet {
             opacity: 0.35;
             transform: translateX(-50%) scale(0.78);
         }
 
+
         .pet-stage[data-stage="2"] .pet {
             opacity: 0.6;
             transform: translateX(-50%) scale(0.87);
         }
 
+
         .pet-stage[data-stage="3"] .pet {
             opacity: 0.85;
             transform: translateX(-50%) scale(0.95);
         }
+
 
         .pet-stage[data-stage="4"] .pet {
             opacity: 1;
@@ -1939,10 +2257,12 @@
             filter: drop-shadow(0 0 18px rgba(201, 253, 90, 0.75));
         }
 
+
         .pet-stage[data-stage="4"] .egg {
             transform: translateX(-50%) translateY(6px) scale(0.92);
             opacity: 0.25;
         }
+
 
         .sparkle {
             position: absolute;
@@ -1954,10 +2274,12 @@
             transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
+
         .pet-stage[data-stage="4"] .sparkle {
             opacity: 1;
             transform: scale(1) rotate(0deg);
         }
+
 
         .step-caption {
             margin-top: 18px;
@@ -1967,11 +2289,13 @@
             color: var(--muted);
         }
 
+
         .micro-list {
             display: grid;
             gap: 10px;
             margin-top: 20px;
         }
+
 
         .micro {
             display: flex;
@@ -1990,14 +2314,17 @@
             transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
         }
 
+
         .micro:hover {
             transform: translateY(-1px);
         }
+
 
         .micro.done {
             border-color: rgba(23, 138, 74, 0.3);
             background: rgba(23, 138, 74, 0.08);
         }
+
 
         .micro .micro-num {
             width: 30px;
@@ -2012,10 +2339,12 @@
             flex-shrink: 0;
         }
 
+
         .micro.done .micro-num {
             background: var(--success);
             color: #fff;
         }
+
 
         .micro-label {
             flex: 1;
@@ -2023,274 +2352,545 @@
             font-size: 0.98rem;
         }
 
-        .curves {
-            margin-top: 22px;
+
+
+/* ---- Pantalla "sistema de huevos y mascotas" (interstitial_3) ---- */
+
+.step-egg-system {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+}
+
+.step-egg-system .egg-head {
+    text-align: center;
+}
+
+.egg-eyebrow {
+    margin: 0;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--funnel-accent-strong);
+}
+
+.step-egg-system .card-head h1 {
+    margin-top: 10px;
+    font-family: var(--funnel-serif);
+    font-size: clamp(1.6rem, 6.8vw, 2.2rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+}
+
+.egg-lede {
+    max-width: 42ch;
+    margin: 12px auto 0;
+    font-size: 0.98rem;
+    line-height: 1.55;
+    color: var(--funnel-muted);
+    text-wrap: pretty;
+}
+
+/* Preview principal: el PNG manda su propia silueta, sin recorte. */
+.egg-preview {
+    margin-top: 22px;
+    text-align: center;
+}
+
+.egg-preview-stage {
+    position: relative;
+    width: min(100%, 260px);
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+    border-radius: 26px;
+    background: linear-gradient(160deg, #F1EEFA 0%, #EFF7F2 62%, #FDF6E6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.egg-preview-img {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 78%;
+    height: 78%;
+    object-fit: contain;
+    /* Flotacion minima: nada que distraiga del texto. */
+    animation: eggFloat 6s ease-in-out infinite;
+}
+
+.egg-preview-img--placeholder {
+    border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
+    background: rgba(36, 37, 33, 0.08);
+}
+
+.egg-preview-glow {
+    position: absolute;
+    inset: 18%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(21, 152, 117, 0.14) 0%, rgba(21, 152, 117, 0) 70%);
+}
+
+@keyframes eggFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+.egg-preview-label {
+    margin: 16px 0 0;
+    font-size: 1.02rem;
+    font-weight: 800;
+    color: var(--funnel-text);
+}
+
+.egg-preview-meter-note {
+    margin: 4px 0 0;
+    font-size: 0.88rem;
+    color: var(--funnel-muted);
+}
+
+/* Medidor ilustrativo de 3 segmentos: explica, no representa progreso real. */
+.egg-meter {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    max-width: 300px;
+    margin: 14px auto 0;
+}
+
+.egg-meter-seg {
+    display: grid;
+    gap: 6px;
+}
+
+.egg-meter-fill {
+    display: block;
+    height: 8px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #CFE7DC 0%, #9BD3B4 100%);
+}
+
+.egg-meter-label {
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--funnel-muted);
+}
+
+.egg-preview-disclaimer {
+    margin: 12px 0 0;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--funnel-muted);
+}
+
+/* Galeria: en mobile es un carril con scroll-snap, sin autoplay. */
+.egg-gallery-block {
+    margin-top: 28px;
+}
+
+.egg-gallery-hint {
+    margin: 0 0 10px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--funnel-muted);
+    text-align: center;
+}
+
+.egg-gallery {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 6px 20px 10px;
+    margin: 0 -20px;
+}
+
+.egg-gallery::-webkit-scrollbar {
+    display: none;
+}
+
+.egg-thumb {
+            position: relative;
+            flex: 0 0 74px;
+            scroll-snap-align: center;
+    /* Zona tactil por encima del minimo de 44px. */
+    min-width: 74px;
+    min-height: 74px;
+    padding: 6px;
+    border: 2px solid transparent;
+    border-radius: 18px;
+    background: var(--funnel-surface);
+    cursor: pointer;
+    /* El estado activo nunca depende solo del color: lleva borde y sombra. */
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.egg-thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.egg-thumb.is-active {
+    border-color: var(--funnel-accent);
+    box-shadow: 0 0 0 3px rgba(21, 152, 117, 0.16);
+    transform: translateY(-2px);
+}
+
+.egg-thumb:focus-visible {
+    outline: 3px solid var(--funnel-accent);
+    outline-offset: 2px;
+}
+
+/* Secuencia de tres pasos. */
+.egg-steps {
+    list-style: none;
+    margin: 26px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+    counter-reset: eggstep;
+}
+
+.egg-step {
+    position: relative;
+    padding: 16px 16px 16px 58px;
+    border: 1px solid var(--funnel-border);
+    border-radius: 20px;
+    background: var(--funnel-surface);
+    box-shadow: var(--funnel-shadow);
+}
+
+.egg-step-num {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--funnel-accent-soft);
+    color: var(--funnel-accent-strong);
+    font-size: 0.82rem;
+    font-weight: 900;
+}
+
+.egg-step-glyph {
+    position: absolute;
+    top: 50px;
+    left: 18px;
+    color: var(--funnel-accent);
+}
+
+.egg-step-icon {
+    display: block;
+    width: 22px;
+    height: 22px;
+}
+
+.egg-step strong {
+    display: block;
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1.3;
+    color: var(--funnel-text);
+}
+
+.egg-step p {
+    margin: 5px 0 0;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--funnel-muted);
+}
+
+/* Tarjeta "Why Brainy uses this". */
+.egg-why {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid var(--funnel-border);
+    border-radius: 22px;
+    background: linear-gradient(160deg, #F3F1FB 0%, #EFF7F2 100%);
+}
+
+.egg-why-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.egg-why-spark {
+    color: var(--funnel-accent-strong);
+    font-size: 1rem;
+}
+
+.egg-why h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--funnel-text);
+}
+
+.egg-why p {
+    margin: 8px 0 0;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--funnel-muted);
+}
+
+.egg-why-badge {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 4px 10px;
+    border: 1px solid var(--funnel-border);
+    border-radius: 999px;
+    background: var(--funnel-surface);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--funnel-accent-strong);
+}
+
+.step-egg-system .actions {
+    margin-top: 22px;
+}
+
+@media (min-width: 720px) {
+    .egg-gallery {
+        justify-content: center;
+        flex-wrap: wrap;
+        overflow-x: visible;
+        padding-inline: 0;
+        margin-inline: 0;
+    }
+
+    .egg-steps {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+    }
+
+    /* En tres columnas el glifo deja de ser absoluto: si no, el titulo
+       queda con un ancho util ridiculo. */
+    .egg-step {
+        padding: 18px 16px 18px 16px;
+        padding-top: 52px;
+    }
+
+    .egg-step-num {
+        top: 16px;
+        left: 16px;
+    }
+
+    .egg-step-glyph {
+        top: 14px;
+        left: auto;
+        right: 16px;
+    }
+
+    /* La conexion visual entre pasos solo tiene sentido en horizontal. */
+    .egg-step--linked::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: -12px;
+        width: 10px;
+        height: 2px;
+        background: var(--funnel-border);
+    }
+}
+
+@media (max-width: 420px) {
+    .egg-steps {
+        margin-top: 22px;
+    }
+}
+
+@media (max-width: 340px) {
+    /* El shell pasa a 16px de padding: la galeria debe seguirlo o desborda
+       horizontalmente. Mismo ajuste que .testimonials__track. */
+    .egg-gallery {
+        margin: 0 -16px;
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+/* Sin flotacion ni transiciones cuando el usuario lo pide. */
+@media (prefers-reduced-motion: reduce) {
+    .egg-preview-img {
+        animation: none;
+    }
+
+    .egg-thumb {
+        transition: none;
+    }
+
+    .egg-thumb.is-active {
+        transform: none;
+    }
+}
+
+/* Cada categoria es una card de color suave y plegable. */
+.picker-cat {
+            margin-top: 14px;
+            border: 1px solid var(--funnel-border);
+            border-radius: var(--funnel-radius);
+            background: var(--cat-tint, #F3F1FB);
+            overflow: hidden;
+            transition: background 0.2s ease;
         }
 
-        .curves-card {
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            background: var(--panel-strong);
-            padding: 20px 18px 18px;
-        }
 
-        .curves-svg {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .legend {
-            list-style: none;
-            display: grid;
-            gap: 14px;
-            margin-top: 18px;
-        }
-
-        .legend li {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-        }
-
-        .legend-dot {
-            width: 30px;
-            height: 8px;
-            border-radius: 999px;
-            margin-top: 7px;
-            flex-shrink: 0;
-        }
-
-        .legend-dot.bad {
-            background: repeating-linear-gradient(90deg, #b9b0d6 0 7px, transparent 7px 12px);
-        }
-
-        .legend-dot.good {
-            background: linear-gradient(90deg, var(--accent), var(--accent-2));
-        }
-
-        .legend strong {
-            display: block;
-            font-size: 0.98rem;
-        }
-
-        .legend p {
-            margin-top: 2px;
-            font-size: 0.86rem;
-            color: var(--muted);
-        }
-
-        .loading-list {
-            list-style: none;
-            display: grid;
-            gap: 12px;
-            margin-top: 24px;
-        }
-
-        .loading-item {
-            display: flex;
-            align-items: center;
-            gap: 13px;
-            padding: 15px 16px;
-            border-radius: 18px;
-            background: var(--panel-strong);
-            border: 1px solid var(--border);
-            font-weight: 700;
-            opacity: 0.25;
-            transform: translateY(8px);
-            transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.4s ease;
-        }
-
-        .loading-item.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .loading-item.done {
-            border-color: rgba(23, 138, 74, 0.28);
-        }
-
-        .loading-pill {
-            width: 28px;
-            height: 28px;
-            border-radius: 999px;
-            flex-shrink: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(91, 75, 244, 0.1);
-            color: var(--accent);
-            font-size: 0.85rem;
-        }
-
-        .loading-item.done .loading-pill {
-            background: rgba(23, 138, 74, 0.14);
-            color: var(--success);
-        }
-
-        .loading-spin {
-            border: 2px solid rgba(91, 75, 244, 0.18);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            width: 26px;
-            height: 26px;
-            animation: spin 0.7s linear infinite;
-        }
-
-        .loading-final {
+.picker-cat:first-of-type {
             margin-top: 20px;
-            text-align: center;
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: var(--success);
-            opacity: 0;
-            transition: opacity 0.5s ease;
         }
 
-        .loading-final.visible {
-            opacity: 1;
-        }
 
-        .loading-hint {
-            margin-top: 10px;
-            text-align: center;
-            font-size: 0.88rem;
-            color: var(--muted);
-        }
+/* Un tono suave por categoria: distingue sin gritar. */
+.picker-cat--1 { --cat-tint: #EFECFA; }
+.picker-cat--2 { --cat-tint: #E9F4EE; }
+.picker-cat--3 { --cat-tint: #FBF0E4; }
+.picker-cat--4 { --cat-tint: #F6EAF0; }
 
-        .picker-cat {
-            margin-top: 24px;
-        }
-
-        .picker-cat:first-of-type {
-            margin-top: 20px;
-        }
-
-        .cat-head {
+/* El encabezado es el disparador del plegable. */
+.cat-head {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 12px;
+            width: 100%;
+            min-height: 52px;
+            padding: 12px 14px;
+            border: 0;
+            background: transparent;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            color: var(--funnel-text);
+        }
+
+
+.cat-head .cat-emoji {
+            font-size: 1.3rem;
+            filter: none;
+            flex-shrink: 0;
+        }
+
+
+.cat-label {
+            flex: 1;
+            min-width: 0;
             font-size: 0.95rem;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 0.04em;
-            color: var(--muted);
-        }
+}
 
-        .cat-head .cat-emoji {
-            font-size: 1.3rem;
-            filter: none;
-        }
-
-        .picker-list {
-            display: grid;
-            gap: 10px;
-        }
-
-        .pick-card {
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            background: var(--panel-strong);
-            overflow: hidden;
-        }
-
-        .pick-card.selected {
-            border-color: rgba(91, 75, 244, 0.5);
-            box-shadow: 0 0 0 3px rgba(91, 75, 244, 0.1);
-        }
-
-        .pick-head {
-            display: flex;
-            align-items: stretch;
-        }
-
-        .pick-expand {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-height: 62px;
-            padding: 12px 14px;
-            border: 0;
-            background: transparent;
-            color: var(--text);
-            font: inherit;
-            text-align: left;
-            cursor: pointer;
-        }
-
-        .pick-emoji {
-            font-size: 1.5rem;
+.cat-count {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--funnel-muted);
             flex-shrink: 0;
-        }
+}
 
-        .pick-body {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .pick-body strong {
-            display: block;
-            font-size: 0.98rem;
-            font-weight: 800;
-            line-height: 1.35;
-        }
-
-        .pick-meta {
-            display: block;
-            margin-top: 3px;
-            font-size: 0.84rem;
-            color: var(--muted);
-        }
-
-        .pick-chev {
+.cat-chev {
             font-size: 0.9rem;
-            color: var(--muted);
+            color: var(--funnel-muted);
             flex-shrink: 0;
             transition: transform 0.2s ease;
         }
 
-        .pick-card.open .pick-chev {
+
+.picker-cat.open .cat-chev {
             transform: rotate(180deg);
         }
 
-        .pick-check {
-            width: 54px;
-            flex-shrink: 0;
-            border: 0;
-            border-left: 1px solid var(--border);
-            background: transparent;
-            cursor: pointer;
-            font-size: 1.2rem;
-            font-weight: 900;
-            color: rgba(36, 37, 33, 0.22);
-            transition: background 0.18s ease, color 0.18s ease;
-        }
 
-        .pick-card.selected .pick-check {
-            background: var(--funnel-accent-soft);
-            color: var(--funnel-accent-strong);
-        }
-
-        .pick-steps {
-            padding: 4px 14px 16px 16px;
-            border-top: 1px dashed var(--border);
-        }
-
-        .pick-steps[hidden] {
-            display: none;
-        }
-
-        .pick-steps ol {
-            margin: 14px 0 0;
-            padding-left: 20px;
+.picker-list {
             display: grid;
             gap: 8px;
-            font-size: 0.93rem;
-            line-height: 1.5;
-            color: var(--text);
+            padding: 0 10px 10px;
         }
+
+
+.picker-list[hidden] {
+            display: none;
+}
+
+/* La fila completa es el boton que selecciona: no hay zona partida. */
+.pick-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            min-height: 56px;
+            padding: 12px 14px;
+            border: 1px solid transparent;
+            border-radius: 16px;
+            background: var(--funnel-surface);
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+
+.pick-card.selected {
+            border-color: var(--funnel-accent);
+            box-shadow: 0 0 0 3px rgba(21, 152, 117, 0.12);
+        }
+
+
+.pick-emoji {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+}
+
+.pick-body {
+            flex: 1;
+            min-width: 0;
+}
+
+.pick-body strong {
+            display: block;
+            font-size: 0.98rem;
+            font-weight: 800;
+            line-height: 1.35;
+            color: var(--funnel-text);
+}
+
+/* Check decorativo: ya no es un boton propio, solo indica el estado. */
+.pick-check {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(36, 37, 33, 0.16);
+            border-radius: 50%;
+            font-size: 0.8rem;
+            font-weight: 900;
+            color: transparent;
+            transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+        }
+
+
+.pick-card.selected .pick-check {
+            background: var(--funnel-accent);
+            border-color: var(--funnel-accent);
+            color: #fff;
+        }
+
 
         .pick-counter {
             margin-top: 18px;
@@ -2299,6 +2899,7 @@
             font-weight: 800;
             color: var(--muted);
         }
+
 
         .pick-counter strong {
             color: var(--accent);
@@ -2314,9 +2915,11 @@
             text-align: center;
         }
 
+
         .plan-block {
             margin-top: 26px;
         }
+
 
         .plan-block h4 {
             display: flex;
@@ -2327,6 +2930,7 @@
             color: var(--text);
         }
 
+
         .plan-note {
             margin: 6px 0 0;
             font-size: 0.85rem;
@@ -2334,11 +2938,13 @@
             color: var(--muted);
         }
 
+
         .plan-rows {
             margin-top: 12px;
             display: grid;
             gap: 10px;
         }
+
 
         .plan-row {
             display: flex;
@@ -2350,22 +2956,43 @@
             border: 1px solid rgba(91, 75, 244, 0.2);
         }
 
+
         .plan-emoji {
             font-size: 1.3rem;
             flex-shrink: 0;
         }
 
+
         .plan-egg {
-            width: 40px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             flex-shrink: 0;
-            border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+
+        /* La imagen del huevo ya trae su propia silueta y sombra. */
+        .plan-egg-photo {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+
+        .plan-egg-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
             font-size: 1.15rem;
             box-shadow: inset -4px -6px 10px rgba(36, 18, 63, 0.18);
         }
+
 
         .plan-name {
             flex: 1;
@@ -2375,10 +3002,12 @@
             color: var(--text);
         }
 
+
         .plan-sep {
             color: var(--muted);
             font-weight: 400;
         }
+
 
         .plan-meta {
             flex-shrink: 0;
@@ -2386,6 +3015,7 @@
             font-weight: 800;
             color: var(--muted);
         }
+
 
         .plan-copy {
             margin-top: 26px;
@@ -2400,266 +3030,6 @@
             text-align: center;
         }
 
-        .app-mock {
-            margin-top: 22px;
-            border: 1px solid var(--border);
-            border-radius: 26px;
-            background: var(--panel-strong);
-            overflow: hidden;
-            box-shadow: inset 0 0 0 6px rgba(36, 18, 63, 0.04);
-        }
-
-        .app-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 16px 18px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .app-head h3 {
-            font-size: 1.05rem;
-            font-weight: 900;
-        }
-
-        .app-head span {
-            font-size: 0.82rem;
-            font-weight: 800;
-            color: var(--muted);
-        }
-
-        .app-body {
-            padding: 14px 16px 20px;
-        }
-
-        .app-pet {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 0 2px;
-        }
-
-        .app-pet .pet-stage {
-            width: 128px;
-            height: 128px;
-        }
-
-        .app-pet .pet svg {
-            width: 118px;
-            height: 118px;
-        }
-
-        .app-pet .egg {
-            width: 92px;
-            height: 116px;
-            bottom: 0;
-        }
-
-        .app-body h4 {
-            margin: 14px 0 10px;
-            font-size: 0.9rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--muted);
-        }
-
-        .preview-mock {
-            margin-top: 18px;
-        }
-
-        .pv-label-row {
-            margin: 14px 0 10px;
-            font-size: 0.82rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--muted);
-        }
-
-        .pv-companion {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 16px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, rgba(91, 75, 244, 0.1), rgba(242, 201, 76, 0.1));
-            border: 1px solid rgba(91, 75, 244, 0.25);
-        }
-
-        .pv-egg {
-            width: 56px;
-            height: 68px;
-            flex-shrink: 0;
-            border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            box-shadow: inset -5px -7px 12px rgba(36, 18, 63, 0.18);
-            transition: transform 0.2s ease;
-        }
-
-        .pv-egg.pulse {
-            animation: pvPulse 0.9s ease;
-        }
-
-        @keyframes pvPulse {
-            0% { transform: scale(1); }
-            35% { transform: scale(1.16) rotate(-4deg); }
-            60% { transform: scale(0.96); }
-            100% { transform: scale(1.06); }
-        }
-
-        .pv-companion-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            min-width: 0;
-        }
-
-        .pv-egg-name {
-            font-size: 1rem;
-            font-weight: 900;
-            color: var(--text);
-        }
-
-        .pv-routine {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .pv-count {
-            flex-shrink: 0;
-            font-size: 0.8rem;
-            font-weight: 900;
-            color: var(--accent);
-            background: rgba(91, 75, 244, 0.12);
-            padding: 6px 10px;
-            border-radius: 999px;
-        }
-
-        .pv-mission {
-            padding: 0 2px;
-        }
-
-        .pv-task {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.02rem;
-            font-weight: 900;
-            color: var(--text);
-        }
-
-        .pv-task-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 34px;
-            height: 34px;
-            border-radius: 12px;
-            background: rgba(201, 253, 90, 0.4);
-            font-size: 1.05rem;
-            flex-shrink: 0;
-        }
-
-        .pv-hint {
-            margin: 10px 0 12px;
-            font-size: 0.88rem;
-            font-weight: 700;
-            color: var(--muted);
-        }
-
-        .pv-steps {
-            display: grid;
-            gap: 8px;
-        }
-
-        .pv-step {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            padding: 13px 14px;
-            border-radius: 14px;
-            background: rgba(36, 18, 63, 0.05);
-            border: 1px solid transparent;
-            font-family: inherit;
-            font-size: 0.94rem;
-            font-weight: 800;
-            color: var(--text);
-            text-align: left;
-            transition: background 0.2s, border-color 0.2s;
-        }
-
-        .pv-step:hover {
-            background: rgba(91, 75, 244, 0.08);
-        }
-
-        .pv-step .pv-circle {
-            width: 26px;
-            height: 26px;
-            flex-shrink: 0;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid rgba(91, 75, 244, 0.6);
-            border-radius: 50%;
-            color: rgba(91, 75, 244, 0.6);
-            font-size: 0.95rem;
-        }
-
-        .pv-step .pv-label {
-            flex: 1;
-        }
-
-        .pv-step .pv-check {
-            opacity: 0;
-            font-weight: 900;
-            color: var(--accent);
-            transform: scale(0.5);
-            transition: opacity 0.2s, transform 0.2s;
-        }
-
-        .pv-step.done {
-            background: rgba(201, 253, 90, 0.3);
-            border-color: var(--accent);
-        }
-
-        .pv-step.done .pv-circle {
-            border-color: var(--dopamine);
-            background: var(--dopamine);
-            color: transparent;
-        }
-
-        .pv-step.done .pv-check {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .pv-feedback {
-            margin-top: 14px;
-            padding: 12px 16px;
-            border-radius: 14px;
-            background: var(--dopamine);
-            color: var(--text);
-            font-size: 0.9rem;
-            font-weight: 900;
-            text-align: center;
-            animation: pvFadeIn 0.35s ease;
-        }
-
-        @keyframes pvFadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
 
         .field-note {
             margin-top: 8px;
@@ -2668,9 +3038,11 @@
             color: var(--muted);
         }
 
+
         .presell-box {
             margin-top: 10px;
         }
+
 
         .presell-personalized {
             background: linear-gradient(135deg, rgba(201, 253, 90, 0.14), rgba(91, 75, 244, 0.1));
@@ -2679,6 +3051,7 @@
             padding: 14px 16px;
             margin-bottom: 14px;
         }
+
 
         .presell-personalized span {
             display: block;
@@ -2690,12 +3063,14 @@
             margin-bottom: 6px;
         }
 
+
         .presell-personalized p {
             margin: 0;
             font-size: 0.95rem;
             font-weight: 700;
             line-height: 1.55;
         }
+
 
         .presell-benefit {
             display: flex;
@@ -2704,9 +3079,11 @@
             border-bottom: 1px solid rgba(36, 18, 63, 0.08);
         }
 
+
         .presell-benefit:last-child {
             border-bottom: none;
         }
+
 
         .presell-icon {
             flex: 0 0 40px;
@@ -2720,11 +3097,13 @@
             font-size: 1.2rem;
         }
 
+
         .presell-body strong {
             display: block;
             font-size: 0.98rem;
             margin-bottom: 2px;
         }
+
 
         .presell-body p {
             margin: 0;
@@ -2733,6 +3112,7 @@
             line-height: 1.5;
         }
 
+
         .handoff-wrap {
             display: flex;
             flex-direction: column;
@@ -2740,6 +3120,7 @@
             gap: 18px;
             margin-top: 16px;
         }
+
 
         .handoff-check {
             width: 74px;
@@ -2755,6 +3136,7 @@
             box-shadow: 0 0 0 8px rgba(201, 253, 90, 0.18);
         }
 
+
         .handoff-main {
             width: 100%;
             display: flex;
@@ -2763,15 +3145,18 @@
             text-align: center;
         }
 
+
         .handoff-open {
             width: 100%;
         }
+
 
         .handoff-hint {
             margin: 10px 4px 0;
             font-size: 0.84rem;
             color: var(--muted);
         }
+
 
         .handoff-stores {
             display: flex;
@@ -2780,6 +3165,7 @@
             margin-top: 14px;
             flex-wrap: wrap;
         }
+
 
         .store-btn {
             display: inline-flex;
@@ -2796,6 +3182,7 @@
             text-decoration: none;
         }
 
+
         .handoff-note {
             margin-top: 12px;
             font-size: 0.84rem;
@@ -2803,11 +3190,13 @@
             color: var(--muted);
         }
 
+
         .handoff-desk-title {
             margin: 0 0 8px;
             font-weight: 900;
             font-size: 1.02rem;
         }
+
 
         .handoff-steps {
             text-align: left;
@@ -2819,9 +3208,11 @@
             color: var(--muted);
         }
 
+
         .handoff-copy {
             margin-top: 4px;
         }
+
 
         .paywall-summary {
             display: flex;
@@ -2830,6 +3221,7 @@
             flex-wrap: wrap;
             margin: 4px 0 14px;
         }
+
 
         .paywall-chip {
             background: rgba(91, 75, 244, 0.08);
@@ -2841,6 +3233,7 @@
             color: var(--text);
         }
 
+
         /* ---- Paywall rediseñado ---- */
 
         .step-paywall {
@@ -2851,9 +3244,11 @@
             border-radius: 0;
         }
 
+
         .paywall-head {
             text-align: center;
         }
+
 
         .paywall-head h1 {
             margin-top: 0;
@@ -2865,11 +3260,13 @@
             text-wrap: balance;
         }
 
+
         .paywall-head .sub {
             max-width: 40ch;
             margin-left: auto;
             margin-right: auto;
         }
+
 
         /* Banner del contador */
         .paywall-banner {
@@ -2884,6 +3281,7 @@
             border: 1px solid rgba(21, 152, 117, 0.22);
         }
 
+
         .paywall-banner-label {
             font-size: 0.7rem;
             font-weight: 800;
@@ -2892,11 +3290,13 @@
             color: var(--funnel-accent-strong);
         }
 
+
         .paywall-countdown-numbers {
             display: inline-flex;
             align-items: flex-start;
             gap: 6px;
         }
+
 
         .paywall-countdown-unit {
             display: inline-flex;
@@ -2904,6 +3304,7 @@
             align-items: center;
             min-width: 40px;
         }
+
 
         .paywall-countdown-value {
             font-size: 1.5rem;
@@ -2913,12 +3314,14 @@
             color: var(--funnel-text);
         }
 
+
         .paywall-countdown-sep {
             font-size: 1.3rem;
             font-weight: 800;
             line-height: 1;
             color: var(--funnel-accent-strong);
         }
+
 
         .paywall-countdown-caption {
             margin-top: 3px;
@@ -2928,6 +3331,7 @@
             color: var(--funnel-muted);
         }
 
+
         /* Tarjetas de oferta: toda la tarjeta es seleccionable via radio */
         .plan-cards {
             display: flex;
@@ -2935,6 +3339,7 @@
             gap: 12px;
             margin: 20px 0 0;
         }
+
 
         .plan-card {
             position: relative;
@@ -2951,15 +3356,18 @@
             transition: border-color 0.15s ease, background 0.15s ease;
         }
 
+
         .plan-card.selected {
             border-color: var(--funnel-accent);
             background: #F6FCF9;
         }
 
+
         .plan-card:focus-within {
             outline: 3px solid var(--funnel-accent);
             outline-offset: 3px;
         }
+
 
         /* Radio real, accesible por teclado, visualmente discreto. */
         .plan-card-radio {
@@ -2971,11 +3379,13 @@
             cursor: pointer;
         }
 
+
         .plan-card-radio:focus-visible ~ .plan-card-state {
             outline: 3px solid var(--funnel-accent);
             outline-offset: 3px;
             border-radius: 999px;
         }
+
 
         .plan-card-main {
             display: flex;
@@ -2985,6 +3395,7 @@
             min-width: 0;
         }
 
+
         .plan-card-head {
             display: flex;
             align-items: center;
@@ -2992,11 +3403,13 @@
             gap: 8px;
         }
 
+
         .plan-card-title {
             font-size: 1.02rem;
             font-weight: 700;
             line-height: 1.25;
         }
+
 
         .plan-badge {
             padding: 3px 9px;
@@ -3010,12 +3423,14 @@
             color: var(--funnel-accent-strong);
         }
 
+
         .plan-card-price-row {
             display: flex;
             align-items: baseline;
             flex-wrap: wrap;
             gap: 8px;
         }
+
 
         .plan-card-price {
             font-size: 1.5rem;
@@ -3024,6 +3439,7 @@
             letter-spacing: -0.01em;
             color: var(--funnel-text);
         }
+
 
         .plan-card-period,
         .plan-card-daily,
@@ -3034,6 +3450,7 @@
             color: var(--funnel-muted);
         }
 
+
         .plan-card-daily,
         .plan-card-save,
         .plan-card-compare,
@@ -3041,17 +3458,20 @@
             display: block;
         }
 
+
         .plan-card-save {
             font-size: 0.8rem;
             font-weight: 800;
             color: var(--funnel-accent-strong);
         }
 
+
         /* La comparacion es una referencia, no un precio anterior tachado. */
         .plan-card-compare {
             font-size: 0.76rem;
             color: var(--funnel-muted);
         }
+
 
         .plan-card-state {
             display: flex;
@@ -3060,6 +3480,7 @@
             gap: 4px;
             flex: 0 0 auto;
         }
+
 
         /* Check visible + texto "Selected": nunca solo el color. */
         .plan-card-check {
@@ -3071,10 +3492,12 @@
             position: relative;
         }
 
+
         .plan-card.selected .plan-card-check {
             border-color: var(--funnel-accent);
             background: var(--funnel-accent);
         }
+
 
         .plan-card.selected .plan-card-check::after {
             content: '';
@@ -3088,6 +3511,7 @@
             transform: rotate(45deg);
         }
 
+
         .plan-card-selected-text {
             font-size: 0.62rem;
             font-weight: 800;
@@ -3095,6 +3519,7 @@
             text-transform: uppercase;
             color: var(--funnel-accent-strong);
         }
+
 
         .paywall-expired {
             margin: 12px 0 0;
@@ -3108,9 +3533,11 @@
             color: #8C2F3B;
         }
 
+
         .paywall-cta {
             width: 100%;
         }
+
 
         .step-paywall .btn[disabled] {
             background: #E7E5DE;
@@ -3119,6 +3546,7 @@
             opacity: 1;
         }
 
+
         .paywall-disclosure {
             margin: 16px 0 0;
             font-size: 0.8rem;
@@ -3126,6 +3554,7 @@
             color: var(--funnel-muted);
             text-wrap: pretty;
         }
+
 
         .paywall-legal {
             display: flex;
@@ -3137,6 +3566,7 @@
             font-size: 0.8rem;
         }
 
+
         .paywall-legal a {
             color: var(--funnel-accent-strong);
             font-weight: 700;
@@ -3145,11 +3575,13 @@
             padding: 4px 2px;
         }
 
+
         .paywall-legal a:focus-visible {
             outline: 2px solid var(--funnel-accent);
             outline-offset: 2px;
             border-radius: 4px;
         }
+
 
         .paywall-secure {
             margin-top: 18px;
@@ -3161,12 +3593,14 @@
             text-align: center;
         }
 
+
         .paywall-secure-head {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
         }
+
 
         /* Escudo CSS puro: sin imagenes ni marcas de metodos de pago. */
         .paywall-secure-icon {
@@ -3178,6 +3612,7 @@
             position: relative;
         }
 
+
         .paywall-secure-title {
             font-size: 0.72rem;
             font-weight: 800;
@@ -3185,12 +3620,14 @@
             color: var(--funnel-accent-strong);
         }
 
+
         .paywall-secure-text {
             margin: 10px 0 0;
             font-size: 0.82rem;
             line-height: 1.5;
             color: var(--funnel-muted);
         }
+
 
         .paywall-secure-list {
             list-style: none;
@@ -3202,12 +3639,14 @@
             color: var(--funnel-muted);
         }
 
+
         .paywall-secure-list li::before {
             content: '✓';
             margin-right: 6px;
             color: var(--funnel-accent);
             font-weight: 800;
         }
+
 
         @media (max-width: 420px) {
             .paywall-banner {
@@ -3225,6 +3664,7 @@
             }
         }
 
+
         @media (max-width: 340px) {
             .plan-card-price-row {
                 flex-direction: column;
@@ -3241,6 +3681,7 @@
             }
         }
 
+
         .paywall-note {
             text-align: center;
             font-size: 0.8rem;
@@ -3248,16 +3689,19 @@
             margin-top: 4px;
         }
 
+
         .paywall-recovery {
             text-align: center;
             padding: 18px 6px 4px;
             color: var(--muted);
         }
 
+
         .paywall-recovery p {
             font-size: 0.9rem;
             margin-bottom: 12px;
         }
+
 
         .success-checks {
             list-style: none;
@@ -3268,6 +3712,7 @@
             padding: 0;
         }
 
+
         .success-checks li {
             display: flex;
             align-items: center;
@@ -3276,6 +3721,7 @@
             font-weight: 700;
             color: var(--text);
         }
+
 
         .success-checks .ok {
             width: 26px;
@@ -3290,6 +3736,7 @@
             font-weight: 900;
         }
 
+
         .handoff-qr {
             margin: 6px 0 2px;
             padding: 10px;
@@ -3298,11 +3745,13 @@
             box-shadow: 0 10px 28px rgba(36, 18, 63, 0.12);
         }
 
+
         .handoff-qr svg {
             display: block;
             width: 208px;
             height: auto;
         }
+
 
         .paywall-status {
             text-align: center;
@@ -3310,6 +3759,7 @@
             color: var(--muted);
             font-weight: 700;
         }
+
 
         .paywall-status .spinner {
             display: inline-block;
@@ -3322,6 +3772,7 @@
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
+
 
         .toast {
             position: fixed;
@@ -3344,10 +3795,12 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
+
         .toast.show {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
+
 
         @keyframes fadeUp {
             from {
@@ -3360,11 +3813,13 @@
             }
         }
 
+
         @keyframes spin {
             to {
                 transform: rotate(360deg);
             }
         }
+
 
         @media (min-width: 720px) {
             .shell {
@@ -3395,7 +3850,15 @@
                 max-width: 640px;
                 min-height: calc(100vh - 64px - env(safe-area-inset-bottom, 0px));
             }
+
+            /* La vertical se ve estirada en pantallas anchas: desde aqui se
+               usa la version horizontal, optimizada para escritorio. */
+            body.begin-active {
+                background-image: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.55) 78%, rgba(0, 0, 0, 0.78) 100%),
+                    url('assets/backgroundBeginDesktop.jpg');
+            }
         }
+
 
         @media (max-width: 420px) {
             .funnel-header {
@@ -3431,6 +3894,7 @@
             }
         }
 
+
         @media (max-width: 340px) {
             .shell {
                 padding-left: 16px;
@@ -3463,6 +3927,7 @@
             }
         }
 
+
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,
@@ -3473,6 +3938,7 @@
                 scroll-behavior: auto !important;
             }
         }
+
     </style>
 </head>
 <body>
@@ -3483,11 +3949,11 @@
             </div>
             <div class="funnel-stages">
                 <div class="funnel-stage" data-stage="profile" data-state="idle">
-                    <span class="funnel-stage-name">Creando tu Perfil</span>
+                    <span class="funnel-stage-name" data-stage-label="profile"></span>
                     <span class="funnel-stage-track"><span class="funnel-stage-fill" id="funnelProfileFill"></span></span>
                 </div>
                 <div class="funnel-stage" data-stage="plan" data-state="idle">
-                    <span class="funnel-stage-name">Diseñando tu Plan</span>
+                    <span class="funnel-stage-name" data-stage-label="plan"></span>
                     <span class="funnel-stage-track"><span class="funnel-stage-fill" id="funnelPlanFill"></span></span>
                 </div>
             </div>
@@ -3570,20 +4036,50 @@
             return output.length > 0 ? output : CANONICAL_ROUTINE_DAYS.slice();
         }
 
+
         // Fuente de verdad (confirmada por backend): egg_catalog.id NUMÉRICO 1–8.
         // El funnel SOLO asigna estos 8 huevos comunes; no se crean slugs nuevos.
         // El nombre visible es el canónico del egg_catalog.id. `emoji`/`color` son
         // solo presentación local (la app resuelve su propio asset por catalogId).
         const EGGS = [
-            { catalogId: 1, name: 'Terra', emoji: '🌍', color: '#7d9b76', imageUrl: null },
-            { catalogId: 2, name: 'Aqua', emoji: '💧', color: '#5bc0eb', imageUrl: null },
-            { catalogId: 3, name: 'Flame', emoji: '🔥', color: '#ec7063', imageUrl: null },
-            { catalogId: 4, name: 'Storm', emoji: '⚡', color: '#f2c94c', imageUrl: null },
-            { catalogId: 5, name: 'Leaf', emoji: '🍃', color: '#58d68d', imageUrl: null },
-            { catalogId: 6, name: 'Stone', emoji: '🪨', color: '#9aa0a6', imageUrl: null },
-            { catalogId: 7, name: 'Crystal', emoji: '💎', color: '#a99bff', imageUrl: null },
-            { catalogId: 8, name: 'Shadow', emoji: '🌑', color: '#5d5b7a', imageUrl: null }
+            { catalogId: 1, name: 'Terra', emoji: '🌍', color: '#7d9b76', imageUrl: 'assets/eggs/eggfinal1.png' },
+            { catalogId: 2, name: 'Aqua', emoji: '💧', color: '#5bc0eb', imageUrl: 'assets/eggs/eggfinal2.png' },
+            { catalogId: 3, name: 'Flame', emoji: '🔥', color: '#ec7063', imageUrl: 'assets/eggs/eggfinal3.png' },
+            { catalogId: 4, name: 'Storm', emoji: '⚡', color: '#f2c94c', imageUrl: 'assets/eggs/eggfinal4.png' },
+            { catalogId: 5, name: 'Leaf', emoji: '🍃', color: '#58d68d', imageUrl: 'assets/eggs/eggfinal5.png' },
+            { catalogId: 6, name: 'Stone', emoji: '🪨', color: '#9aa0a6', imageUrl: 'assets/eggs/eggfinal6.png' },
+            { catalogId: 7, name: 'Crystal', emoji: '💎', color: '#a99bff', imageUrl: 'assets/eggs/eggfinal7.png' },
+            { catalogId: 8, name: 'Shadow', emoji: '🌑', color: '#5d5b7a', imageUrl: 'assets/eggs/eggfinal8.png' }
         ];
+
+        // --- Manifesto de la pantalla de huevos (interstitial_3) ---
+        //
+        // REAL_EGG_ASSETS_PRESENT: los 8 PNG reales existen en assets/eggs/.
+        // Estan versionados, pero la carpeta completa aun no esta trackeada
+        // por git: en un clon limpio todavia no estarian disponibles.
+        const REAL_EGG_ASSETS_PRESENT = true;
+        const BRAINY_EGG_FOLDER = 'assets/eggs/';
+        // Carpeta recomendada si hay que reubicarlos o sumar mas.
+        const BRAINY_EGG_FOLDER_RECOMMENDED = 'assets/pets/eggs/';
+
+        // UNICA fuente de verdad de la galeria: se deriva de EGGS, que ya es
+        // la lista canonica del catalogo. Las rutas NO se repiten en ningun
+        // otro lugar del archivo.
+        const BRAINY_EGG_SHOWCASE = EGGS
+            .filter((egg) => Boolean(egg.imageUrl))
+            .map((egg) => ({
+                id: `egg-${egg.catalogId}`,
+                catalogId: egg.catalogId,
+                src: egg.imageUrl,
+                name: egg.name
+            }));
+
+        // El texto alternativo se arma en el idioma activo, no al cargar el
+        // modulo: el usuario puede cambiar de idioma con la pantalla abierta.
+        function eggShowcaseAlt(egg) {
+            return localizedText(`Huevo de la mascota ${egg.name} de Brainy`, `Brainy ${egg.name} companion egg`);
+        }
+
 
         // Slugs del funnel anterior: SOLO compatibilidad con localStorage/estado
         // viejo. Nunca son identidad canónica ni se envían al backend.
@@ -3624,8 +4120,50 @@
             return EGGS[id - 1];
         }
 
+
         const TASKS_JSON_URL = 'brainy-tasks-steps.json';
         const ROUTINES_JSON_URL = 'brainy-daily-routines.json';
+
+        // Los JSON de tareas y rutinas solo traen español. Estos son los titulos
+        // en ingles, indexados por el texto español original. Si un titulo nuevo
+        // no aparece aqui, se muestra tal cual viene del JSON (en español).
+        const TASK_TITLE_EN = {
+            'Escribir ese informe/ensayo que vengo postergando': 'Write that report or essay I keep putting off',
+            'Armar mi CV/portafolio y postularme a algo pendiente': 'Build my CV or portfolio and apply to something pending',
+            'Empezar a estudiar para un examen o certificación': 'Start studying for an exam or certification',
+            'Ordenar mi clóset/pieza': 'Organize my closet or one room',
+            'Poner al día mis finanzas': 'Get my finances in order',
+            'Resolver ese trámite pendiente': 'Handle that pending errand',
+            'Armar y empezar una rutina de ejercicio': 'Set up and start an exercise routine',
+            'Preparar comidas para la semana (meal prep)': 'Meal prep for the week',
+            'Armar una rutina matutina para levantarme y arrancar el día': 'Build a morning routine to get up and start the day',
+            'Vaciar la cabeza cuando hay demasiados pensamientos (brain dump)': 'Clear your head when there are too many thoughts (brain dump)',
+            'Armar una rutina de noche para dormir mejor': 'Build an evening routine to sleep better',
+            'Tomar una decisión que vengo posponiendo': 'Make a decision I keep postponing'
+        };
+
+        const ROUTINE_NAME_EN = {
+            'Hidratación y anclaje matutino': 'Morning hydration and anchoring',
+            'Salir a la luz temprano': 'Get outside in the light early',
+            'Desayuno con energía estable': 'A steady-energy breakfast',
+            'Movimiento diario corto': 'Short daily movement',
+            'Elegir mis 3 tareas del día': 'Choose my 3 tasks for the day',
+            'Pausa de pantallas a media tarde': 'Screen break in the mid-afternoon',
+            'Cuidado personal diario': 'Daily self-care',
+            'Orden rápido de 5 minutos': '5-minute quick tidy',
+            'Brain dump nocturno': 'Nightly brain dump',
+            'Rutina de cierre para dormir': 'Wind-down routine for sleep'
+        };
+
+        // Aplica el diccionario al titulo segun el idioma activo. Los pasos no
+        // se traducen: en esta pantalla ya no se muestran.
+        function localizeItemTitle(value, dictionary) {
+            if (currentLocale() !== 'en' || !value) {
+                return value;
+            }
+            return dictionary[value] || value;
+        }
+
 
         const FUNNEL_CONFIG = {
             enableBackend: true,
@@ -3656,6 +4194,7 @@
             });
         }
 
+
         const FUNNEL_EXPERIMENTS = {
             interactivePreview: true,
             showPrePaywall: true,
@@ -3681,6 +4220,7 @@
             }
         }
 
+
         function routinesByCategory() {
             const grouped = CATEGORIES.map((cat) => ({
                 ...cat,
@@ -3689,9 +4229,11 @@
             return grouped.filter((cat) => cat.items.length > 0);
         }
 
+
         function categoryMeta(id) {
             return CATEGORIES.find((c) => c.id === id) || { emoji: '✅', label: 'Otros' };
         }
+
 
         const DEFAULT_STATE = {
             locale: null,
@@ -3774,6 +4316,7 @@
             return `<div class="egg ${extraClass || ''}"></div>`;
         }
 
+
         function petStageHtml(stage, compact) {
             return `
                 <div class="pet-stage" data-stage="${stage || 4}"${compact ? ' style="width:128px;height:128px"' : ''}>
@@ -3782,27 +4325,6 @@
                     <div class="pet">${PET_SVG}</div>
                 </div>`;
         }
-
-        const CURVES_SVG = `
-            <svg class="curves-svg" viewBox="0 0 320 168" aria-hidden="true">
-                <defs>
-                    <linearGradient id="curveGrad" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0" stop-color="#5b4bf4"></stop>
-                        <stop offset="1" stop-color="#f2c94c"></stop>
-                    </linearGradient>
-                </defs>
-                <path d="M16 140 C42 120 44 44 70 62 C96 80 94 128 122 112 C150 96 148 30 178 46 C208 62 206 122 236 108 C266 94 262 58 304 30" fill="none" stroke="#b9b0d6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 9"></path>
-                <g fill="#c2b9e2">
-                    <circle cx="16" cy="140" r="4"></circle>
-                    <circle cx="70" cy="62" r="4"></circle>
-                    <circle cx="122" cy="112" r="4"></circle>
-                    <circle cx="178" cy="46" r="4"></circle>
-                    <circle cx="236" cy="108" r="4"></circle>
-                </g>
-                <path d="M16 140 C78 138 130 122 190 88 C238 62 284 38 304 22" fill="none" stroke="url(#curveGrad)" stroke-width="6" stroke-linecap="round"></path>
-                <circle cx="304" cy="22" r="7" fill="#f2c94c"></circle>
-                <circle cx="304" cy="22" r="12" fill="none" stroke="#f2c94c" opacity="0.35"></circle>
-            </svg>`;
 
         const FUNNEL_STEPS = [
             {
@@ -4047,7 +4569,7 @@
                 type: 'interstitial',
                 headline: 'Así funciona un cerebro con sistema',
                 body: 'No es fuerza de voluntad. Es desglosar hasta que cada paso se sienta posible.',
-                cta: 'Quiero ver cómo crece la mía →',
+                cta: 'Entendido !→',
                 breakdown: {
                     title: '"Organizar mi clóset" se parte en:',
                     steps: ['Sacar todo', 'Separar en 3 pilas', 'Doblar', 'Guardar'],
@@ -4150,13 +4672,10 @@
             {
                 id: 'interstitial_3',
                 type: 'interstitial',
-                headline: 'Así se ve intentarlo solo vs. tener un sistema',
-                body: 'No necesitás más disciplina. Necesitás un sistema que te sostenga en los días difíciles.',
-                cta: 'Continuar →',
-                curves: [
-                    { label: 'Solo con fuerza de voluntad', desc: 'línea irregular, sube y cae en ciclos de motivación', cls: 'bad' },
-                    { label: 'Con Brainy', desc: 'curva sostenida, tu mascota creciendo de forma constante', cls: 'good' }
-                ]
+                eyebrow: 'A habit system that feels rewarding',
+                headline: 'Your consistency brings them to life',
+                body: 'Every habit in Brainy can grow alongside a companion. Complete manageable daily steps, fill its progress meter, and unlock its first evolution after 3 completed days.',
+                cta: 'Build my plan →'
             },
             {
                 id: 'nq23',
@@ -4175,7 +4694,7 @@
                 type: 'question',
                 questionIndex: 24,
                 key: 'nq24_expert',
-                headline: 'Did an expert recommend MellowFlow to you?',
+                headline: 'Did an expert recommend Brainy to you?',
                 options: [
                     { value: 'Yes', label: 'Yes' },
                     { value: 'No', label: 'No' }
@@ -4323,19 +4842,6 @@
                 cta: 'Ver mi Brainy →'
             },
             {
-                id: 'loading',
-                type: 'loading',
-                headline: 'Preparando tu plan...',
-                subFinal: 'Todo listo. Un último vistazo a tu primer día.'
-            },
-            {
-                id: 'product_preview',
-                type: 'product_preview',
-                headline: 'Así se verá tu primer día en Brainy',
-                sub: 'Un adelanto real de tu plan, con tu compañero y tu primera misión. Tocá un paso para probar cómo avanzás.',
-                cta: 'Guardar mi plan →'
-            },
-            {
                 id: 'contact',
                 type: 'contact',
                 headline: 'Guarda tu plan',
@@ -4371,6 +4877,64 @@
         ];
 
         const STEP_COPY = {
+            good_hands: {
+                es: { headline: 'Estás en buenas manos.', body: 'Brainy usa tus respuestas para personalizar la guía y el plan que verás a continuación.', cta: 'Continuar →' },
+                en: { headline: 'You’re in good hands.', body: 'Brainy uses your answers to personalize the guidance and plan shown next.', cta: 'Continue →' }
+            },
+            not_alone: {
+                es: { headline: 'No estás solo.', sub: 'Muchas personas se enfrentan a los mismos desafíos, y el apoyo correcto puede hacer que el cambio parezca posible.', card: 'Un plan claro y personalizado puede facilitar convertir la intención en acción.', cta: 'Continuar →' },
+                en: { headline: 'You’re not alone.', sub: 'Many people struggle with the same challenges—and the right support can make change feel possible.', card: 'A clear, personalized plan can make it easier to turn intention into action.', cta: 'Continue →' }
+            },
+            mini_steps_science: {
+                es: {
+                    headline: 'Las tareas grandes se vuelven más fáciles cuando se parten en pasos chicos',
+                    body: 'La investigación conductual sugiere que convertir una meta vaga o abrumadora en una próxima acción concreta y manejable puede facilitar empezar y seguir adelante.',
+                    cards: [
+                        { id: 'break-down', title: 'Dividirla', text: 'Convierte una tarea abrumadora en pasos chicos y claros.' },
+                        { id: 'next-move', title: 'Ver el próximo paso', text: 'Enfócate en una acción concreta en vez de en el proyecto entero.' },
+                        { id: 'momentum', title: 'Ganar impulso', text: 'Cada paso completado hace tu progreso más visible.' }
+                    ],
+                    cta: 'Continuar →'
+                },
+                en: {
+                    headline: 'Big tasks feel easier when they become small steps',
+                    body: 'Behavioral research suggests that turning a vague or overwhelming goal into a specific, manageable next action can make it easier to begin and follow through.',
+                    cards: [
+                        { id: 'break-down', title: 'Break it down', text: 'Turn one overwhelming task into clear mini-steps.' },
+                        { id: 'next-move', title: 'See the next move', text: 'Focus on one concrete action instead of the entire project.' },
+                        { id: 'momentum', title: 'Build momentum', text: 'Each completed step makes your progress easier to see.' }
+                    ],
+                    cta: 'Continue →'
+                }
+            },
+            gamified_progress_science: {
+                es: {
+                    headline: 'Desbloquea el progreso, paso a paso',
+                    body: 'Brainy combina pasos chicos con progreso visible y recompensas sutiles. La investigación sugiere que una gamificación bien diseñada puede sostener la motivación y el compromiso cuando refuerza acciones con sentido.',
+                    labels: [
+                        { id: 'step', text: 'Próximo paso claro' },
+                        { id: 'progress', text: 'Progreso visible' },
+                        { id: 'reward', text: 'Recompensa pequeña' }
+                    ],
+                    card: { title: 'Informado por evidencia, sin presión', text: 'Diseñado para reforzar la acción, no la perfección.' },
+                    cta: 'Continuar →'
+                },
+                en: {
+                    headline: 'Unlock progress, one step at a time',
+                    body: 'Brainy pairs mini-steps with visible progress and gentle rewards. Research suggests that well-designed gamification can support motivation and engagement when it reinforces meaningful actions.',
+                    labels: [
+                        { id: 'step', text: 'Clear next step' },
+                        { id: 'progress', text: 'Visible progress' },
+                        { id: 'reward', text: 'Small reward' }
+                    ],
+                    card: { title: 'Evidence-informed, pressure-free', text: 'Designed to reinforce action—not perfection.' },
+                    cta: 'Continue →'
+                }
+            },
+            plan_personalization_loading: {
+                es: { headline: 'Creando tu plan personalizado', cta: 'Continuar →' },
+                en: { headline: 'Creating your personalized plan', cta: 'Continue →' }
+            },
             begin: {
                 es: { headline: 'Hecho para cerebros que piensan diferente', sub: 'Da el primer paso para vencer la procrastinación y la paralisis por análisis.' },
                 en: { headline: 'Made for brains that think different', sub: 'Take the first step to beat procrastination and analysis paralysis.' }
@@ -4468,8 +5032,8 @@
                 en: { headline: 'Do you find it easy to lose motivation?', options: ['Yes', 'No', 'I haven’t tried yet'] }
             },
             nq24: {
-                es: { headline: '¿Un experto te recomendó MellowFlow?', options: ['Sí', 'No'] },
-                en: { headline: 'Did an expert recommend MellowFlow to you?', options: ['Yes', 'No'] }
+                es: { headline: '¿Un experto te recomendó Brainy?', options: ['Sí', 'No'] },
+                en: { headline: 'Did an expert recommend Brainy to you?', options: ['Yes', 'No'] }
             },
             nq25: {
                 es: { headline: '¿Cómo describirías tu relación con la autodisciplina?', options: ['No tengo ninguna', 'Va por etapas', 'Suelo ser bastante estructurado/a'] },
@@ -4496,32 +5060,56 @@
                 en: { headline: 'You are not alone in this', body: 'Designed for ADHD brains. The pattern is not a lack of willpower: without a system that breaks down big tasks and shows your progress, anyone could give up. Brainy turns it into small steps and a companion that grows with each one.', cta: 'Continue →' }
             },
             interstitial_2: {
-                es: { headline: 'Así funciona una mente con un sistema', body: 'No se trata de fuerza de voluntad. Se trata de dividir las tareas hasta que cada paso parezca posible.', cta: 'Quiero ver cómo crece la mía →', breakdown: { title: '«Organizar mi armario» se divide en:', steps: ['Sacar todo', 'Separar en 3 grupos', 'Doblar', 'Guardar'], caption: 'Cada micro paso que completas también la hace crecer.' } },
+                es: { headline: 'Con nuestro sistema:', body: 'No se trata de fuerza de voluntad. Se trata de dividir las tareas hasta que cada paso parezca posible.', cta: 'Entendido→', breakdown: { title: '«Organizar mi armario» se divide en:', steps: ['Sacar todo', 'Separar en 3 grupos', 'Doblar', 'Guardar'], caption: 'Cada micro paso que completas también la hace crecer.' } },
                 en: { headline: 'This is how a brain with a system works', body: 'It is not about willpower. It is about breaking things down until every step feels possible.', cta: 'I want to see mine grow →', breakdown: { title: '“Organize my closet” becomes:', steps: ['Take everything out', 'Separate into 3 piles', 'Fold', 'Put away'], caption: 'Every small step you complete helps it grow too.' } }
             },
             interstitial_3: {
-                es: { headline: 'Así se ve intentarlo solo frente a tener un sistema', body: 'No necesitas más disciplina. Necesitas un sistema que te acompañe en los días difíciles.', cta: 'Continuar →', curves: [{ label: 'Solo con fuerza de voluntad', desc: 'Una línea irregular que sube y baja con la motivación' }, { label: 'Con Brainy', desc: 'Una curva constante mientras tu mascota crece' }] },
-                en: { headline: 'Trying alone versus having a system', body: 'You do not need more discipline. You need a system that supports you on hard days.', cta: 'Continue →', curves: [{ label: 'Willpower alone', desc: 'An uneven line that rises and falls with motivation' }, { label: 'With Brainy', desc: 'A steady curve as your companion grows' }] }
+                es: {
+                    eyebrow: 'Un sistema de hábitos que se siente gratificante',
+                    headline: 'Tu constancia les da vida',
+                    body: 'Cada hábito en Brainy puede crecer junto a una mascota. Completá pasos diarios manejables, llená su medidor de progreso y desbloqueá su primera evolución después de 3 días completados.',
+                    cta: 'Crear mi plan →',
+                    previewLabel: 'Listo para crecer',
+                    previewMeter: 'Primera evolución: 3 días completados',
+                    galleryHint: 'Mirá las mascotas disponibles en Brainy.',
+                    whyTitle: 'Por qué Brainy lo usa',
+                    whyText: 'El progreso visible y las recompensas cercanas pueden facilitar sostener acciones repetidas. La primera evolución de tu mascota es un hito temprano, no el momento en que el hábito queda formado.',
+                    badge: 'Informado por evidencia',
+                    steps: [
+                        { id: 'choose', title: 'Elegí un hábito manejable', text: 'Empezá con una acción lo bastante chica para completarla hoy.' },
+                        { id: 'complete', title: 'Completá su paso diario', text: 'Cada acción completada suma progreso visible.' },
+                        { id: 'grow', title: 'Mirá crecer tu mascota', text: 'Después de 3 días completados se desbloquea su primera evolución.' }
+                    ]
+                },
+                en: {
+                    eyebrow: 'A habit system that feels rewarding',
+                    headline: 'Your consistency brings them to life',
+                    body: 'Every habit in Brainy can grow alongside a companion. Complete manageable daily steps, fill its progress meter, and unlock its first evolution after 3 completed days.',
+                    cta: 'Build my plan →',
+                    previewLabel: 'Ready to grow',
+                    previewMeter: 'First evolution: 3 completed days',
+                    galleryHint: 'Preview the companions available in Brainy.',
+                    whyTitle: 'Why Brainy uses this',
+                    whyText: 'Visible progress and near-term rewards can make repeated actions easier to sustain. Your pet’s first evolution is an early milestone—not the moment a habit is fully formed.',
+                    badge: 'Evidence-informed',
+                    steps: [
+                        { id: 'choose', title: 'Choose a manageable habit', text: 'Start with one action small enough to complete today.' },
+                        { id: 'complete', title: 'Complete its daily mini-step', text: 'Each completed action adds visible progress.' },
+                        { id: 'grow', title: 'Watch your companion grow', text: 'After 3 completed days, its first evolution unlocks.' }
+                    ]
+                }
             },
             task_select: {
-                es: { headline: 'Elige de 1 a 3 tareas que te están frenando', sub: 'Elige una o hasta 3 tareas. Toca cada una para ver sus pasos antes de seleccionarla.' },
-                en: { headline: 'Choose 1 to 3 tasks that are holding you back', sub: 'Choose one or up to 3 tasks. Tap each one to see its steps before selecting it.' }
+                es: { headline: 'Elige de 1 a 3 tareas que te están frenando', sub: 'Abrí la categoría que te corresponda y elegí una o hasta 3 tareas.' },
+                en: { headline: 'Choose 1 to 3 tasks that are holding you back', sub: 'Open the category that fits you and choose one or up to 3 tasks.' }
             },
             routine_select: {
                 es: { headline: 'Ahora elige de 1 a 5 rutinas diarias', sub: 'Son acciones pequeñas que repetirás cada día sin tener que decidir. Elige al menos una y hasta 5.' },
                 en: { headline: 'Now choose 1 to 5 daily routines', sub: 'These are small actions you will repeat each day without having to decide. Choose at least one and up to 5.' }
             },
             plan_summary: {
-                es: { headline: 'Tu plan de Brainy está listo', cta: 'Ver mi Brainy →' },
-                en: { headline: 'Your Brainy plan is ready', cta: 'See my Brainy plan →' }
-            },
-            loading: {
-                es: { headline: 'Preparando tu plan...', subFinal: 'Todo listo. Este es un último vistazo a tu primer día.' },
-                en: { headline: 'Preparing your plan...', subFinal: 'All set. Here is one last look at your first day.' }
-            },
-            product_preview: {
-                es: { headline: 'Así se verá tu primer día en Brainy', sub: 'Un adelanto real de tu plan, con tu compañero y tu primera misión. Toca un paso para probar cómo avanzas.', cta: 'Guardar mi plan →' },
-                en: { headline: 'This is what your first day in Brainy will look like', sub: 'A real preview of your plan, with your companion and first mission. Tap a step to try making progress.', cta: 'Save my plan →' }
+                es: { headline: 'Tu plan de Brainy está listo', cta: 'Guardar mi plan →' },
+                en: { headline: 'Your Brainy plan is ready', cta: 'Save my plan →' }
             },
             contact: {
                 es: { headline: 'Guarda tu plan', body: 'Así tus tareas, rutinas y compañeros estarán listos cuando abras Brainy.', cta: 'Guardar mi plan →' },
@@ -4558,15 +5146,18 @@
             return funnelState.locale === 'en' ? 'en' : 'es';
         }
 
+
         function ui(key, vars) {
             let text = UI_COPY[currentLocale()][key] || UI_COPY.es[key] || key;
             Object.keys(vars || {}).forEach((name) => { text = text.replace(`{${name}}`, vars[name]); });
             return text;
         }
 
+
         function localizedText(es, en) {
             return currentLocale() === 'en' ? en : es;
         }
+
 
         function localizedStep(step) {
             const copy = (STEP_COPY[step.id] || {})[currentLocale()];
@@ -4589,6 +5180,7 @@
             return localized;
         }
 
+
         let funnelState = JSON.parse(JSON.stringify(DEFAULT_STATE));
         let currentStepIndex = 0;
         let stepTimers = [];
@@ -4607,6 +5199,7 @@
             }
             return !/^(sk|rk|rp|whsec|tok|req)_/i.test(key) && !/(secret|restricted)/i.test(key);
         }
+
 
         // Reordena los pasos que declaran afterKey para que queden anclados al
         // key de la pregunta, no a una posicion numerica fragil.
@@ -4675,34 +5268,52 @@
             return result;
         }
 
+
         // Variantes del resumen de perfil.
         // Los ids de variante usan 2 espacios de sangria extra a proposito: asi
         // no se confunden con los ids de paso (16 espacios) al inspeccionar
         // la lista de pasos.
+        // Cada variante trae su copy en ambos idiomas. La variante se elige UNA vez y
+        // se guarda; el renderer nunca sortea.
+        function variantText(variant, field) {
+            const value = variant[field];
+            return value ? value[currentLocale()] : '';
+        }
+
+
         const PROFILE_DIAGNOSIS_VARIANTS = [
           {
             id: 'task_initiation',
-            label: 'Task initiation friction',
-            headline: 'When a task feels large or unclear, getting started can require more energy than the task itself. Turning it into one tiny first action can lower the barrier and help you build momentum.',
-            main: 'Getting started',
-            moment: 'Large or unclear tasks',
-            trigger: 'Feeling overwhelmed'
+            label: { es: 'Fricción para empezar', en: 'Difficulty starting' },
+            headline: {
+              es: 'Cuando una tarea se siente grande o poco clara, arrancar puede costar más energía que la tarea en sí.',
+              en: 'When a task feels large or unclear, getting started can require more energy than the task itself.'
+            },
+            main: { es: 'Empezar', en: 'Getting started' },
+            moment: { es: 'Tareas grandes o poco claras', en: 'Large or unclear tasks' },
+            trigger: { es: 'Sentirse abrumado', en: 'Feeling overwhelmed' }
           },
           {
             id: 'analysis_paralysis',
-            label: 'Analysis paralysis',
-            headline: 'When every option feels important, your mind can stay in planning mode and delay action. Choosing one clear next step can help turn overthinking into movement.',
-            main: 'Overthinking',
-            moment: 'Making decisions',
-            trigger: 'Too many options'
+            label: { es: 'Parálisis por análisis', en: 'Analysis paralysis' },
+            headline: {
+              es: 'Cuando todas las opciones parecen importantes, la mente puede quedarse en modo planificación y retrasar la acción. Elegir un próximo paso claro ayuda a convertir el exceso de análisis en movimiento.',
+              en: 'When every option feels important, your mind can stay in planning mode and delay action. Choosing one clear next step can help turn overthinking into movement.'
+            },
+            main: { es: 'Sobrepensar', en: 'Overthinking' },
+            moment: { es: 'Tomar decisiones', en: 'Making decisions' },
+            trigger: { es: 'Demasiadas opciones', en: 'Too many options' }
           },
           {
             id: 'follow_through',
-            label: 'Follow-through friction',
-            headline: 'When progress feels distant, attention can shift toward something more immediate. Visible progress, mini-steps and small unlocks can make it easier to keep moving.',
-            main: 'Following through',
-            moment: 'Long or repetitive tasks',
-            trigger: 'Immediate distractions'
+            label: { es: 'Fricción para sostener', en: 'Difficulty following through' },
+            headline: {
+              es: 'Cuando el progreso se siente lejano, la atención se va hacia lo más inmediato. El progreso visible, los pasos chicos y los desbloqueos pequeños facilitan seguir avanzando.',
+              en: 'When progress feels distant, attention can shift toward something more immediate. Visible progress, mini-steps and small unlocks can make it easier to keep moving.'
+            },
+            main: { es: 'Seguir adelante', en: 'Following through' },
+            moment: { es: 'Tareas largas o repetitivas', en: 'Long or repetitive tasks' },
+            trigger: { es: 'Distracciones inmediatas', en: 'Immediate distractions' }
           }
         ];
 
@@ -4719,6 +5330,7 @@
             return PROFILE_DIAGNOSIS_IDS[slot];
         }
 
+
         function randomUnitValue() {
             try {
                 if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
@@ -4732,6 +5344,7 @@
             return Math.random();
         }
 
+
         function profileDiagnosisVariant() {
             const stored = funnelState.profileDiagnosisVariant;
             if (PROFILE_DIAGNOSIS_IDS.includes(stored)) {
@@ -4742,6 +5355,7 @@
             setState('profileDiagnosisVariant', picked);
             return picked;
         }
+
 
         // --- Generacion del plan: maquina de estados + reloj testeable ---
         //
@@ -4761,23 +5375,44 @@
             'bar_1_running', 'question_1', 'bar_2_running', 'question_2', 'bar_3_running', 'ready'
         ];
 
+        // Preguntas del modal, en el idioma activo. Antes vivian solo en ingles y se
+        // mostraban igual en español.
         const PLAN_LOADING_QUESTIONS = {
             question_1: {
-                title: 'Are you generally rushed in the mornings?',
-                yes: 'Yes',
-                no: 'No'
+                es: {
+                    title: '¿Generally andás apurado/a en las mañanas?',
+                    yes: 'Sí',
+                    no: 'No'
+                },
+                en: {
+                    title: 'Are you generally rushed in the mornings?',
+                    yes: 'Yes',
+                    no: 'No'
+                }
             },
             question_2: {
-                title: 'Would you like to learn a new science-based method for developing new healthy habits?',
-                yes: 'Yes',
-                no: 'No'
+                es: {
+                    title: '¿Te gustaría aprender un método nuevo, basado en evidencia, para desarrollar hábitos saludables?',
+                    yes: 'Sí',
+                    no: 'No'
+                },
+                en: {
+                    title: 'Would you like to learn a new science-based method for developing new healthy habits?',
+                    yes: 'Yes',
+                    no: 'No'
+                }
             }
         };
 
+        function planLoadingQuestion(phase) {
+            const entry = PLAN_LOADING_QUESTIONS[phase];
+            return entry ? entry[currentLocale()] : null;
+        }
+
         const PLAN_LOADING_BARS = [
-            { key: 'bar1', label: 'Understanding your patterns' },
-            { key: 'bar2', label: 'Designing your mini-steps' },
-            { key: 'bar3', label: 'Building your Brainy plan' }
+            { key: 'bar1', label: { es: 'Entendiendo tus patrones', en: 'Understanding your patterns' } },
+            { key: 'bar2', label: { es: 'Diseñando tus pasos chicos', en: 'Designing your mini-steps' } },
+            { key: 'bar3', label: { es: 'Construyendo tu plan Brainy', en: 'Building your Brainy plan' } }
         ];
 
         // Sana un objeto persistido. La fase NO se toma como verdad: se deriva
@@ -4814,18 +5449,22 @@
             return progress;
         }
 
+
         function patchPlanLoading(partial) {
             const current = planLoadingProgress();
             return sanitizePlanLoadingProgress(Object.assign({}, current, partial));
         }
 
+
         function planLoadingProgress() {
             return sanitizePlanLoadingProgress(funnelState.planPersonalizationProgress);
         }
 
+
         function savePlanLoadingProgress(progress) {
             setState('planPersonalizationProgress', sanitizePlanLoadingProgress(progress));
         }
+
 
         function isPlanLoadingReady(progress) {
             return progress.phase === 'ready'
@@ -4835,6 +5474,7 @@
                 && progress.rushedMornings !== null
                 && progress.wantsScienceBasedMethod !== null;
         }
+
 
         function stepList() {
             const checkout = funnelWebCheckout();
@@ -4848,6 +5488,7 @@
                 return true;
             }));
         }
+
 
         function mergeLoadedState(raw) {
             const safe = raw && typeof raw === 'object' ? raw : {};
@@ -4874,6 +5515,7 @@
             return merged;
         }
 
+
         function loadState() {
             try {
                 return mergeLoadedState(JSON.parse(localStorage.getItem(STORAGE_STATE_KEY) || 'null'));
@@ -4882,10 +5524,12 @@
             }
         }
 
+
         function persistState() {
             localStorage.setItem(STORAGE_STATE_KEY, JSON.stringify(funnelState));
             window.brainyFunnelState = funnelState;
         }
+
 
         function loadStep() {
             const raw = parseInt(localStorage.getItem(STORAGE_STEP_KEY), 10);
@@ -4895,9 +5539,11 @@
             return raw;
         }
 
+
         function persistStep() {
             localStorage.setItem(STORAGE_STEP_KEY, String(currentStepIndex));
         }
+
 
         let cancelPlanLoadingRunners = null;
         let paywallCleanup = null;
@@ -4920,6 +5566,7 @@
             }
         }
 
+
         function answeredCount() {
             return QUESTION_KEYS.filter((key) => {
                 const value = funnelState[key];
@@ -4930,13 +5577,26 @@
             }).length;
         }
 
+
         // Etapa 1 = perfil (begin + preguntas + interstitials del diagnóstico).
         // Etapa 2 = diseño del plan (task_select -> handoff).
         // Ambas se derivan de stepList(); no hay una segunda fuente de verdad.
         const FUNNEL_STAGES = [
-            { id: 'profile', fillId: 'funnelProfileFill', label: 'Creando tu Perfil' },
-            { id: 'plan', fillId: 'funnelPlanFill', label: 'Diseñando tu Plan' }
+            { id: 'profile', fillId: 'funnelProfileFill', label: { es: 'Creando tu Perfil', en: 'Building your Profile' } },
+            { id: 'plan', fillId: 'funnelPlanFill', label: { es: 'Diseñando tu Plan', en: 'Designing your Plan' } }
         ];
+
+        // Las etiquetas viven en el header estatico: se pintan segun el idioma
+        // activo, que puede cambiar en caliente desde la pantalla de idioma.
+        function syncStageLabels() {
+            document.querySelectorAll('[data-stage-label]').forEach((node) => {
+                const stage = FUNNEL_STAGES.find((s) => s.id === node.dataset.stageLabel);
+                if (stage) {
+                    node.textContent = stage.label[currentLocale()];
+                }
+            });
+        }
+
 
         function stageIndexOfStep(step) {
             if (step && typeof step.stage === 'number') {
@@ -4944,6 +5604,7 @@
             }
             return step && (step.type === 'question' || step.type === 'interstitial') ? 0 : 1;
         }
+
 
         function stageBounds() {
             const steps = stepList();
@@ -4955,6 +5616,7 @@
             });
             return { profileEnd: lastProfile, total: steps.length };
         }
+
 
         function stageProgress() {
             const steps = stepList();
@@ -4972,6 +5634,7 @@
             return [1, bothDone ? 1 : Math.min(0.98, Math.max(0.02, (intoPlan + 1) / planSpan))];
         }
 
+
         // La flecha es un unico boton persistente en el encabezado. Cada paso
         // sigue decidiendo si se puede volver con backButtonHtml(): aqui solo
         // se marca su presencia. Asi nunca se acumulan flechas al avanzar.
@@ -4986,6 +5649,7 @@
             button.hidden = !allowed;
             button.setAttribute('aria-label', ui('back'));
         }
+
 
         function updateProgress() {
             const steps = stepList();
@@ -5025,9 +5689,11 @@
             syncBackVisibility();
         }
 
+
         function scrollTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
 
         function showToast(text, ms) {
             const toast = document.getElementById('toast');
@@ -5036,6 +5702,7 @@
             clearTimeout(toast._t);
             toast._t = setTimeout(() => toast.classList.remove('show'), ms || 2600);
         }
+
 
         function goNext() {
             if (advancing) {
@@ -5047,6 +5714,7 @@
             renderStep();
         }
 
+
         function goBack() {
             if (advancing) {
                 return;
@@ -5056,6 +5724,7 @@
             persistStep();
             renderStep();
         }
+
 
         function resetFunnel() {
             localStorage.removeItem(STORAGE_STATE_KEY);
@@ -5068,10 +5737,12 @@
             renderStep();
         }
 
+
         function setState(key, value) {
             funnelState[key] = value;
             persistState();
         }
+
 
         const FORBIDDEN_ANALYTICS_KEYS = /^(email|mail|claim_?token|claim_?token_?hash|redemption_?url|redemption_?token|token|jwt|authorization|redeem_?url)$/i;
 
@@ -5086,6 +5757,7 @@
             }
             return out;
         }
+
 
         function track(event, metadata) {
             const data = { event: event, metadata: safeAnalyticsMetadata(metadata) };
@@ -5104,6 +5776,7 @@
             }
         }
 
+
         function taskCategoryFor(templateId) {
             const cats = tasksData && tasksData.categories ? tasksData.categories : [];
             for (const cat of cats) {
@@ -5113,6 +5786,7 @@
             }
             return null;
         }
+
 
         function makeSelectedTask(task, category) {
             const cat = category || { id: null, label: 'Otros' };
@@ -5131,6 +5805,7 @@
                 categoryLabel: cat.label
             };
         }
+
 
         function makeSelectedRoutine(routine, category) {
             const cat = category || { id: null, label: 'Otros' };
@@ -5153,6 +5828,7 @@
                 categoryLabel: cat.label
             };
         }
+
 
         function hydrateSelections() {
             const taskCats = tasksData && tasksData.categories ? tasksData.categories : [];
@@ -5202,6 +5878,7 @@
             }
         }
 
+
         function shuffledEggOrder() {
             const seedStr = (funnelState.selectedRoutines[0] && funnelState.selectedRoutines[0].templateId) || 'brainy';
             let seed = 0;
@@ -5219,6 +5896,7 @@
             return order;
         }
 
+
         function eggToAssignment(egg) {
             return {
                 catalogId: egg.catalogId,
@@ -5228,6 +5906,7 @@
                 imageUrl: egg.imageUrl || null
             };
         }
+
 
         function ensureEggAssignment() {
             const count = funnelState.selectedRoutines.length;
@@ -5255,18 +5934,53 @@
             setState('assignedRoutines', assigned);
         }
 
+
         function assignedRoutines() {
             ensureEggAssignment();
             return funnelState.assignedRoutines || [];
         }
 
+
         function eggForRoutine(index) {
             return assignedRoutines()[index] || EGGS[index % EGGS.length];
         }
 
+
+        // Foto del huevo del catálogo. Si el archivo falta o falla la carga, se
+        // devuelve el emoji para que la fila nunca quede con un hueco roto.
+        function eggPlanHtml(egg) {
+            if (!egg || !egg.imageUrl) {
+                return `<span class="plan-egg-fallback" style="background: radial-gradient(circle at 35% 28%, #ffffff 12%, ${egg ? egg.color : '#ddd'} 58%, rgba(36,18,63,0.18) 135%);">${egg ? egg.emoji : ''}</span>`;
+            }
+            const safe = String(egg.imageUrl).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+            return `<img class="plan-egg-photo" src="${safe}" alt="" data-fallback="${egg.emoji}" data-color="${egg.color}" decoding="async">`;
+        }
+
+
+        function bindEggPlanFallbacks() {
+            document.querySelectorAll('.plan-egg-photo').forEach((img) => {
+                const swap = () => {
+                    const span = document.createElement('span');
+                    span.className = 'plan-egg-fallback';
+                    span.style.background = `radial-gradient(circle at 35% 28%, #ffffff 12%, ${img.dataset.color} 58%, rgba(36,18,63,0.18) 135%)`;
+                    span.textContent = img.dataset.fallback || '';
+                    img.replaceWith(span);
+                };
+                if (img.complete) {
+                    if (img.naturalWidth === 0) {
+                        swap();
+                    }
+                    return;
+                }
+                img.addEventListener('error', swap, { once: true });
+            });
+        }
+
+
         function answerValue(qkey) {
             return funnelState[qkey] !== undefined ? funnelState[qkey] : null;
         }
+
 
         // La app móvil consume: easy | moderate | hard. Nunca "medium".
         const DIFFICULTY_MAP = {
@@ -5280,10 +5994,12 @@
             return DIFFICULTY_MAP[key] || 'moderate';
         }
 
+
         function normalizeDuration(value) {
             const num = typeof value === 'number' ? value : parseFloat(value);
             return Number.isFinite(num) && num > 0 ? num : DEFAULT_SUBTASK_DURATION_MINUTES;
         }
+
 
         function buildUserPlanPayload() {
             const now = new Date().toISOString();
@@ -5363,24 +6079,60 @@
             };
         }
 
+
+        // Copia de la objecion principal, en el idioma activo. Se indexa por la
+        // respuesta que el usuario eligio, que puede venir en es o en en.
+        const OBJECTION_COPY = {
+            'La tarea se sentía enorme e inabarcable': {
+                es: 'Esta vez todo empieza por un paso chico: tu tarea ya está desglosada y solo tenés que completar la que ves adelante.',
+                en: 'This time everything starts with one small step: your task is already broken down and you only have to do the one in front of you.'
+            },
+            'The task felt huge and impossible to tackle': {
+                es: 'Esta vez todo empieza por un paso chico: tu tarea ya está desglosada y solo tenés que completar la que ves adelante.',
+                en: 'This time everything starts with one small step: your task is already broken down and you only have to do the one in front of you.'
+            },
+            'Perdí la motivación a los pocos días': {
+                es: 'El hábito deja de depender de tus ganas: la rutina y tu compañero lo sostienen solos, incluso en los días planos.',
+                en: 'The habit stops depending on your motivation: the routine and your companion keep it going on your flat days too.'
+            },
+            'I lost motivation after a few days': {
+                es: 'El hábito deja de depender de tus ganas: la rutina y tu compañero lo sostienen solos, incluso en los días planos.',
+                en: 'The habit stops depending on your motivation: the routine and your companion keep it going on your flat days too.'
+            },
+            'Nada me daba feedback ni recordaba por mí': {
+                es: 'Cada paso se registra solo y Brainy te recuerda por vos: el progreso nunca vuelve a depender de tu memoria.',
+                en: 'Every step is logged on its own and Brainy reminds you: progress never depends on your memory again.'
+            },
+            'Nothing gave me feedback or reminded me what to do': {
+                es: 'Cada paso se registra solo y Brainy te recuerda por vos: el progreso nunca vuelve a depender de tu memoria.',
+                en: 'Every step is logged on its own and Brainy reminds you: progress never depends on your memory again.'
+            },
+            'Nadie sabía que lo estaba intentando': {
+                es: 'Tu compañero crece con cada paso que das y te espera al otro lado: hay alguien que sí está mirando que avances.',
+                en: 'Your companion grows with every step you take and waits on the other side: someone is watching you move forward.'
+            },
+            'No one knew I was trying': {
+                es: 'Tu compañero crece con cada paso que das y te espera al otro lado: hay alguien que sí está mirando que avances.',
+                en: 'Your companion grows with every step you take and waits on the other side: someone is watching you move forward.'
+            }
+        };
+
+        const OBJECTION_COPY_FALLBACK = {
+            es: 'Todo lo que armaste quedó guardado para que arranques sin depender de la motivación del día.',
+            en: 'Everything you set up is saved so you can start without depending on your motivation that day.'
+        };
+
         function getObjectionCopy(p4Answer) {
-            const map = {
-                'La tarea se sentía enorme e inabarcable': 'Esta vez todo empieza por un paso chico: tu tarea ya está desglosada y solo tenés que completar la que ves adelante.',
-                'Perdí la motivación a los pocos días': 'El hábito deja de depender de tus ganas: la rutina y tu compañero lo sostienen solos, incluso en los días planos.',
-                'Nada me daba feedback ni recordaba por mí': 'Cada paso se registra solo y Brainy te recuerda por vos: el progreso nunca vuelve a depender de tu memoria.',
-                'Nadie sabía que lo estaba intentando': 'Tu compañero crece con cada paso que das y te espera al otro lado: hay alguien que sí está mirando que avances.',
-                'The task felt huge and impossible to tackle': 'Esta vez todo empieza por un paso chico: tu tarea ya está desglosada y solo tenés que completar la que ves adelante.',
-                'I lost motivation after a few days': 'El hábito deja de depender de tus ganas: la rutina y tu compañero lo sostienen solos, incluso en los días planos.',
-                'Nothing gave me feedback or reminded me what to do': 'Cada paso se registra solo y Brainy te recuerda por vos: el progreso nunca vuelve a depender de tu memoria.',
-                'No one knew I was trying': 'Tu compañero crece con cada paso que das y te espera al otro lado: hay alguien que sí está mirando que avances.'
-            };
-            return map[p4Answer] || 'Todo lo que armaste quedó guardado para que arranques sin depender de la motivación del día.';
+            const entry = OBJECTION_COPY[p4Answer];
+            return entry ? entry[currentLocale()] : OBJECTION_COPY_FALLBACK[currentLocale()];
         }
+
 
         function isDemoId(value) {
             const str = value === null || value === undefined ? '' : String(value);
             return !str || str.startsWith('demo-') || str.startsWith('pending');
         }
+
 
         // NO REAL PLAN = NO REAL CHECKOUT. Un plan solo es real si el backend
         // confirmó su creación y el token no es demo.
@@ -5393,6 +6145,7 @@
                 !isDemoId(funnelState.claimToken)
             );
         }
+
 
         async function prepareIdentifiedAccount() {
             const identity = window.BrainyFunnelIdentity;
@@ -5418,6 +6171,7 @@
             return result;
         }
 
+
         function ensureClientPlanKey() {
             if (funnelState.clientPlanKey) {
                 return funnelState.clientPlanKey;
@@ -5442,6 +6196,7 @@
             return key;
         }
 
+
         function resetClientPlanKey() {
             setState('clientPlanKey', null);
             try {
@@ -5450,6 +6205,7 @@
                 // sin localStorage: la key en memoria ya quedó limpia
             }
         }
+
 
         // Persiste el redemption URL server-side vía set-funnel-redemption.
         // Usa SOLO la config pública/anon del funnel (nunca service_role) y
@@ -5489,6 +6245,7 @@
             }
         }
 
+
         // Recovery de persistencia: reintenta SOLO set-funnel-redemption.
         // NUNCA vuelve a ejecutar purchase().
         async function retryPendingRedemption() {
@@ -5514,6 +6271,7 @@
             renderStep();
         }
 
+
         // Deep link web -> app. Identity is resolved by the Supabase UUID and
         // claim token; do not put email or other PII in the URL or QR payload.
         function buildClaimLink(redeemUrl) {
@@ -5527,6 +6285,7 @@
             return link;
         }
 
+
         function revenuecatConfig() {
             return {
                 apiKey: FUNNEL_CONFIG.revenuecatWebApiKey || '',
@@ -5535,6 +6294,7 @@
                 termsUrl: FUNNEL_CONFIG.revenuecatTermsUrl || ''
             };
         }
+
 
         function storeButtonsHtml() {
             const buttons = [];
@@ -5546,6 +6306,7 @@
             }
             return buttons.join('');
         }
+
 
         function qrSvgHtml(content) {
             if (!window.qrcode || !content) {
@@ -5560,6 +6321,7 @@
                 return '';
             }
         }
+
 
         async function ensurePlan() {
             if (funnelState.planId && funnelState.claimToken) {
@@ -5640,6 +6402,7 @@
             }
         }
 
+
         // Flecha simple. La decision de "se puede volver" no cambia: esta
         // funcion solo se llama desde los pasos que ya permitian retroceder.
         const BACK_ARROW_SVG = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M15 4.5 7.5 12l7.5 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -5648,9 +6411,11 @@
             return `<div class="step-top" ${BACK_SLOT_MARKER} hidden aria-hidden="true"></div>`;
         }
 
+
         function cardOpen(modifier) {
             return `<article class="panel step${modifier ? ` ${modifier}` : ''}">`;
         }
+
 
         // Ilustraciones por pregunta. Vacio a proposito: hasta que existan
         // ilustraciones reales, todas las preguntas usan el mismo logo.
@@ -5664,6 +6429,7 @@
             return `<div class="question-illustration" data-question-id="${step.id}"><img src="${src}" alt=""></div>`;
         }
 
+
         function headHtml(step) {
             return `
                 ${step.eyebrow ? `<span class="eyebrow">${step.eyebrow}</span>` : ''}
@@ -5672,6 +6438,7 @@
                     ${step.sub ? `<p class="sub">${step.sub}</p>` : ''}
                 </div>`;
         }
+
 
         // Aviso legal bajo el CTA. Términos y Privacidad enlazan a las paginas
 // existentes; la politica de reembolso todavia no tiene pagina, asi que
@@ -5682,6 +6449,7 @@
             const and = localizedText(' y ', ' and ');
             return `${prefix}<a href="terms.html" target="_blank" rel="noopener">${localizedText('Términos de Uso', 'Terms of Use')}</a>${comma}<a href="privacy.html" target="_blank" rel="noopener">${localizedText('Política de Privacidad', 'Privacy Policy')}</a>${and}${localizedText('Política de Reembolso', 'Refund Policy')}.`;
         }
+
 
         function renderBegin(step) {
             const hasProgress = answeredCount() > 0;
@@ -5702,6 +6470,7 @@
             document.addEventListener('click', handleBeginClick);
         }
 
+
         function handleBeginClick(event) {
             const el = event.target.closest('[data-action]');
             if (el && el.dataset.action === 'start') {
@@ -5713,6 +6482,7 @@
                 resetFunnel();
             }
         }
+
 
         function renderLanguage() {
             document.getElementById('funnelRoot').innerHTML = `
@@ -5734,6 +6504,7 @@
                 });
             });
         }
+
 
         function renderQuestion(step) {
             const key = step.key;
@@ -5862,38 +6633,143 @@
             });
         }
 
+
+        // Fotos de la ilustracion good_hands: 1 central + 8 exteriores.
+        //
+        // El circulo central es el que domina la pantalla, asi que lleva el
+        // retrato con la cara mas despejada. Si sobran archivos en la carpeta,
+        // simplemente no se usan: no se anaden circulos nuevos.
+        const GOOD_HANDS_AVATARS = {
+            center: 'assets/testimonialAvatars/Woman_smiling_for_headshot_portrait_20261002150538.jpg',
+            1: 'assets/testimonialAvatars/avatar1.jpg',
+            2: 'assets/testimonialAvatars/avatar2.jpg',
+            3: 'assets/testimonialAvatars/Woman_posing_for_photo_20261002150538.jpg',
+            4: 'assets/testimonialAvatars/avatar3.jpg',
+            5: 'assets/testimonialAvatars/Woman_standing_in_kitchen_20261002150538.jpg',
+            6: 'assets/testimonialAvatars/avatar4.jpg',
+            7: 'assets/testimonialAvatars/avatar5.jpg',
+            8: 'assets/testimonialAvatars/avatar6.jpg'
+        };
+
+        function goodHandsAvatarPhoto(slot) {
+            const src = Object.prototype.hasOwnProperty.call(GOOD_HANDS_AVATARS, slot)
+                ? GOOD_HANDS_AVATARS[slot]
+                : '';
+            if (!src) {
+                return '';
+            }
+            // La figura es decorativa (aria-hidden), asi que alt va vacio.
+            const safe = String(src).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+            return `<img class="good-hands-avatar-photo" src="${safe}" alt="" decoding="async">`;
+        }
+
+
+        // Si una foto no existe, se oculta el <img> y el circulo conserva su
+        // gradiente: nunca queda un hueco roto.
+        function bindGoodHandsAvatarFallbacks() {
+            document.querySelectorAll('.good-hands-avatar-photo').forEach((img) => {
+                if (img.complete) {
+                    if (img.naturalWidth === 0) {
+                        img.remove();
+                    }
+                    return;
+                }
+                img.addEventListener('error', () => img.remove(), { once: true });
+            });
+        }
+
+
         // Ilustracion decorativa: 1 circulo central dominante + 8 avatares
         // externos con tamanos variados sobre 3 orbitas discontinuas.
-        // Sin SVG/img para poder sustituir cada placeholder por una imagen.
         function goodHandsOrbitsHtml() {
             const rings = [1, 2, 3]
                 .map((n) => `<span class="good-hands-orbit good-hands-orbit--${n}"></span>`)
                 .join('');
             const sizes = [15, 13, 14, 12, 15, 13, 14, 12];
             const avatars = sizes
-                .map((size, i) => `<span class="good-hands-avatar good-hands-avatar--${i + 1}" data-size="${size}"></span>`)
+                .map((size, i) => `<span class="good-hands-avatar good-hands-avatar--${i + 1}" data-size="${size}">${goodHandsAvatarPhoto(i + 1)}</span>`)
                 .join('');
             return `
                 <div class="good-hands-figure" aria-hidden="true">
                     ${rings}
-                    <span class="good-hands-avatar good-hands-avatar--center"></span>
+                    <span class="good-hands-avatar good-hands-avatar--center">${goodHandsAvatarPhoto('center')}</span>
                     ${avatars}
                 </div>`;
         }
 
-        // Nube de avatares decorativa: 1 placeholder central + 9 secundarios.
-        // Solo CSS, sin SVG/img: se sustituye luego con background-image o <img>.
+
+        // Nube de avatares decorativa: 1 circulo central + 9 secundarios.
+        //
+        // Una foto por circulo: las 10 imagenes de testimonialAvatars cubren
+        // exactamente los 10 huecos, asi que ninguno conserva el degradado.
+        // El centro es el que domina la pantalla, asi que lleva el retrato con
+        // la cara mas despejada.
+        //
+        // Para cambiar una foto: escribe su ruta en SOCIAL_PROOF_AVATARS con la
+        // clave del circulo (center, 1..9). Si el archivo falta o falla la
+        // carga, el circulo vuelve al gradiente sin romperse.
+        const SOCIAL_PROOF_DEFAULT_AVATAR = 'assets/testimonialAvatars/Woman_smiling_for_headshot_portrait_20261002150538.jpg';
+
+        const SOCIAL_PROOF_AVATARS = {
+            center: 'assets/testimonialAvatars/Woman_smiling_for_headshot_portrait_20261002150538.jpg',
+            1: 'assets/testimonialAvatars/avatar1.jpg',
+            2: 'assets/testimonialAvatars/Woman_posing_for_photo_20261002150538.jpg',
+            3: 'assets/testimonialAvatars/avatar2.jpg',
+            4: 'assets/testimonialAvatars/Woman_standing_in_kitchen_20261002150538.jpg',
+            5: 'assets/testimonialAvatars/avatar3.jpg',
+            6: 'assets/testimonialAvatars/Woman_sitting_in_living_room_20261002150538.jpg',
+            7: 'assets/testimonialAvatars/avatar4.jpg',
+            8: 'assets/testimonialAvatars/avatar5.jpg',
+            9: 'assets/testimonialAvatars/avatar6.jpg'
+        };
+
+        function socialProofAvatarPhoto(slot, forcedSrc) {
+            const override = Object.prototype.hasOwnProperty.call(SOCIAL_PROOF_AVATARS, slot)
+                ? SOCIAL_PROOF_AVATARS[slot]
+                : '';
+            const src = forcedSrc || override || SOCIAL_PROOF_DEFAULT_AVATAR;
+            if (!src) {
+                return '';
+            }
+            // La figura es decorativa (aria-hidden), asi que alt va vacio.
+            const safe = String(src).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+            return `<img class="social-proof-avatar-photo" src="${safe}" alt="" decoding="async">`;
+        }
+
+
         function socialProofAvatarsHtml() {
             const hues = ['lavanda', 'menta', 'miel', 'rosa', 'cielo', 'lima', 'arena', 'lavanda', 'menta'];
             const outers = hues
-                .map((hue, i) => `<span class="social-proof-avatar social-proof-avatar--${i + 1} social-proof-avatar--${hue}"></span>`)
+                .map((hue, i) => `
+                    <span class="social-proof-avatar social-proof-avatar--${i + 1} social-proof-avatar--${hue}">
+                        ${socialProofAvatarPhoto(i + 1)}
+                    </span>`)
                 .join('');
             return `
                 <div class="social-proof-figure" aria-hidden="true">
                     ${outers}
-                    <span class="social-proof-avatar social-proof-avatar--center"></span>
+                    <span class="social-proof-avatar social-proof-avatar--center">
+                        ${socialProofAvatarPhoto('center')}
+                    </span>
                 </div>`;
         }
+
+
+        // Si una foto no existe, se oculta el <img> y el circulo conserva su
+        // gradiente: nunca queda un hueco roto.
+        function bindSocialProofAvatarFallbacks() {
+            document.querySelectorAll('.social-proof-avatar-photo').forEach((img) => {
+                if (img.complete) {
+                    // Ya resolvio: si no tiene pixeles, es un 404.
+                    if (img.naturalWidth === 0) {
+                        img.remove();
+                    }
+                    return;
+                }
+                img.addEventListener('error', () => img.remove(), { once: true });
+            });
+        }
+
 
         // --- Pantalla de generacion del plan ---
         //
@@ -5906,14 +6782,15 @@
                 <div class="plan-loading-bars">
                     ${PLAN_LOADING_BARS.map((bar) => {
                         const value = Math.max(0, Math.min(100, progress[bar.key] || 0));
+                        const barLabel = bar.label[currentLocale()];
                         return `
                             <div class="plan-bar plan-bar--${bar.key}" data-bar="${bar.key}">
                                 <div class="plan-bar-head">
-                                    <span class="plan-bar-label">${bar.label}</span>
+                                    <span class="plan-bar-label">${barLabel}</span>
                                     <span class="plan-bar-value">${Math.round(value)}%</span>
                                 </div>
                                 <div class="plan-bar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-                                    aria-valuenow="${Math.round(value)}" aria-label="${bar.label}"${done ? ' data-complete="true"' : ''}>
+                                    aria-valuenow="${Math.round(value)}" aria-label="${barLabel}"${done ? ' data-complete="true"' : ''}>
                                     <span class="plan-bar-fill" style="width: ${value}%"></span>
                                 </div>
                             </div>`;
@@ -5922,24 +6799,54 @@
                 <p class="sr-only" id="planLoadingStatus" role="status" aria-live="polite"></p>`;
         }
 
+
+        // Testimoniales de la pantalla de generacion del plan. Son contenido de
+        // ejemplo: la caja es decorativa (aria-hidden) y no se envia a ningun
+        // backend. Reemplazar por testimonios reales antes de publicar.
+        const PLAN_LOADING_TESTIMONIALS = [
+            {
+                name: { es: 'Carla M.', en: 'Carla M.' },
+                avatar: 'assets/testimonialAvatars/Woman_smiling_for_headshot_portrait_20261002150538.jpg',
+                quote: {
+                    en: 'Breaking big tasks into tiny steps made them less intimidating. Each completed step helped my egg grow, so progress finally felt clear and rewarding.',
+                    es: 'Dividir las tareas grandes en pasos chicos las dejó menos intimidantes. Cada paso completado hizo crecer mi huevo, así que el progreso por fin se vio claro y dio recompensa.'
+                }
+            },
+            {
+                name: { es: 'Diego R.', en: 'Diego R.' },
+                avatar: 'assets/testimonialAvatars/avatar3.jpg',
+                quote: {
+                    en: 'Instead of facing one overwhelming task, I only had to complete the next small step. Unlocking my pet’s growth made me want to keep going.',
+                    es: 'En vez de enfrentar una sola tarea abrumadora, solo tenía que completar el próximo paso chico. Desbloquear el crecimiento de mi mascota me dio ganas de seguir.'
+                }
+            },
+            {
+                name: { es: 'Sofía A.', en: 'Sofía A.' },
+                avatar: 'assets/testimonialAvatars/Woman_posing_for_photo_20261002150538.jpg',
+                quote: {
+                    en: 'The mini-steps helped me start without overthinking, while the growing companion turned consistency into something visual, simple and genuinely fun.',
+                    es: 'Los pasos chicos me ayudaron a arrancar sin sobrepensarlo, y la mascota que crece convirtió la constancia en algo visible, simple y realmente divertido.'
+                }
+            }
+        ];
+
         function planLoadingTestimonialsHtml() {
-            const card = `
-                <div class="testimonial-placeholder">
-                    <div class="testimonial-placeholder__head">
-                        <span class="testimonial-placeholder__avatar"></span>
-                        <span class="testimonial-placeholder__stars">
-                            <span></span><span></span><span></span><span></span><span></span>
-                        </span>
+            const stars = '<span aria-hidden="true">★★★★★</span>';
+            const cards = PLAN_LOADING_TESTIMONIALS.map((t) => `
+                <figure class="testimonial-card">
+                    <div class="testimonial-card__head">
+                        <img class="testimonial-card__avatar" src="${t.avatar}" alt="" width="32" height="32" loading="lazy" decoding="async">
+                        <span class="testimonial-card__stars" role="img" aria-label="${localizedText('5 de 5 estrellas', '5 out of 5 stars')}">${stars}</span>
                     </div>
-                    <span class="testimonial-placeholder__line"></span>
-                    <span class="testimonial-placeholder__line testimonial-placeholder__line--short"></span>
-                    <span class="testimonial-placeholder__name"></span>
-                </div>`;
+                    <blockquote class="testimonial-card__quote">${t.quote[currentLocale()]}</blockquote>
+                    <figcaption class="testimonial-card__name">${t.name[currentLocale()]}</figcaption>
+                </figure>`).join('');
             return `
                 <div class="testimonials" aria-hidden="true">
-                    <div class="testimonials__track">${card}${card}${card}</div>
+                    <div class="testimonials__track">${cards}</div>
                 </div>`;
         }
+
 
         function planLoadingAnnounce(message) {
             const status = document.getElementById('planLoadingStatus');
@@ -5947,6 +6854,7 @@
                 status.textContent = message;
             }
         }
+
 
         function syncPlanLoadingView(progress) {
             const ready = isPlanLoadingReady(progress);
@@ -5977,6 +6885,7 @@
                 lock.hidden = ready;
             }
         }
+
 
         // Avanza una barra con rAF + reloj inyectable. Solo el tiempo visible
         // cuenta: con la pestaña oculta el frame se cancela.
@@ -6022,6 +6931,7 @@
             cancelPlanLoadingRunners = stopPlanLoadingBar;
         }
 
+
         function stopPlanLoadingBar() {
             if (planLoadingRuntime.frame !== null) {
                 PLAN_LOADING_CLOCK.cancelRaf(planLoadingRuntime.frame);
@@ -6029,6 +6939,7 @@
             }
             planLoadingRuntime.active = null;
         }
+
 
         // Pausa sin perder el porcentaje: guarda el tiempo ya consumido.
         function pausePlanLoadingBar() {
@@ -6039,6 +6950,7 @@
             PLAN_LOADING_CLOCK.cancelRaf(planLoadingRuntime.frame);
             planLoadingRuntime.frame = null;
         }
+
 
         function resumePlanLoadingBar() {
             const phase = planLoadingProgress().phase;
@@ -6051,6 +6963,7 @@
             }
         }
 
+
         function completePlanLoadingBar(barKey) {
             const nextPhase = barKey === 'bar1' ? 'question_1'
                 : (barKey === 'bar2' ? 'question_2' : 'ready');
@@ -6060,14 +6973,18 @@
             stopPlanLoadingBar();
             syncPlanLoadingView(planLoadingProgress());
             if (nextPhase === 'ready') {
-                planLoadingAnnounce('Your plan is ready.');
+                planLoadingAnnounce(localizedText('Tu plan está listo.', 'Your plan is ready.'));
             } else {
-                planLoadingAnnounce(`${PLAN_LOADING_BARS.find((b) => b.key === barKey).label} complete.`);
+                // label es {es,en}: hay que resolverlo o se anuncia [object Object].
+                const bar = PLAN_LOADING_BARS.find((b) => b.key === barKey);
+                const label = bar ? bar.label[currentLocale()] : '';
+                planLoadingAnnounce(localizedText(`${label} completado.`, `${label} complete.`));
             }
             if (nextPhase === 'question_1' || nextPhase === 'question_2') {
                 openPlanLoadingDialog(nextPhase);
             }
         }
+
 
         // Modal accesible con <dialog>.showModal(): foco atrapado, fondo
         // inerte. No se cierra con Escape ni con click en backdrop.
@@ -6075,7 +6992,7 @@
             if (planLoadingRuntime.dialog) {
                 return;
             }
-            const question = PLAN_LOADING_QUESTIONS[phase];
+            const question = planLoadingQuestion(phase);
             if (!question) {
                 return;
             }
@@ -6161,6 +7078,7 @@
             }
         }
 
+
         function renderPlanLoading(step) {
             const progress = planLoadingProgress();
             if (!funnelState.planPersonalizationProgress) {
@@ -6178,7 +7096,6 @@
                     <div class="actions">
                         <button class="btn btn-dopamine" type="button" data-action="next" id="nextBtn" disabled
                             aria-disabled="true">${step.cta}</button>
-                        <p class="plan-loading-lock" id="planLoadingLock">Complete the three steps above to continue.</p>
                     </div>
                 </article>`;
             // Con reduced-motion se mantiene la duracion logica de 3s pero sin
@@ -6219,6 +7136,7 @@
             };
         }
 
+
         // Placeholder central del resumen de perfil: formas CSS puras,
         // distintas por variante y reemplazables por imagen real.
         function diagnosisVisualHtml(variantId) {
@@ -6244,15 +7162,25 @@
                 <span class="diagnosis-stage diagnosis-stage--on"></span>`;
         }
 
-        // Pantalla 1: tres tarjetas verticales con placeholder CSS.
+
+        // Emoji de cada tarjeta de la pantalla de mini pasos. Antes era un placeholder
+        // CSS sin contenido. El id es el de la tarjeta en STEP_COPY.
+        const MINI_STEP_GLYPHS = {
+            'break-down': '🧩',
+            'next-move': '🎯',
+            momentum: '🚀'
+        };
+
+        // Pantalla 1: tres tarjetas verticales con glifo.
         function miniStepCardsHtml(step) {
             return step.cards.map((card) => `
                 <article class="mini-step-card mini-step-card--${card.id}">
-                    <span class="mini-step-card-glyph" aria-hidden="true"></span>
+                    <span class="mini-step-card-glyph" aria-hidden="true">${MINI_STEP_GLYPHS[card.id] || '•'}</span>
                     <h3>${card.title}</h3>
                     <p>${card.text}</p>
                 </article>`).join('');
         }
+
 
         // Pantalla 2: diagrama decorativo con nucleo, orbitas y 3 etiquetas.
         function gamificationDiagramHtml(step) {
@@ -6262,14 +7190,186 @@
                 <div class="gamification-diagram" aria-hidden="true">
                     <span class="gamification-orbit gamification-orbit--1"></span>
                     <span class="gamification-orbit gamification-orbit--2"></span>
-                    <span class="gamification-core-placeholder"></span>
+                    <span class="gamification-core-placeholder">
+                        <img class="gamification-core-image" src="assets/brainymap.png" alt="" width="1200" height="1200" decoding="async">
+                    </span>
                     ${labels}
                 </div>`;
         }
 
+
+        // --- Pantalla "sistema de huevos y mascotas" (interstitial_3) ---
+        //
+        // Puramente informativa. El huevo que se previsualiza vive SOLO en esta
+        // variable de modulo mientras la pantalla esta montada: no se escribe en
+        // funnelState, ni en localStorage, ni en el payload, ni se envía a ningun
+        // backend. No es una elección ni preasigna una mascota.
+        let eggShowcaseSelection = 0;
+
+        // Bloquea la salida mientras se procesa un clic: evita que un doble clic
+        // en el CTA avance dos pasos. No altera la navegación, solo evita
+        // reentrada sobre el mismo goNext().
+        let eggCtaLocked = false;
+
+        const EGG_SHOWCASE_METES = [1, 2, 3];
+
+        function eggShowcaseStepIcon(stepId) {
+            const marks = {
+                choose: '<circle cx="12" cy="12" r="7.2"></circle><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"></circle>',
+                complete: '<path d="M5 12.6l4.4 4.4L19 7.4"></path>',
+                grow: '<path d="M12 20V9.6"></path><path d="M12 9.6C12 6.6 14.2 4.4 17.2 4.4c0 3-2.2 5.2-5.2 5.2z"></path>'
+            };
+            return `<svg class="egg-step-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${marks[stepId] || ''}</svg>`;
+        }
+
+
+        function renderEggShowcase(step) {
+            const eggs = BRAINY_EGG_SHOWCASE;
+            const index = Math.min(Math.max(eggShowcaseSelection, 0), Math.max(0, eggs.length - 1));
+            const current = eggs[index];
+            eggShowcaseSelection = index;
+
+            const meterHtml = EGG_SHOWCASE_METES.map((day) => `
+                <span class="egg-meter-seg">
+                    <span class="egg-meter-fill" aria-hidden="true"></span>
+                    <span class="egg-meter-label">${localizedText(`Día ${day}`, `Day ${day}`)}</span>
+                </span>`).join('');
+
+            // Sin assets reales se conserva la forma: el hueco nunca se rompe.
+            const previewInner = current
+                ? `<img class="egg-preview-img" id="eggPreviewImg" src="${current.src}" alt="${eggShowcaseAlt(current)}" width="314" height="314" decoding="async">`
+                : '<span class="egg-preview-img egg-preview-img--placeholder" id="eggPreviewImg" aria-hidden="true"></span>';
+
+            const thumbsHtml = eggs.map((egg, i) => `
+                <button type="button" class="egg-thumb${i === index ? ' is-active' : ''}" data-egg-index="${i}" aria-pressed="${i === index ? 'true' : 'false'}">
+                    <img src="${egg.src}" alt="" width="314" height="314" loading="lazy" decoding="async">
+                    <span class="sr-only">${eggShowcaseAlt(egg)}</span>
+                </button>`).join('');
+
+            const stepsHtml = (step.steps || []).map((s, i) => `
+                <li class="egg-step${i < (step.steps || []).length - 1 ? ' egg-step--linked' : ''}">
+                    <span class="egg-step-num" aria-hidden="true">${i + 1}</span>
+                    <span class="egg-step-glyph">${eggShowcaseStepIcon(s.id)}</span>
+                    <strong>${s.title}</strong>
+                    <p>${s.text}</p>
+                </li>`).join('');
+
+            document.getElementById('funnelRoot').innerHTML = `
+                ${backButtonHtml()}
+                ${cardOpen('step-egg-system')}
+                    <div class="card-head egg-head">
+                        <p class="egg-eyebrow">${step.eyebrow}</p>
+                        <h1>${step.headline}</h1>
+                        <p class="egg-lede">${step.body}</p>
+                    </div>
+
+                    <div class="egg-preview">
+                        <div class="egg-preview-stage">
+                            <span class="egg-preview-glow" aria-hidden="true"></span>
+                            ${previewInner}
+                        </div>
+                        <p class="egg-preview-label">${step.previewLabel}</p>
+                        <p class="egg-preview-meter-note">${step.previewMeter}</p>
+                        <div class="egg-meter" aria-label="${localizedText('Ilustración de la primera evolución después de 3 días completados', 'Illustration of the first evolution unlocking after 3 completed days')}">
+                            ${meterHtml}
+                        </div>
+                        <p class="egg-preview-disclaimer">${localizedText('Vista previa ilustrativa. Todavía no registraste ningún día.', 'Illustrative preview. You have not logged any day yet.')}</p>
+                    </div>
+
+                    <div class="egg-gallery-block">
+                        <p class="egg-gallery-hint" id="eggGalleryHint">${step.galleryHint}</p>
+                        <div class="egg-gallery" role="group" aria-labelledby="eggGalleryHint" data-egg-gallery>
+                            ${thumbsHtml}
+                        </div>
+                    </div>
+
+                    <ol class="egg-steps">
+                        ${stepsHtml}
+                    </ol>
+
+                    <div class="egg-why">
+                        <div class="egg-why-head">
+                            <span class="egg-why-spark" aria-hidden="true">✦</span>
+                            <h2>${step.whyTitle}</h2>
+                        </div>
+                        <p>${step.whyText}</p>
+                        <span class="egg-why-badge">${step.badge}</span>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn btn-dopamine" type="button" data-action="next" id="nextBtn">${step.cta}</button>
+                    </div>
+                </article>`;
+
+            bindEggShowcaseGallery();
+
+            // Navegacion original: mismo nextBtn y mismo goNext() que usaba
+            // antes esta pantalla. El candado solo evita la reentrada.
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                if (eggCtaLocked) {
+                    return;
+                }
+                eggCtaLocked = true;
+                goNext();
+            });
+        }
+
+
+        // Seleccion visual: solo cambia el preview. No escribe en ningun estado.
+        function bindEggShowcaseGallery() {
+            const gallery = document.querySelector('[data-egg-gallery]');
+            if (!gallery) {
+                return;
+            }
+            const thumbs = Array.from(gallery.querySelectorAll('[data-egg-index]'));
+            const preview = document.getElementById('eggPreviewImg');
+            const eggs = BRAINY_EGG_SHOWCASE;
+            if (!preview || !eggs.length) {
+                return;
+            }
+
+            function selectEgg(next, focusThumb) {
+                const clamped = Math.min(Math.max(next, 0), eggs.length - 1);
+                eggShowcaseSelection = clamped;
+                const egg = eggs[clamped];
+                // Un solo cambio de src: el resto del DOM no se toca.
+                preview.setAttribute('src', egg.src);
+                preview.setAttribute('alt', eggShowcaseAlt(egg));
+                thumbs.forEach((t, i) => {
+                    const active = i === clamped;
+                    t.classList.toggle('is-active', active);
+                    t.setAttribute('aria-pressed', String(active));
+                });
+                if (focusThumb) {
+                    thumbs[clamped].focus();
+                }
+            }
+
+            thumbs.forEach((thumb, i) => {
+                thumb.addEventListener('click', () => selectEgg(i, false));
+            });
+
+            // Enter y Space ya activan un <button>; aqui solo se anaden las
+            // flechas, que son la convencion del patron de galeria.
+            gallery.addEventListener('keydown', (event) => {
+                const arrows = { ArrowLeft: -1, ArrowRight: 1 };
+                const delta = arrows[event.key];
+                if (!delta) {
+                    return;
+                }
+                const from = thumbs.indexOf(document.activeElement);
+                if (from === -1) {
+                    return;
+                }
+                event.preventDefault();
+                selectEgg(from + delta, true);
+            });
+        }
+
+
         function renderInterstitial(step) {
             const isMethod = step.id === 'interstitial_2';
-            const isCurves = step.id === 'interstitial_3';
+            const isEggSystem = step.id === 'interstitial_3';
             const isGoodHands = step.variant === 'good_hands';
             const isNotAlone = step.variant === 'not_alone';
             const isPlanLoading = step.variant === 'plan_loading';
@@ -6293,37 +7393,38 @@
                         </div>
                         <article class="diagnosis-card">
                             <div class="diagnosis-card-top">
-                                <span class="diagnosis-eyebrow">Daily friction level</span>
-                                <span class="diagnosis-badge">HIGH</span>
+                                <span class="diagnosis-eyebrow">${localizedText('Nivel de fricción diario', 'Daily friction level')}</span>
+                                <span class="diagnosis-badge">${localizedText('ALTO', 'HIGH')}</span>
                             </div>
-                            <div class="diagnosis-visual diagnosis-visual--${variant.id.replace(/_/g, '-')}" aria-hidden="true">${diagnosisVisualHtml(variant.id)}</div>
-                            <div class="diagnosis-meter" role="img" aria-label="High daily friction level">
+                            <div class="diagnosis-visual diagnosis-visual--photo diagnosis-visual--${variant.id.replace(/_/g, '-')}" aria-hidden="true"><img class="diagnosis-visual-photo" src="assets/brainyStressed.png" alt="" decoding="async">${diagnosisVisualHtml(variant.id)}</div>
+                            
+                            <div class="diagnosis-meter" role="img" aria-label="${localizedText('Nivel de fricción diario alto', 'High daily friction level')}">
                                 <span class="diagnosis-meter-track"></span>
                                 <span class="diagnosis-meter-dot"></span>
                             </div>
                             <div class="diagnosis-alert">
                                 <span class="diagnosis-alert-icon" aria-hidden="true">!</span>
                                 <div>
-                                    <h2 class="diagnosis-alert-title">HIGH level</h2>
-                                    <p class="diagnosis-alert-copy">${variant.headline}</p>
+                                    <h2 class="diagnosis-alert-title">${localizedText('Nivel ALTO', 'HIGH level')}</h2>
+                                    <p class="diagnosis-alert-copy">${variantText(variant, 'headline')}</p>
                                 </div>
                             </div>
                         </article>
                         <div class="diagnosis-details">
                             <article class="diagnosis-detail">
-                                <h3>Main difficulty</h3>
-                                <p>${variant.main}</p>
+                                <h3>${localizedText('Dificultad principal', 'Main difficulty')}</h3>
+                                <p>${variantText(variant, 'main')}</p>
                             </article>
                             <article class="diagnosis-detail">
-                                <h3>Most challenging moment</h3>
-                                <p>${variant.moment}</p>
+                                <h3>${localizedText('Momento más difícil', 'Most challenging moment')}</h3>
+                                <p>${variantText(variant, 'moment')}</p>
                             </article>
                             <article class="diagnosis-detail">
-                                <h3>Common trigger</h3>
-                                <p>${variant.trigger}</p>
+                                <h3>${localizedText('Disparador habitual', 'Common trigger')}</h3>
+                                <p>${variantText(variant, 'trigger')}</p>
                             </article>
                         </div>
-                        <p class="diagnosis-note">This profile reflects your quiz experience and is not a medical diagnosis.</p>
+                        <p class="diagnosis-note">${localizedText('Este perfil refleja tu experiencia en el cuestionario y no es un diagnóstico médico.', 'This profile reflects your quiz experience and is not a medical diagnosis.')}</p>
                         <div class="actions">
                             <button class="btn btn-dopamine" type="button" data-action="next" id="nextBtn">${step.cta}</button>
                         </div>
@@ -6359,7 +7460,7 @@
                         </div>
                         ${gamificationDiagramHtml(step)}
                         <div class="explain-note">
-                            <span class="explain-note-glyph" aria-hidden="true"></span>
+                            <span class="explain-note-glyph" aria-hidden="true">🌱</span>
                             <div>
                                 <h3>${step.card.title}</h3>
                                 <p>${step.card.text}</p>
@@ -6391,6 +7492,7 @@
                             <button class="btn btn-dopamine" type="button" data-action="next" id="nextBtn">${step.cta}</button>
                         </div>
                     </article>`;
+                bindSocialProofAvatarFallbacks();
                 document.getElementById('nextBtn').addEventListener('click', goNext);
                 return;
             }
@@ -6408,7 +7510,13 @@
                             <button class="btn btn-dopamine" type="button" data-action="next" id="nextBtn">${step.cta}</button>
                         </div>
                     </article>`;
+                bindGoodHandsAvatarFallbacks();
                 document.getElementById('nextBtn').addEventListener('click', goNext);
+                return;
+            }
+
+            if (isEggSystem) {
+                renderEggShowcase(step);
                 return;
             }
 
@@ -6421,20 +7529,11 @@
                         <span class="opt-check">✓</span>
                     </button>`).join('');
                 extra = `
-                    <div class="pet-stage" data-stage="0" id="demoPet">${eggHtml()}<span class="sparkle">✨</span><div class="pet">${PET_SVG}</div></div>
+                    <div class="pet-stage" data-stage="0" id="demoPet">${eggHtml()}<span class="sparkle">✨</span><div class="pet"><img src="./assets/logomain.png" alt="Brainy img."></div></div>
                     <p class="step-caption">${step.breakdown.title}</p>
                     <div class="micro-list">${microSteps}</div>
                     <p class="step-caption">${step.breakdown.caption}</p>
                     <div id="methodNote" style="display:none"></div>`;
-            }
-
-            if (isCurves) {
-                const legend = step.curves.map((c) => `
-                    <li>
-                        <span class="legend-dot ${c.cls}"></span>
-                        <div><strong>${c.label}</strong><p>${c.desc}</p></div>
-                    </li>`).join('');
-                extra = `<div class="curves"><div class="curves-card">${CURVES_SVG}</div><ul class="legend">${legend}</ul></div>`;
             }
 
             document.getElementById('funnelRoot').innerHTML = `
@@ -6454,6 +7553,7 @@
                 setupMethodDemo(step.breakdown.steps.length);
             }
         }
+
 
         function setupMethodDemo(total) {
             const pet = document.getElementById('demoPet');
@@ -6497,6 +7597,7 @@
 
             sync();
         }
+
 
         function renderContact(step) {
             track('email_view', { resumed: !!funnelState.email });
@@ -6546,144 +7647,8 @@
             });
         }
 
-        function renderLoading(step) {
-            const tasksCount = funnelState.selectedTasks.length;
-            const routinesCount = funnelState.selectedRoutines.length;
-            const items = [
-                currentLocale() === 'en' ? 'Analyzing your answers' : 'Analizando tus respuestas',
-                currentLocale() === 'en' ? 'Focusing on what matters to you' : 'Enfocando lo que te importa',
-                currentLocale() === 'en' ? 'Adjusting the pace to your life' : 'Ajustando el ritmo a tu vida',
-                `${currentLocale() === 'en' ? 'Preparing' : 'Preparando'} ${tasksCount} ${tasksCount === 1 ? ui('task') : ui('tasks')} ${currentLocale() === 'en' ? 'broken down into small steps' : 'desglosadas en pasos pequeños'}`,
-                `${currentLocale() === 'en' ? 'Adding' : 'Agregando'} ${routinesCount} ${routinesCount === 1 ? ui('routine') : ui('routines')} ${currentLocale() === 'en' ? 'to your day' : 'diarias'}`,
-                currentLocale() === 'en' ? 'Matching a companion to each routine' : 'Asignando un compañero a cada rutina'
-            ];
-            const itemsHtml = items.map((item) => `
-                <li class="loading-item">
-                    <span class="loading-pill"><span class="loading-spin"></span></span>
-                    <span class="loading-label">${item}</span>
-                </li>`).join('');
 
-            document.getElementById('funnelRoot').innerHTML = `
-                ${cardOpen()}
-                    ${headHtml(step)}
-                    <ul class="loading-list">${itemsHtml}</ul>
-                    <p class="loading-final" id="loadingFinal">${step.subFinal}</p>
-                </article>`;
 
-            track('plan_generation_start', { tasksCount, routinesCount });
-
-            const listEls = Array.from(document.querySelectorAll('.loading-item'));
-            const stagger = 380;
-            listEls.forEach((el, i) => {
-                const t = setTimeout(() => {
-                    el.classList.add('active');
-                    const done = setTimeout(() => {
-                        el.classList.add('done');
-                        const pill = el.querySelector('.loading-pill');
-                        pill.textContent = '✓';
-                    }, 300);
-                    stepTimers.push(done);
-                }, i * stagger);
-                stepTimers.push(t);
-            });
-
-            const finalT = setTimeout(() => {
-                document.getElementById('loadingFinal').classList.add('visible');
-                track('plan_generation_complete', { tasksCount, routinesCount });
-            }, listEls.length * stagger + 300);
-            stepTimers.push(finalT);
-
-            const goT = setTimeout(() => {
-                clearTimers();
-                goNext();
-            }, listEls.length * stagger + 1100);
-            stepTimers.push(goT);
-        }
-
-        function renderProductPreview(step) {
-            track('preview_view', { tasksCount: funnelState.selectedTasks.length, routinesCount: funnelState.selectedRoutines.length });
-            const task = funnelState.selectedTasks[0];
-            const routine = funnelState.selectedRoutines[0];
-            const egg = eggForRoutine(0);
-
-            const fallbackTask = { title: 'Ordenar mi habitación', subtasks: [{ title: 'Llevar la ropa al cesto', duration: 5 }, { title: 'Recoger 5 objetos', duration: 5 }, { title: 'Ordenar una superficie', duration: 5 }] };
-            const fallbackRoutine = { name: 'Prepararme para dormir' };
-            const mission = task || fallbackTask;
-            const companionName = (routine && (routine.name || routine.title)) || fallbackRoutine.name;
-
-            const eggBg = `radial-gradient(circle at 35% 28%, #ffffff 12%, ${egg.color} 58%, rgba(36,18,63,0.18) 135%)`;
-            const subSteps = mission.subtasks || [];
-            const stepsHtml = subSteps.map((s, i) => `
-                    <button class="pv-step" type="button" data-step="${i}">
-                        <span class="pv-circle">○</span>
-                        <span class="pv-label">${s.title}</span>
-                        <span class="pv-check">✓</span>
-                    </button>`).join('');
-
-            document.getElementById('funnelRoot').innerHTML = `
-                ${backButtonHtml()}
-                ${cardOpen()}
-                    ${headHtml(step)}
-                    <div class="app-mock preview-mock" id="previewMock">
-                        <div class="app-head">
-                            <h3>${currentLocale() === 'en' ? 'Hello' : 'Hola'} 👋</h3>
-                            <span id="appDate">${ui('today')}</span>
-                        </div>
-                        <div class="app-body">
-                            <div class="pv-label-row">${ui('companion')}</div>
-                            <div class="pv-companion">
-                                <span class="pv-egg" id="pvEgg" style="background:${eggBg}">${egg.emoji}</span>
-                                <div class="pv-companion-info">
-                                    <span class="pv-egg-name" id="pvEggName">${egg.name}</span>
-                                    <span class="pv-routine">${companionName}</span>
-                                </div>
-                                <span class="pv-count" id="pvCount">0 / ${subSteps.length}</span>
-                            </div>
-                            <div class="pv-label-row">${ui('mission')}</div>
-                            <div class="pv-mission">
-                                <div class="pv-task"><span class="pv-task-icon">🎯</span>${mission.title}</div>
-                                <p class="pv-hint">${ui('divided')}</p>
-                                <div class="pv-steps">${stepsHtml}</div>
-                            </div>
-                        <div class="pv-feedback" id="pvFeedback" hidden>${ui('smallSteps')}</div>
-                        </div>
-                    </div>
-                    <div class="actions">
-                        <button class="btn btn-dopamine" type="button" id="nextBtn">${step.cta}</button>
-                    </div>
-                </article>`;
-
-            document.getElementById('appDate').textContent = `${ui('today')}, ${todayLabel()}`;
-
-            if (FUNNEL_EXPERIMENTS.interactivePreview) {
-                let completed = false;
-                document.querySelectorAll('.pv-step').forEach((el) => {
-                    el.addEventListener('click', () => {
-                        if (completed) {
-                            return;
-                        }
-                        completed = true;
-                        el.classList.add('done');
-                        el.querySelector('.pv-circle').textContent = '';
-                        const eggEl = document.getElementById('pvEgg');
-                        eggEl.classList.add('pulse');
-                        document.getElementById('pvFeedback').hidden = false;
-                        setTimeout(() => eggEl.classList.remove('pulse'), 900);
-                        if (!funnelState.previewInteracted) {
-                            setState('previewInteracted', true);
-                        }
-                        track('preview_interaction', { previewInteracted: true });
-                    });
-                });
-            }
-
-            document.getElementById('nextBtn').addEventListener('click', () => {
-                if (advancing) {
-                    return;
-                }
-                goNext();
-            });
-        }
 
         function renderPresell(step) {
             track('presell_view', {
@@ -6767,6 +7732,7 @@
             });
         }
 
+
         // --- Paywall: helpers puros, contador y render ---
         //
         // La oferta dura 15 minutos reales desde la PRIMERA visita al paywall.
@@ -6791,6 +7757,7 @@
             return { numeric: numeric, currency: currency, formatted: formatted };
         }
 
+
         function formatPaywallMoney(amount, currency) {
             if (typeof amount !== 'number' || !Number.isFinite(amount)) {
                 return '';
@@ -6803,6 +7770,7 @@
             }
         }
 
+
         // Equivalencias SOLO informativas: nunca alteran el cobro.
         // monthlyDaily = monthly / (365.25 / 12); annualDaily = annual / 365.25.
         // `days` viene del periodo real del producto: 365.25 anual,
@@ -6814,6 +7782,7 @@
             const value = formatPaywallMoney(product.numeric / product.days, product.currency);
             return value ? localizedText(`About ${value} per day`, `About ${value} per day`) : '';
         }
+
 
         // Comparacion anual: mensual x 12. Solo si ambas monedas coinciden.
         function paywallAnnualComparison(annualProduct, monthlyProduct) {
@@ -6838,6 +7807,7 @@
             return result;
         }
 
+
         // Trial solo si el producto real trae uno reconocible. Si no, null.
         function paywallTrialInfo(pkg) {
             const product = pkg && pkg.webBillingProduct ? pkg.webBillingProduct : null;
@@ -6859,6 +7829,7 @@
             return { text: (currentLocale() === 'en' ? shape.en : shape.es)(duration.number) };
         }
 
+
         // Vencimiento absoluto. Se crea UNA vez y nunca se renueva al rerenderizar.
         function paywallOfferDeadline() {
             const stored = funnelState.paywallOfferExpiresAt;
@@ -6870,13 +7841,16 @@
             return created;
         }
 
+
         function paywallOfferRemaining(deadline) {
             return Math.max(0, (deadline || 0) - Date.now());
         }
 
+
         function paywallOfferExpired(deadline) {
             return paywallOfferRemaining(deadline) <= 0;
         }
+
 
         function renderPaywall(step) {
             const rcConfig = revenuecatConfig();
@@ -7509,6 +8483,7 @@
             initPaywall();
         }
 
+
         function renderSuccess(step) {
             const platform = isMobileDevice() ? 'mobile' : 'desktop';
             const redeemUrl = funnelState.pendingRedemptionUrl || null;
@@ -7642,6 +8617,7 @@
             }
         }
 
+
         function renderHandoff(step) {
             track('handoff_view', { platform: isMobileDevice() ? 'mobile' : 'desktop' });
             ensurePlan();
@@ -7717,9 +8693,11 @@
             }
         }
 
+
         function isMobileDevice() {
             return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
         }
+
 
         function todayLabel() {
             const months = currentLocale() === 'en'
@@ -7729,12 +8707,14 @@
             return `${d.getDate()} ${months[d.getMonth()]}`;
         }
 
+
         function renderPicker(step) {
             const data = step.source === 'tasks' ? tasksData : routinesData;
             const key = step.key;
             const min = step.min || 1;
             const max = step.max;
             const selected = funnelState[key];
+            const titleDictionary = step.source === 'tasks' ? TASK_TITLE_EN : ROUTINE_NAME_EN;
 
             let categories = [];
             if (step.source === 'tasks') {
@@ -7749,29 +8729,25 @@
                 }));
             }
 
-            const cardsHtml = categories.map((cat) => `
-                    <section class="picker-cat">
-                        <div class="cat-head"><span class="cat-emoji">${cat.emoji}</span><span>${(CATEGORY_COPY[cat.id] && CATEGORY_COPY[cat.id][currentLocale()]) || cat.label}</span></div>
-                        <div class="picker-list">
+            const cardsHtml = categories.map((cat, ci) => `
+                    <section class="picker-cat picker-cat--${ci + 1}" data-cat="${ci + 1}">
+                        <button class="cat-head" type="button" aria-expanded="false" data-cat-toggle="${ci + 1}">
+                            <span class="cat-emoji">${cat.emoji}</span>
+                            <span class="cat-label">${(CATEGORY_COPY[cat.id] && CATEGORY_COPY[cat.id][currentLocale()]) || cat.label}</span>
+                            <span class="cat-count">${cat.items.length}</span>
+                            <span class="cat-chev">▾</span>
+                        </button>
+                        <div class="picker-list" hidden>
                             ${cat.items.map((item) => {
                                 const isSel = selected.some((s) => s.id === item.id);
                                 return `
-                                    <article class="pick-card ${isSel ? 'selected' : ''}" data-id="${item.id}">
-                                        <div class="pick-head">
-                                            <button class="pick-expand" type="button" aria-expanded="false" data-expand="${item.id}">
-                                                ${item.emoji ? `<span class="pick-emoji">${item.emoji}</span>` : ''}
-                                                <span class="pick-body">
-                                                    <strong>${item.title}</strong>
-                                                 <span class="pick-meta">${item.subtasks.length} ${ui('steps')} · ${ui('tapToSee')}</span>
-                                                </span>
-                                                <span class="pick-chev">▾</span>
-                                            </button>
-                                                <button class="pick-check" type="button" data-select="${item.id}" aria-label="${ui('select')} ${item.title}">✓</button>
-                                        </div>
-                                        <div class="pick-steps" hidden>
-                                            <ol>${item.subtasks.map((s) => `<li>${s.title}</li>`).join('')}</ol>
-                                        </div>
-                                    </article>`;
+                                    <button type="button" class="pick-card ${isSel ? 'selected' : ''}" data-id="${item.id}" data-select="${item.id}" aria-pressed="${isSel ? 'true' : 'false'}">
+                                        ${item.emoji ? `<span class="pick-emoji">${item.emoji}</span>` : ''}
+                                        <span class="pick-body">
+                                            <strong>${localizeItemTitle(item.title, titleDictionary)}</strong>
+                                        </span>
+                                        <span class="pick-check" aria-hidden="true">✓</span>
+                                    </button>`;
                             }).join('')}
                         </div>
                     </section>`).join('');
@@ -7802,17 +8778,19 @@
                     const id = card.dataset.id;
                     const isSel = sel.some((s) => s.id === id);
                     card.classList.toggle('selected', isSel);
+                    card.setAttribute('aria-pressed', String(isSel));
                 });
                 nextBtn.disabled = sel.length < min;
             }
 
-            document.querySelectorAll('[data-expand]').forEach((btn) => {
+            // Plegable de categoria: solo abre y cierra la lista de tareas.
+            document.querySelectorAll('[data-cat-toggle]').forEach((btn) => {
                 btn.addEventListener('click', () => {
-                    const card = btn.closest('.pick-card');
-                    const steps = card.querySelector('.pick-steps');
-                    const open = steps.hidden;
-                    steps.hidden = !open;
-                    card.classList.toggle('open', open);
+                    const cat = btn.closest('.picker-cat');
+                    const list = cat.querySelector('.picker-list');
+                    const open = list.hidden;
+                    list.hidden = !open;
+                    cat.classList.toggle('open', open);
                     btn.setAttribute('aria-expanded', String(open));
                 });
             });
@@ -7855,6 +8833,7 @@
             });
         }
 
+
         function renderPlanSummary(step) {
             track('plan_summary_view', { tasksCount: funnelState.selectedTasks.length, routinesCount: funnelState.selectedRoutines.length });
             const tasks = funnelState.selectedTasks;
@@ -7863,7 +8842,7 @@
             const taskRows = tasks.map((item) => `
                     <div class="plan-row">
                         <span class="plan-emoji">${item.emoji || categoryMeta(item.category).emoji}</span>
-                        <span class="plan-name">${item.title}</span>
+                        <span class="plan-name">${localizeItemTitle(item.title, TASK_TITLE_EN)}</span>
                         <span class="plan-meta">${(item.subtasks || []).length} ${ui('steps')}</span>
                     </div>`).join('') || `<div class="data-error">${ui('noTasks')}</div>`;
 
@@ -7871,8 +8850,8 @@
                 const egg = eggForRoutine(i);
                 return `
                     <div class="plan-row">
-                        <span class="plan-egg" style="background: radial-gradient(circle at 35% 28%, #ffffff 12%, ${egg.color} 58%, rgba(36,18,63,0.18) 135%);">${egg.emoji}</span>
-                        <span class="plan-name">${egg.name} <span class="plan-sep">—</span> ${item.name || item.title}</span>
+                        <span class="plan-egg">${eggPlanHtml(egg)}</span>
+                        <span class="plan-name">${egg.name} <span class="plan-sep">—</span> ${localizeItemTitle(item.name || item.title, ROUTINE_NAME_EN)}</span>
                     </div>`;
                 }).join('') || `<div class="data-error">${ui('noRoutines')}</div>`;
 
@@ -7895,6 +8874,8 @@
                     </div>
                 </article>`;
 
+            bindEggPlanFallbacks();
+
             document.getElementById('nextBtn').addEventListener('click', () => {
                 if (advancing) {
                     return;
@@ -7903,12 +8884,14 @@
             });
         }
 
+
         function renderStep() {
             clearTimers();
             advancing = false;
             const rawStep = stepList()[currentStepIndex];
             const step = localizedStep(rawStep);
             document.body.classList.toggle('begin-active', step.type === 'begin');
+            syncStageLabels();
             document.title = step.questionIndex
                 ? (currentLocale() === 'en' ? `Brainy — Question ${step.questionIndex} of ${QUESTION_KEYS.length}` : `Brainy — Pregunta ${step.questionIndex} de ${QUESTION_KEYS.length}`)
                 : (currentLocale() === 'en' ? 'Brainy — Your system and companion' : 'Brainy — Tu sistema y tu mascota');
@@ -7927,10 +8910,6 @@
                 renderPlanSummary(step);
             } else if (step.type === 'contact') {
                 renderContact(step);
-            } else if (step.type === 'loading') {
-                renderLoading(step);
-            } else if (step.type === 'product_preview') {
-                renderProductPreview(step);
             } else if (step.type === 'presell') {
                 renderPresell(step);
             } else if (step.type === 'paywall') {
@@ -7945,11 +8924,13 @@
             scrollTop();
         }
 
+
         if (new URLSearchParams(window.location.search).get('reset') !== null) {
             localStorage.removeItem(STORAGE_STATE_KEY);
             localStorage.removeItem(STORAGE_STEP_KEY);
             history.replaceState(null, '', window.location.pathname);
         }
+
 
         document.getElementById('funnelBackBtn').innerHTML = BACK_ARROW_SVG;
 
