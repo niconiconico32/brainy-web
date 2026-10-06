@@ -126,11 +126,274 @@ function testFormAccessibility() {
   assert.match(page, />Continue to subscription management</);
   assert.match(page, /Cancelling stops future renewals\. You’ll keep access until the end of your current free trial or billing period\./);
   assert.match(page, /Forgot your password\?/);
-  assert.match(page, /href="\/reset-password\/"/);
   assert.match(page, /Can’t access your account\? Contact <a href="mailto:hello@brainyadhd\.com">hello@brainyadhd\.com<\/a>/);
   assert.match(page, /We couldn’t find an active subscription for this account\./);
+  // "Forgot your password?" es un botón que cambia de estado, NO un enlace a
+  // /reset-password/: esa página solo consume un callback ya emitido.
+  assert.match(page, /<button class="forgot" type="button" id="forgotPasswordBtn">Forgot your password\?<\/button>/);
+  assert.equal(/href="\/reset-password\/"/.test(page), false, 'no debe haber enlace directo a /reset-password/');
   // No hay logo en las páginas de utilidad del repo.
   assert.equal(/class="logo"|logomain\.png/.test(page), false);
+}
+
+/* ---------- 2b. solicitud de recuperación de contraseña ---------- */
+
+function testResetRequestView() {
+  assert.match(page, /<section id="resetRequestState" hidden>/);
+  assert.match(page, /<label for="resetEmailInput">Email<\/label>/);
+  assert.match(page, /id="resetEmailInput"[^>]*autocomplete="email"/);
+  assert.match(page, /id="resetError"[^>]*aria-live="assertive"/);
+  assert.match(page, /<button id="resetSubmitButton" type="submit">Send reset link<\/button>/);
+  assert.match(page, />Back to subscription login</);
+  assert.match(page, /id="resetBackBtn"/);
+  assert.equal((page.match(/>Back to subscription login</g) || []).length, 3, 'volver al login desde cada estado de reset');
+  // Mensaje genérico exacto, sin distinguir si la cuenta existe.
+  assert.match(page, /<h1>Check your inbox<\/h1>/);
+  assert.match(page, /If an account exists for this email, we’ve sent a password reset link\. Open the link in your browser to choose a new password\./);
+  assert.match(page, /<section id="resetSentState" hidden>[\s\S]*aria-live="polite"/);
+  // Retry de red.
+  assert.match(page, /id="resetRetry"/);
+  assert.match(page, /We couldn’t reach the service to send your reset link\./);
+  // El mensaje genérico nunca se combina con una frase que delate existencia.
+  assert.equal(/account (exists|was found|not found|does not exist)/i.test(page.replace(/If an account exists for this email[^<]*/g, '')), false);
+}
+
+function testResetRedirectIsExact() {
+  // Callback exacto, una sola vez, como configuración.
+  const occurrences = page.match(/https:\/\/brainyadhd\.com\/reset-password\//g) || [];
+  assert.equal(occurrences.length, 1, 'el callback aparece exactamente una vez');
+  assert.match(page, /passwordResetRedirectTo: 'https:\/\/brainyadhd\.com\/reset-password\/'/);
+  assert.match(page, /resetRedirectTo: cfg\.passwordResetRedirectTo/);
+  assert.equal(/https:\/\/www\.brainyadhd\.com\/reset-password/.test(page), false, 'sin www ni variantes del callback');
+  assert.equal(/resetPasswordRedirectTo[\s\S]*reset-password\/[\s\S]{0,40}[?#]/.test(page), false, 'sin query params en el callback');
+  assert.equal(page.includes('https://brainyadhd.com/reset-password/index.html'), false, 'el callback es la ruta limpia');
+}
+
+function testResetRequestUsesResetPasswordForEmail() {
+  assert.match(flowSource, /supabase\.auth\.resetPasswordForEmail\(normalizedEmail, \{\s*\n\s*redirectTo: resetRedirectTo\s*\n\s*\}\)/);
+  assert.equal(/signInWithPassword/.test(flowSource.slice(flowSource.indexOf('function requestPasswordReset('))), false, 'el flujo de reset no inicia sesión');
+  // Se usa el MISMO cliente Supabase aislado de la página (no se crea otro).
+  assert.match(page, /sdk\.createFlow\(\{[\s\S]*supabase: client,/);
+  assert.match(page, /persistSession: false/);
+  assert.match(page, /autoRefreshToken: false/);
+  assert.match(page, /detectSessionInUrl: false/);
+}
+
+function testEmailValidation() {
+  for (const good of ['a@b.co', 'user.name+tag@example.com', 'USER@Example.COM', 'u@sub.domain.example']) {
+    assert.equal(manage.isValidEmail(good), true, `debe aceptar ${good}`);
+  }
+  for (const bad of ['', '   ', 'nope', 'a@', '@b.co', 'a@b', 'a b@c.co', 'a@@b.co', 'a@b..co', 'a@-b.co', 'a@b-.co', 'x'.repeat(65) + '@b.co', 'a@' + 'x'.repeat(250) + '.co', null, undefined, 42]) {
+    assert.equal(manage.isValidEmail(bad), false, `debe rechazar ${String(bad)}`);
+  }
+}
+
+async function testResetRequestGenericResponse() {
+  function resetFlow(result) {
+    const calls = [];
+    const states = [];
+    const clearedEmail = [];
+    const flow = manage.createFlow({
+      supabase: {
+        auth: {
+          signInWithPassword: async () => { throw new Error('no debe iniciar sesión'); },
+          resetPasswordForEmail: async (email, options) => {
+            calls.push({ email, options });
+            return typeof result === 'function' ? result(email, options) : result;
+          }
+        }
+      },
+      revenuecat: { configure: () => null },
+      apiKey: 'strp_sb_public',
+      resetRedirectTo: 'https://brainyadhd.com/reset-password/',
+      clearEmail: () => clearedEmail.push('cleared'),
+      navigate: () => { throw new Error('no debe navegar'); },
+      onState: (state, detail) => states.push({ state, detail }),
+    });
+    return { flow, calls, states, clearedEmail, lastState: () => states[states.length - 1] };
+  }
+
+  // A) Cuenta existente: respuesta limpia.
+  const existing = resetFlow({ data: {}, error: null });
+  assert.equal(await existing.flow.requestPasswordReset('  User@Example.COM  '), 'sent');
+  assert.equal(existing.calls.length, 1);
+  assert.equal(existing.calls[0].email, 'user@example.com', 'el email se normaliza antes de enviarse');
+  assert.deepEqual(existing.calls[0].options, { redirectTo: 'https://brainyadhd.com/reset-password/' });
+  assert.deepEqual(existing.lastState(), { state: 'reset-sent', detail: {} });
+
+  // B) Cuenta inexistente: Supabase puede devolver "User not found". La respuesta
+  //    debe ser IDÉNTICA a la de A.
+  const missing = resetFlow({ data: null, error: { message: 'User not found', status: 404 } });
+  assert.equal(await missing.flow.requestPasswordReset('nobody@example.com'), 'sent');
+  assert.deepEqual(missing.lastState(), { state: 'reset-sent', detail: {} });
+
+  // C) Otros errores de autorización también se reportan como éxito genérico.
+  for (const error of [{ message: 'Email not confirmed', status: 400 }, { message: 'Forbidden', status: 403 }, { message: 'rate_limit', status: 429 }]) {
+    const other = resetFlow({ data: null, error });
+    assert.equal(await other.flow.requestPasswordReset('user@example.com'), 'sent');
+    assert.deepEqual(other.lastState(), { state: 'reset-sent', detail: {} });
+  }
+
+  // D) launchAuthSessionRedirect  (error de cliente) también genérico.
+  const thrown = resetFlow(() => { throw Object.assign(new Error('launchAuthSessionRedirect failed'), { name: 'AuthApiError' }); });
+  assert.equal(await thrown.flow.requestPasswordReset('user@example.com'), 'sent');
+
+  // El email se borra del DOM tras la respuesta genérica.
+  assert.ok(existing.clearedEmail.length >= 1);
+  assert.ok(missing.clearedEmail.length >= 1);
+  assert.equal(existing.flow.hasPendingResetEmail(), false, 'no queda email pendiente tras el éxito');
+  assert.equal(missing.flow.hasPendingResetEmail(), false);
+
+  // No se llama a RevenueCat ni se navega en ningún caso.
+  assert.deepEqual(existing.states.map((s) => s.state), ['reset-sending', 'reset-sent']);
+}
+
+async function testResetRequestBlocksDoubleSend() {
+  let release;
+  const gate = new Promise((resolve) => { release = resolve; });
+  let calls = 0;
+  const states = [];
+  const flow = manage.createFlow({
+    supabase: {
+      auth: {
+        signInWithPassword: async () => { throw new Error('no'); },
+        resetPasswordForEmail: async () => {
+          calls += 1;
+          await gate;
+          return { data: {}, error: null };
+        }
+      }
+    },
+    revenuecat: { configure: () => null },
+    apiKey: 'strp_sb_public',
+    resetRedirectTo: 'https://brainyadhd.com/reset-password/',
+    onState: (state, detail) => states.push({ state, detail }),
+  });
+
+  const first = flow.requestPasswordReset('user@example.com');
+  await Promise.resolve();
+  assert.equal(await flow.requestPasswordReset('user@example.com'), 'busy');
+  assert.equal(await flow.requestPasswordReset('otro@example.com'), 'busy');
+  assert.equal(await flow.retryPasswordReset(), 'busy');
+  release();
+  assert.equal(await first, 'sent');
+  assert.equal(calls, 1, 'un solo resetPasswordForEmail');
+  assert.deepEqual(states.map((s) => s.state), ['reset-sending', 'reset-sent']);
+
+  // Email inválido: ni llamada ni estado de envío.
+  let called = false;
+  const invalid = manage.createFlow({
+    supabase: {
+      auth: {
+        signInWithPassword: async () => { throw new Error('no'); },
+        resetPasswordForEmail: async () => { called = true; return { data: {}, error: null }; }
+      }
+    },
+    revenuecat: { configure: () => null },
+    apiKey: 'strp_sb_public',
+    resetRedirectTo: 'https://brainyadhd.com/reset-password/',
+    onState: () => {},
+  });
+  assert.equal(await invalid.requestPasswordReset('no-es-un-email'), 'invalid');
+  assert.equal(await invalid.requestPasswordReset(''), 'invalid');
+  assert.equal(called, false, 'un email inválido no llega a Supabase');
+}
+
+async function testResetRequestNetworkErrorRetry() {
+  let calls = 0;
+  let failNext = true;
+  const states = [];
+  const flow = manage.createFlow({
+    supabase: {
+      auth: {
+        signInWithPassword: async () => { throw new Error('no'); },
+        resetPasswordForEmail: async () => {
+          calls += 1;
+          if (failNext) {
+            failNext = false;
+            throw Object.assign(new TypeError('Failed to fetch'), { name: 'TypeError' });
+          }
+          return { data: {}, error: null };
+        }
+      }
+    },
+    revenuecat: { configure: () => null },
+    apiKey: 'strp_sb_public',
+    resetRedirectTo: 'https://brainyadhd.com/reset-password/',
+    onState: (state, detail) => states.push({ state, detail }),
+  });
+
+  assert.equal(await flow.requestPasswordReset('user@example.com'), 'network-error');
+  assert.deepEqual(states[states.length - 1], { state: 'reset-network-error', detail: {} });
+  // El email sigue disponible SOLO en memoria para el Retry.
+  assert.equal(flow.hasPendingResetEmail(), true);
+  // Retry reutiliza el mismo email y no vuelve a pedirlo.
+  assert.equal(await flow.retryPasswordReset(), 'sent');
+  assert.equal(calls, 2);
+  assert.equal(flow.hasPendingResetEmail(), false);
+  assert.deepEqual(states.map((s) => s.state), ['reset-sending', 'reset-network-error', 'reset-sending', 'reset-sent']);
+
+  // Sin email pendiente, Retry no hace nada.
+  assert.equal(await flow.retryPasswordReset(), 'busy');
+}
+
+function testResetRequestFailClosed() {
+  // Sin cliente de Supabase: no se llama a nada y se reporta no disponible.
+  const noClient = [];
+  const withoutClient = manage.createFlow({
+    supabase: null,
+    revenuecat: { configure: () => null },
+    apiKey: 'strp_sb_public',
+    resetRedirectTo: 'https://brainyadhd.com/reset-password/',
+    onState: (state, detail) => noClient.push({ state, detail }),
+  });
+  // Con resetRedirectTo ausente.
+  const noRedirect = [];
+  const withoutRedirect = manage.createFlow({
+    supabase: { auth: { resetPasswordForEmail: async () => ({ data: {}, error: null }) } },
+    revenuecat: { configure: () => null },
+    apiKey: 'strp_sb_public',
+    resetRedirectTo: '',
+    onState: (state, detail) => noRedirect.push({ state, detail }),
+  });
+  return Promise.all([
+    withoutClient.requestPasswordReset('user@example.com'),
+    withoutRedirect.requestPasswordReset('user@example.com'),
+  ]).then(([first, second]) => {
+    assert.equal(first, 'unavailable');
+    assert.deepEqual(noClient, [{ state: 'reset-unavailable', detail: { reason: 'auth_unavailable' } }]);
+    assert.equal(second, 'unavailable');
+    assert.deepEqual(noRedirect, [{ state: 'reset-unavailable', detail: { reason: 'redirect_missing' } }]);
+  });
+}
+
+async function testResetRequestDoesNotTouchSubscriptionFlow() {
+  // Solicitar un reset no crea sesión, no configura RevenueCat y no navega.
+  let configured = 0;
+  let navigated = 0;
+  let signedIn = 0;
+  const states = [];
+  const flow = manage.createFlow({
+    supabase: {
+      auth: {
+        signInWithPassword: async () => { signedIn += 1; return { data: { user: { id: UUID_A } }, error: null }; },
+        resetPasswordForEmail: async () => ({ data: {}, error: null })
+      }
+    },
+    revenuecat: { configure: () => { configured += 1; return {}; } },
+    apiKey: 'strp_sb_public',
+    resetRedirectTo: 'https://brainyadhd.com/reset-password/',
+    navigate: () => { navigated += 1; },
+    onState: (state, detail) => states.push({ state, detail }),
+  });
+  assert.equal(await flow.requestPasswordReset('user@example.com'), 'sent');
+  assert.equal(signedIn, 0, 'no inicia sesión');
+  assert.equal(configured, 0, 'no configura RevenueCat');
+  assert.equal(navigated, 0, 'no navega');
+  assert.equal(flow.hasVerifiedSession(), false, 'no se crea identidad verificada');
+  // Y el login sigue funcionando después de un reset.
+  assert.equal(await flow.signIn('user@example.com', 'secret-1'), 'unavailable', 'sin getManagementURL el flujo acaba en unavailable, no en un estado de reset');
+  assert.deepEqual(states[states.length - 1], { state: 'unavailable', detail: { reason: 'revenuecat_unavailable' } });
 }
 
 /* ---------- 3. no secrets hardcodeados ---------- */
@@ -179,6 +442,13 @@ function testPasswordNeverPrintedOrPersisted() {
   const body = flowSource.slice(flowSource.indexOf('function signIn('));
   assert.match(body, /clearPassword\(\);/);
   assert.equal(/password\s*=\s*password/.test(body), false);
+  // El email de recuperación tampoco se persiste ni se imprime en ninguna rama.
+  const resetBody = flowSource.slice(flowSource.indexOf('function requestPasswordReset('), flowSource.indexOf('function retryPasswordReset('));
+  assert.match(resetBody, /clearEmail\(\);/);
+  assert.equal(/localStorage|sessionStorage|document\.cookie|sendBeacon|console\./.test(resetBody), false);
+  // El email nunca se pone en la URL ni en atributos de navegación.
+  assert.equal(/emailInput\.value\s*=\s*location/.test(page), false);
+  assert.equal(/location\.(search|hash)\s*[+=]/.test(page), false);
 }
 
 /* ---------- 5. el userId nunca viene de parámetros o formularios ---------- */
@@ -255,7 +525,21 @@ async function testInvalidCredentials() {
   assert.deepEqual(navigated, []);
   // La página muestra copy genérico y no revela si el correo existe.
   assert.match(page, /GENERIC_INVALID = 'We couldn’t sign you in\. Check your email and password and try again\.'/);
-  assert.equal(/no such user|user not found|email not registered/i.test(page + flowSource), false);
+  // Ningún texto visible al usuario revela existencia de la cuenta.
+  assert.equal(/no such user|user not found|user_not_found|email not registered|account not found/i.test(page), false);
+  // El flujo nunca reenvía el mensaje del proveedor a la vista: los detalles
+  // emitidos son motivos cerrados, no texto de error.
+  const closedReasons = [
+    'invalid_credentials', 'missing_credentials', 'auth_unavailable', 'identity_missing',
+    'identity_invalid', 'revenuecat_unavailable', 'revenuecat_key_missing',
+    'revenuecat_configuration_failed', 'revenuecat_identity_mismatch',
+    'revenuecat_lookup_failed', 'redirect_missing',
+  ];
+  const flowBody = flowSource.slice(flowSource.indexOf('function signIn('), flowSource.indexOf('function scrubIdentityParams('));
+  for (const match of flowBody.matchAll(/emit\('([a-z-]+)', \{ reason: '([a-z_]+)' \}\)/g)) {
+    assert.ok(closedReasons.includes(match[2]), `motivo abierto o no permitido: ${match[2]}`);
+  }
+  assert.equal(/emit\([^)]*error\.message/.test(flowBody), false, 'no se emite el mensaje del proveedor');
   // Error de validación: mensaje genérico de campos, sin llamar a Supabase.
   const empty = makeFlow();
   const emptyOutcome = await empty.flow.signIn('', '');
@@ -616,6 +900,15 @@ async function main() {
   const cases = [
     ['route exists', testRouteExists],
     ['labels, autocomplete and required copy', testFormAccessibility],
+    ['reset request view exists', testResetRequestView],
+    ['reset redirect is exact', testResetRedirectIsExact],
+    ['reset request uses resetPasswordForEmail', testResetRequestUsesResetPasswordForEmail],
+    ['reset email validation', testEmailValidation],
+    ['reset request generic response (no enumeration)', testResetRequestGenericResponse],
+    ['reset request blocks double send', testResetRequestBlocksDoubleSend],
+    ['reset request network error allows retry', testResetRequestNetworkErrorRetry],
+    ['reset request fails closed', testResetRequestFailClosed],
+    ['reset request does not touch subscription flow', testResetRequestDoesNotTouchSubscriptionFlow],
     ['no hardcoded secrets', testNoHardcodedSecrets],
     ['password never printed or persisted', testPasswordNeverPrintedOrPersisted],
     ['no userId from params or form', testNoUserIdFromParamsOrForm],

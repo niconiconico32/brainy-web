@@ -113,6 +113,20 @@ const MOCK_SCRIPT = ({ managementURL, failMode }) => `
             var userId = ${JSON.stringify(failMode === 'badUuid' ? 'anon' : UUID)};
             return Promise.resolve({ data: { user: { id: userId } }, error: null });
           },
+          resetPasswordForEmail: function (email, options) {
+            window.__record('supabase:resetPasswordForEmail', {
+              email: email,
+              optionsKeys: Object.keys(options || {}).sort(),
+              redirectTo: options && options.redirectTo
+            });
+            if (window.__failMode === 'resetNetwork') {
+              return Promise.reject(Object.assign(new TypeError('Failed to fetch'), { name: 'TypeError' }));
+            }
+            if (window.__failMode === 'resetUnknownUser') {
+              return Promise.resolve({ data: null, error: { message: 'User not found', status: 404 } });
+            }
+            return Promise.resolve({ data: {}, error: null });
+          },
           signOut: function () { window.__record('supabase:signOut'); return Promise.resolve({ error: null }); }
         }
       };
@@ -198,9 +212,13 @@ async function newPage(browser, viewport, mocks, baseUrl) {
 }
 
 function visibleStates(page) {
-  return page.evaluate(() => ['formState', 'workingState', 'noSubscriptionState', 'networkErrorState', 'invalidUrlState', 'unavailableState']
+  return page.evaluate(() => ['formState', 'workingState', 'noSubscriptionState', 'networkErrorState',
+    'invalidUrlState', 'unavailableState', 'resetRequestState', 'resetSentState', 'resetNetworkErrorState']
     .filter((id) => !document.getElementById(id).hidden));
 }
+
+const ALL_STATES = ['formState', 'workingState', 'noSubscriptionState', 'networkErrorState',
+  'invalidUrlState', 'unavailableState', 'resetRequestState', 'resetSentState', 'resetNetworkErrorState'];
 
 async function fillCredentials(page, email = 'user@example.com', password = 'secret-1') {
   await page.fill('#emailInput', email);
@@ -258,7 +276,7 @@ async function testKeyboardNavigation(browser, baseUrl) {
       return el.tagName === 'A' ? `link:${el.getAttribute('href')}` : el.id;
     }));
   }
-  assert.deepEqual(order, ['passwordInput', 'submitButton', 'link:/reset-password/'], `orden de tabulación inesperado: ${order.join(' > ')}`);
+  assert.deepEqual(order, ['passwordInput', 'submitButton', 'forgotPasswordBtn'], `orden de tabulación inesperado: ${order.join(' > ')}`);
   await page.focus('#submitButton');
   const outline = await page.evaluate(() => getComputedStyle(document.getElementById('submitButton')).outlineStyle);
   assert.notEqual(outline, 'none', 'el botón debe tener foco visible');
@@ -417,6 +435,243 @@ async function testNoBrowserStorage(browser, baseUrl) {
   console.log('PASS session is in-memory only: nothing persisted, nothing leaked');
 }
 
+/* ---------- recuperación de contraseña ---------- */
+
+const RESET_REDIRECT = 'https://brainyadhd.com/reset-password/';
+
+async function openResetView(page) {
+  await page.click('#forgotPasswordBtn');
+  await page.waitForSelector('#resetRequestState:not([hidden])');
+}
+
+async function testForgotDoesNotNavigate(browser, baseUrl) {
+  const { context, page, state } = await newPage(browser, VIEWPORTS[1], { managementURL: PORTAL }, baseUrl);
+  // "Forgot your password?" no es un enlace ni navega a /reset-password/.
+  assert.equal(await page.locator('a[href="/reset-password/"]').count(), 0, 'no debe haber enlace directo a /reset-password/');
+  assert.equal(await page.evaluate(() => document.getElementById('forgotPasswordBtn').tagName), 'BUTTON');
+  assert.equal(await page.evaluate(() => document.getElementById('forgotPasswordBtn').type), 'button');
+  const before = page.url();
+  await openResetView(page);
+  assert.equal(page.url(), before, 'no navega: solo cambia de estado');
+  assert.deepEqual(state.navigations, [], 'no navega a ninguna URL');
+  assert.equal(state.count('supabase:resetPasswordForEmail'), 0, 'abrir la vista no envía nada');
+  // Contenido exigido.
+  assert.equal(await page.textContent('#resetSubmitButton'), 'Send reset link');
+  assert.equal(await page.textContent('#resetBackBtn'), 'Back to subscription login');
+  assert.equal(await page.inputValue('#resetEmailInput'), '');
+  assert.equal(await page.getAttribute('#resetEmailInput', 'autocomplete'), 'email');
+  // Foco visible y en el campo de email.
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'resetEmailInput');
+  await closeContext(context, state);
+  console.log('PASS Forgot your password? opens the reset request state without navigating');
+}
+
+async function testResetRequestSendsExactRedirect(browser, baseUrl) {
+  const { context, page, state } = await newPage(browser, VIEWPORTS[1], { managementURL: PORTAL }, baseUrl);
+  await openResetView(page);
+  await page.fill('#resetEmailInput', '  User@Example.COM  ');
+  await page.evaluate(() => document.getElementById('resetForm').requestSubmit());
+  await page.waitForSelector('#resetSentState:not([hidden])');
+  const call = state.first('supabase:resetPasswordForEmail');
+  assert.ok(call, 'debe llamar a resetPasswordForEmail');
+  assert.equal(call.detail.email, 'user@example.com', 'el email se normaliza');
+  assert.equal(call.detail.redirectTo, RESET_REDIRECT, 'callback exacto');
+  assert.deepEqual(call.detail.optionsKeys, ['redirectTo'], 'solo redirectTo');
+  assert.equal(state.count('supabase:signInWithPassword'), 0, 'no inicia sesión');
+  assert.equal(state.count('rc:configure'), 0, 'no toca RevenueCat');
+  assert.deepEqual(state.navigations, []);
+  await closeContext(context, state);
+  console.log('PASS reset request uses resetPasswordForEmail with the exact redirect');
+}
+
+async function testResetRequestGenericForExistingAndMissing(browser, baseUrl) {
+  const existing = await newPage(browser, VIEWPORTS[1], { managementURL: PORTAL }, baseUrl);
+  await openResetView(existing.page);
+  await existing.page.fill('#resetEmailInput', 'real.user@example.com');
+  await existing.page.evaluate(() => document.getElementById('resetForm').requestSubmit());
+  await existing.page.waitForSelector('#resetSentState:not([hidden])');
+  const existingCopy = {
+    title: await existing.page.textContent('#resetSentState h1'),
+    body: await existing.page.textContent('#resetSentState p[role="status"]'),
+    visible: await visibleStates(existing.page),
+  };
+  assert.equal(existingCopy.title, 'Check your inbox');
+  assert.equal(existingCopy.body, 'If an account exists for this email, we’ve sent a password reset link. Open the link in your browser to choose a new password.');
+  assert.deepEqual(existingCopy.visible, ['resetSentState']);
+  // El email se borra del DOM tras la respuesta genérica.
+  assert.equal(await existing.page.inputValue('#resetEmailInput'), '');
+  await closeContext(existing.context, existing.state);
+
+  // Cuenta inexistente: Supabase devuelve "User not found".
+  const missing = await newPage(browser, VIEWPORTS[1], { managementURL: PORTAL, failMode: 'resetUnknownUser' }, baseUrl);
+  await openResetView(missing.page);
+  await missing.page.fill('#resetEmailInput', 'ghost@example.com');
+  await missing.page.evaluate(() => document.getElementById('resetForm').requestSubmit());
+  await missing.page.waitForSelector('#resetSentState:not([hidden])');
+  const missingCopy = {
+    title: await missing.page.textContent('#resetSentState h1'),
+    body: await missing.page.textContent('#resetSentState p[role="status"]'),
+    visible: await visibleStates(missing.page),
+  };
+  // Respuesta IDÉNTICA: no hay forma de distinguir los dos casos.
+  assert.deepEqual(missingCopy, existingCopy, 'la respuesta debe ser idéntico exista o no la cuenta');
+  assert.equal(await missing.page.inputValue('#resetEmailInput'), '');
+  const text = await missing.page.textContent('main');
+  assert.equal(/not found|no such user|does not exist|registered/i.test(text), false, 'sin texto que revele existencia');
+  const joinedLogs = missing.state.consoleLines.join(' | ');
+  assert.equal(/not found|ghost@example\.com/.test(joinedLogs), false, 'sin PII ni motivo en consola');
+  await closeContext(missing.context, missing.state);
+  console.log('PASS generic response: identical output for existing and missing accounts');
+}
+
+async function testResetRequestInvalidEmail(browser, baseUrl) {
+  const { context, page, state } = await newPage(browser, VIEWPORTS[1], { managementURL: PORTAL }, baseUrl);
+  await openResetView(page);
+  for (const bad of ['nope', 'a@', '@b.co', 'a b@c.co']) {
+    await page.fill('#resetEmailInput', bad);
+    await page.evaluate(() => document.getElementById('resetForm').requestSubmit());
+    await page.waitForSelector('#resetError:not([hidden])');
+    assert.equal(await page.textContent('#resetError'), 'Enter a valid email address.');
+    assert.deepEqual(await visibleStates(page), ['resetRequestState']);
+  }
+  assert.equal(state.count('supabase:resetPasswordForEmail'), 0, 'un email inválido no llega a Supabase');
+  await closeContext(context, state);
+  console.log('PASS invalid email is rejected before any request');
+}
+
+async function testResetRequestDoubleClick(browser, baseUrl) {
+  const { context, page, state } = await newPage(browser, VIEWPORTS[1], { managementURL: PORTAL }, baseUrl);
+  await openResetView(page);
+  await page.fill('#resetEmailInput', 'user@example.com');
+  await page.evaluate(() => {
+    const form = document.getElementById('resetForm');
+    form.requestSubmit();
+    form.requestSubmit();
+    form.requestSubmit();
+  });
+  await page.waitForSelector('#resetSentState:not([hidden])');
+  assert.equal(state.count('supabase:resetPasswordForEmail'), 1, 'un solo resetPasswordForEmail');
+  await closeContext(context, state);
+  console.log('PASS double click does not duplicate the reset request');
+}
+
+async function testResetRequestNetworkRetry(browser, baseUrl) {
+  const { context, page, state } = await newPage(browser, VIEWPORTS[1], { managementURL: PORTAL, failMode: 'resetNetwork' }, baseUrl);
+  await openResetView(page);
+  await page.fill('#resetEmailInput', 'user@example.com');
+  await page.evaluate(() => document.getElementById('resetForm').requestSubmit());
+  await page.waitForSelector('#resetNetworkErrorState:not([hidden])');
+  assert.match(await page.textContent('#resetNetworkErrorState p[role="alert"]'), /We couldn’t reach the service to send your reset link\./);
+  assert.equal(await page.isVisible('#resetRetry'), true);
+  const callsBefore = state.count('supabase:resetPasswordForEmail');
+  // Retry reintenta con el email ya capturado, sin volver a pedirlo.
+  await page.click('#resetRetry');
+  await page.waitForSelector('#resetNetworkErrorState:not([hidden])');
+  assert.equal(state.count('supabase:resetPasswordForEmail'), callsBefore + 1, 'Retry reenvía la solicitud');
+  assert.equal(state.count('supabase:resetPasswordForEmail'), 2);
+  const second = state.events.filter((e) => e.name === 'supabase:resetPasswordForEmail').pop();
+  assert.equal(second.detail.email, 'user@example.com', 'Retry reutiliza el email pendiente');
+  assert.equal(second.detail.redirectTo, RESET_REDIRECT);
+  // Volver al login funciona desde el estado de error.
+  await page.click('#resetNetworkBackBtn');
+  await page.waitForSelector('#formState:not([hidden])');
+  assert.deepEqual(await visibleStates(page), ['formState']);
+  await closeContext(context, state);
+  console.log('PASS network error allows Retry and Back to subscription login');
+}
+
+async function testResetRequestNoPiiPersisted(browser, baseUrl) {
+  const { context, page, state } = await newPage(browser, VIEWPORTS[1], { managementURL: PORTAL }, baseUrl);
+  await openResetView(page);
+  await page.fill('#resetEmailInput', 'private.person@example.com');
+  await page.evaluate(() => document.getElementById('resetForm').requestSubmit());
+  await page.waitForSelector('#resetSentState:not([hidden])');
+  const storage = await page.evaluate(() => ({
+    local: JSON.stringify(Object.entries(window.localStorage)),
+    session: JSON.stringify(Object.entries(window.sessionStorage)),
+    cookie: document.cookie,
+  }));
+  assert.equal(storage.local, '[]', 'localStorage vacío');
+  assert.equal(storage.session, '[]', 'sessionStorage vacío');
+  assert.equal(storage.cookie, '', 'sin cookies');
+  assert.equal(page.url().includes('private.person'), false, 'el email no va en la URL');
+  const joined = state.consoleLines.join(' | ');
+  assert.equal(joined.includes('private.person@example.com'), false, 'el email no se imprime');
+  await closeContext(context, state);
+  console.log('PASS reset request persists no PII and prints nothing');
+}
+
+async function testResetRequestKeyboard(browser, baseUrl) {
+  const { context, page, state } = await newPage(browser, VIEWPORTS[1], { managementURL: PORTAL }, baseUrl);
+  // Se llega al botón con el teclado y se activa con Enter.
+  await page.focus('#forgotPasswordBtn');
+  const outline = await page.evaluate(() => getComputedStyle(document.getElementById('forgotPasswordBtn')).outlineStyle);
+  assert.notEqual(outline, 'none', 'el botón necesita foco visible');
+  await page.keyboard.press('Enter');
+  await page.waitForSelector('#resetRequestState:not([hidden])');
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'resetEmailInput', 'el foco pasa al email');
+  // Orden de tabulación en la vista de reset.
+  const order = [];
+  for (let i = 0; i < 2; i += 1) {
+    await page.keyboard.press('Tab');
+    order.push(await page.evaluate(() => document.activeElement.id));
+  }
+  assert.deepEqual(order, ['resetSubmitButton', 'resetBackBtn'], `orden inesperado: ${order.join(' > ')}`);
+  // Se envía con Enter desde el email.
+  await page.focus('#resetEmailInput');
+  await page.keyboard.type('user@example.com');
+  await page.keyboard.press('Enter');
+  await page.waitForSelector('#resetSentState:not([hidden])');
+  assert.equal(state.count('supabase:resetPasswordForEmail'), 1);
+  assert.equal(state.first('supabase:resetPasswordForEmail').detail.redirectTo, RESET_REDIRECT);
+  // Y se vuelve al login con Enter en el botón.
+  await page.focus('#resetSentBackBtn');
+  await page.keyboard.press('Enter');
+  await page.waitForSelector('#formState:not([hidden])');
+  assert.equal(await page.inputValue('#resetEmailInput'), '', 'el email se limpia al volver');
+  await closeContext(context, state);
+  console.log('PASS reset request is fully keyboard operable with aria-live feedback');
+}
+
+async function testSubscriptionFlowStillWorksAfterReset(browser, baseUrl) {
+  const { context, page, state } = await newPage(browser, VIEWPORTS[1], { managementURL: PORTAL }, baseUrl);
+  // 1)_RESET completo y de vuelta al login.
+  await openResetView(page);
+  await page.fill('#resetEmailInput', 'user@example.com');
+  await page.evaluate(() => document.getElementById('resetForm').requestSubmit());
+  await page.waitForSelector('#resetSentState:not([hidden])');
+  await page.click('#resetSentBackBtn');
+  await page.waitForSelector('#formState:not([hidden])');
+  // 2) Login + Customer Portal siguen funcionando igual.
+  await fillCredentials(page);
+  assert.deepEqual(await waitForPortal(state), [PORTAL]);
+  assert.equal(state.count('supabase:signInWithPassword'), 1);
+  assert.equal(state.count('rc:configure'), 1);
+  assert.equal(state.count('rc:getCustomerInfo'), 1);
+  assert.equal(state.first('rc:configure').detail.appUserId, UUID, 'RevenueCat sigue recibiendo el UUID de la sesión');
+  assert.equal(state.count('rc:purchase'), 0);
+  assert.equal(state.count('rc:getOfferings'), 0);
+  assert.equal(state.count('rc:restorePurchases'), 0);
+  await closeContext(context, state);
+  console.log('PASS subscription management still works after using the reset flow');
+}
+
+async function testResetPageUnchanged(browser, baseUrl) {
+  // /reset-password/ sigue siendo la página que consume el callback, sin cambios.
+  const resetPage = fs.readFileSync(path.join(ROOT, 'reset-password', 'index.html'), 'utf8');
+  assert.match(resetPage, /hash/);
+  assert.equal(/resetPasswordForEmail/.test(resetPage), false, '/reset-password/ no inicia solicitudes, solo consume el callback');
+  assert.equal(/request-password-reset|resetRequestState/.test(resetPage), false);
+  // Y sigue funcionando.
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.route((url) => url.hostname !== '127.0.0.1', (route) => route.abort());
+  await page.goto(baseUrl + '/reset-password/');
+  assert.equal(await page.isVisible('#invalidState'), true, 'sin token muestra el estado de enlace no válido');
+  await context.close();
+  console.log('PASS /reset-password/ is unchanged and still only consumes the callback');
+}
+
 async function testSiteLinks(browser, baseUrl) {
   const context = await browser.newContext();
   const page = await context.newPage();
@@ -448,6 +703,16 @@ async function main() {
     ['double submit', testDoubleClickSingleLogin],
     ['no console leaks', testNoConsoleLeaks],
     ['no browser storage', testNoBrowserStorage],
+    ['forgot does not navigate', testForgotDoesNotNavigate],
+    ['reset request redirect exact', testResetRequestSendsExactRedirect],
+    ['reset request generic response', testResetRequestGenericForExistingAndMissing],
+    ['reset request invalid email', testResetRequestInvalidEmail],
+    ['reset request double click', testResetRequestDoubleClick],
+    ['reset request network retry', testResetRequestNetworkRetry],
+    ['reset request no pii persisted', testResetRequestNoPiiPersisted],
+    ['reset request keyboard', testResetRequestKeyboard],
+    ['subscription flow after reset', testSubscriptionFlowStillWorksAfterReset],
+    ['reset-password page unchanged', testResetPageUnchanged],
     ['site links', testSiteLinks],
   ];
   let passed = 0;

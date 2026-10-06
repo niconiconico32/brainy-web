@@ -22,9 +22,33 @@
     'use strict';
 
     var UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    var EMAIL_DOMAIN_RE = /^[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)+$/;
 
     function isUuid(value) {
         return typeof value === 'string' && UUID_RE.test(value);
+    }
+
+    /* Validación de email deliberadamente conservadora: rechaza espacios, @
+     * duplicados, dominio sin punto y longitudes absurdas. No busca exhaustividad
+     * RFC 5322; solo evita direcciones mal formadas antes de gastar una llamada.
+     */
+    function isValidEmail(value) {
+        if (typeof value !== 'string') {
+            return false;
+        }
+        var trimmed = value.trim();
+        if (!trimmed || trimmed.length > 254 || /\s/.test(trimmed)) {
+            return false;
+        }
+        var parts = trimmed.split('@');
+        if (parts.length !== 2) {
+            return false;
+        }
+        var local = parts[0];
+        var domain = parts[1];
+        return local.length >= 1 && local.length <= 64 &&
+            domain.length >= 3 && domain.length <= 253 &&
+            EMAIL_DOMAIN_RE.test(domain);
     }
 
     function isNonEmptyString(value) {
@@ -100,16 +124,24 @@
      */
     function createFlow(deps) {
         var supabase = deps.supabase;
-        var revenuecat = deps.revenuecat;
+var revenuecat = deps.revenuecat;
         var apiKey = deps.apiKey;
         var navigate = deps.navigate;
         var clearPassword = deps.clearPassword || function () {};
         var onState = deps.onState || function () {};
+        // Callback donde Supabase redirige tras aceptar el enlace de recuperación.
+        var resetRedirectTo = deps.resetRedirectTo;
+        var clearEmail = deps.clearEmail || function () {};
 
         var busy = false;
+        var resetBusy = false;
         // Solo en memoria, y SOLO el UUID ya autenticado: permite reintentar el
         // paso de RevenueCat sin volver a pedir la contraseña. No se persiste.
         var verifiedUserId = null;
+        // Email pendiente de reintentar tras un error de red. Solo en memoria: nunca
+        // se escribe en localStorage, sessionStorage, cookies, query params,
+        // analytics ni consola.
+        var pendingResetEmail = null;
 
         function emit(state, detail) {
             onState(state, detail || {});
@@ -251,10 +283,84 @@
             });
         }
 
+        /* Solicitud del correo de recuperación.
+         *
+         * Anti-enumeración: tanto si la cuenta existe como si no se emite
+         * EXACTAMENTE el mismo estado y el mismo mensaje genérico. Cualquier
+         * error que no sea de red (incluido "user not found" o similar) se
+         * trata como éxito y se descarta sin registrar ni distinguir. Solo los
+         * fallos de red son recuperables y ofrecen Retry.
+         *
+         * El email vive solo en memoria: nunca se escribe en localStorage,
+         * sessionStorage, cookies, query params, analytics ni consola.
+         */
+        function requestPasswordReset(email) {
+            var normalizedEmail = normalizeEmail(email);
+            if (resetBusy) {
+                return Promise.resolve('busy');
+            }
+            if (!isValidEmail(normalizedEmail)) {
+                emit('reset-invalid', {});
+                return Promise.resolve('invalid');
+            }
+            if (!supabase || !supabase.auth ||
+                typeof supabase.auth.resetPasswordForEmail !== 'function') {
+                emit('reset-unavailable', { reason: 'auth_unavailable' });
+                return Promise.resolve('unavailable');
+            }
+            if (!isNonEmptyString(resetRedirectTo)) {
+                emit('reset-unavailable', { reason: 'redirect_missing' });
+                return Promise.resolve('unavailable');
+            }
+
+            resetBusy = true;
+            pendingResetEmail = normalizedEmail;
+            emit('reset-sending', {});
+
+            return Promise.resolve(supabase.auth.resetPasswordForEmail(normalizedEmail, {
+                redirectTo: resetRedirectTo
+            })).then(function () {
+                resetBusy = false;
+                pendingResetEmail = null;
+                clearEmail();
+                // Idéntico exista o no la cuenta.
+                emit('reset-sent', {});
+                return 'sent';
+            }).catch(function (error) {
+                resetBusy = false;
+                if (looksLikeNetworkError(error)) {
+                    // Se conserva el email solo en memoria para poder reintentar.
+                    emit('reset-network-error', {});
+                    return 'network-error';
+                }
+                // Cualquier otro error (incluido "usuario inexistente") se trata
+                // como éxito genérico: no se registra ni se distingue del caso real.
+                pendingResetEmail = null;
+                clearEmail();
+                emit('reset-sent', {});
+                return 'sent';
+            });
+        }
+
+        function retryPasswordReset() {
+            if (resetBusy || !isValidEmail(pendingResetEmail)) {
+                return Promise.resolve('busy');
+            }
+            // Reutiliza la misma ruta para no tener dos caminos hacia el mismo efecto.
+            return requestPasswordReset(pendingResetEmail);
+        }
+
+        function hasPendingResetEmail() {
+            return isValidEmail(pendingResetEmail);
+        }
+
         return {
             signIn: signIn,
             retryRevenueCatStep: retryRevenueCatStep,
             hasVerifiedSession: hasVerifiedSession,
+            requestPasswordReset: requestPasswordReset,
+            retryPasswordReset: retryPasswordReset,
+            hasPendingResetEmail: hasPendingResetEmail,
             isBusy: isBusy
         };
     }
@@ -287,6 +393,7 @@
         scrubIdentityParams: scrubIdentityParams,
         isValidHttpsUrl: isValidHttpsUrl,
         isUuid: isUuid,
+        isValidEmail: isValidEmail,
         looksLikeNetworkError: looksLikeNetworkError,
         readSessionUserId: readSessionUserId,
         normalizeEmail: normalizeEmail
