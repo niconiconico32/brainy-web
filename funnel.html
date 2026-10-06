@@ -1509,6 +1509,24 @@
             margin-top: 4px;
         }
 
+        .paywall-note a {
+            color: inherit;
+        }
+
+        /* Aclaración de cancelación en el paywall y enlace secundario en la
+           pantalla de éxito/handoff. No altera el avance del funnel. */
+        .manage-subscription-note {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 10px;
+        }
+
+        .manage-subscription-note a {
+            color: inherit;
+            font-weight: 700;
+        }
+
         .paywall-recovery {
             text-align: center;
             padding: 18px 6px 4px;
@@ -4211,6 +4229,7 @@
                         <div class="paywall-summary">${chips}</div>
                         <div class="plan-cards">${cardsHtml}</div>
                          <p class="paywall-note">${rcConfig.termsUrl ? localizedText('Al continuar aceptas los términos de Brainy. Puedes cancelar en cualquier momento.', 'By continuing, you accept Brainy’s terms. You can cancel at any time.') : localizedText('Puedes cancelar en cualquier momento desde tu cuenta.', 'You can cancel at any time from your account.')}</p>
+                         <p class="manage-subscription-note">${localizedText('Cancela cuando quieras desde el correo de confirmación de pago o en brainyadhd.com/manage-subscription/.', 'Cancel anytime from your payment confirmation email or at brainyadhd.com/manage-subscription/.')}</p>
                         <div class="actions">
                             ${checkoutAllowed
                                 ? `<button class="btn btn-dopamine" type="button" id="purchaseBtn">${localizedText('Activar mi plan →', 'Activate my plan →')}</button>`
@@ -4492,6 +4511,7 @@
                         <div class="handoff-check">✓</div>
                         ${mainArea}
                     </div>
+                    <p class="manage-subscription-note">${localizedText('¿Necesitas cancelar? ', 'Need to cancel? ')}<a href="/manage-subscription/">${localizedText('Gestionar suscripción', 'Manage subscription')}</a></p>
                 </article>`;
 
             const openBtn = document.getElementById('openAppBtn');
@@ -4569,6 +4589,7 @@
                         <div class="handoff-check">✓</div>
                         ${mainArea}
                     </div>
+                    <p class="manage-subscription-note">${localizedText('¿Necesitas cancelar? ', 'Need to cancel? ')}<a href="/manage-subscription/">${localizedText('Gestionar suscripción', 'Manage subscription')}</a></p>
                 </article>`;
 
             const openBtn = document.getElementById('openAppBtn');
