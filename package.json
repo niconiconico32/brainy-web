@@ -20,6 +20,7 @@
     "test:plan-loading": "node testers/plan-loading-regression.cjs",
     "test:plan-loading-screen": "node testers/plan-loading-screen-regression.cjs",
     "test:paywall": "node testers/paywall-regression.cjs",
+    "test:plan-key-rotation": "node testers/plan-key-rotation-regression.cjs",
     "cleanup:funnel-plans": "node testers/cleanup-funnel-plans.cjs"
   },
   "dependencies": {

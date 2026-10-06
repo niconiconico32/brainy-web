@@ -6484,12 +6484,23 @@
 
                 let { res, data } = await attempt(clientPlanKey);
 
-                // Plan vencido: la clave quedó quemada en una fila expired.
-                // Rotamos UNA vez (nueva fila) para no bloquear el funnel.
-                if (res.status === 409 && data && data.error === 'plan_expired') {
+                // La clave de este navegador ya no se puede reutilizar tal cual.
+                // El backend NO modifica la fila existente en estos 409: solo
+                // responde el error. Rotar crea una fila nueva para este email.
+                //   plan_expired      → la clave quedó quemada en una fila expired
+                //   identity_conflict → la fila ya tiene funnel_user_id de OTRO
+                //                      email, así que este email necesita plan propio
+                // OJO: no se rotan plan_already_claiming / plan_already_claimed /
+                // plan_already_paid. Ahí hay un plan real en curso o pagado y
+                // rotar en silencio lo dejaría huérfano; eso se recupera, no se
+                // duplica.
+                const rotatable409 = res.status === 409 && data &&
+                    (data.error === 'plan_expired' || data.error === 'identity_conflict');
+                if (rotatable409) {
+                    const reason = data.error;
                     resetClientPlanKey();
                     const rotatedKey = ensureClientPlanKey();
-                    track('plan_key_rotated', { reason: 'plan_expired' });
+                    track('plan_key_rotated', { reason: reason });
                     ({ res, data } = await attempt(rotatedKey));
                 }
 
