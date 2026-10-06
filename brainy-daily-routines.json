@@ -1,154 +1,537 @@
 {
   "daily_routines": [
     {
-      "templateId": "hidratacion_anclaje",
-      "name": "Hidratación y anclaje matutino",
-      "days": ["daily"],
-      "icon": "💧",
-      "category": "rutinas_organizacion",
-      "why": "El agua y la medicación (si aplica) a la misma hora crean un punto fijo desde donde arranca el resto del día.",
-      "tasks": [
-        { "title": "Dejar el vaso de agua listo la noche anterior", "position": 1 },
-        { "title": "Tomar el vaso de agua completo antes de mirar el celular", "position": 2 },
-        { "title": "Tomar tu medicación a la misma hora, si corresponde", "position": 3 },
-        { "title": "Abrir la cortina o salir a la luz un momento", "position": 4 },
-        { "title": "Marcar el hábito como cumplido", "position": 5 }
-      ]
-    },
-    {
-      "templateId": "luz_solar",
-      "name": "Salir a la luz temprano",
-      "days": ["daily"],
-      "icon": "☀️",
-      "category": "salud_energia",
-      "why": "La luz natural en los primeros minutos del día ayuda a regular el ritmo circadiano, que suele estar más alterado en TDAH.",
-      "tasks": [
-        { "title": "Elegir el momento del día en que vas a salir o abrir una ventana grande", "position": 1 },
-        { "title": "Salir afuera o pararte junto a la ventana", "position": 2 },
-        { "title": "Quedarte ahí al menos 5 minutos", "position": 3 },
-        { "title": "Estirar o respirar mientras estás en la luz", "position": 4 },
-        { "title": "Marcar el hábito como cumplido", "position": 5 }
-      ]
-    },
-    {
-      "templateId": "desayuno_energia",
-      "name": "Desayuno con energía estable",
-      "days": ["daily"],
-      "icon": "🥚",
-      "category": "salud_energia",
-      "why": "Un desayuno con proteína evita el pico y caída de azúcar que empeora la falta de foco y la irritabilidad.",
-      "tasks": [
-        { "title": "Elegir la noche anterior una opción simple con proteína", "position": 1 },
-        { "title": "Prepararla apenas te levantás", "position": 2 },
-        { "title": "Comerla, sin pantalla si podés", "position": 3 },
-        { "title": "Marcar el hábito como cumplido", "position": 4 }
-      ]
-    },
-    {
-      "templateId": "movimiento_corto",
-      "name": "Movimiento diario corto",
-      "days": ["daily"],
-      "icon": "🏃",
-      "category": "salud_energia",
-      "why": "No hace falta una rutina larga: activar el cuerpo unos minutos ya ayuda a regular energía y foco.",
-      "tasks": [
-        { "title": "Elegir el tipo de movimiento (caminar, estirar, bailar)", "position": 1 },
-        { "title": "Poner un timer de 5 a 10 minutos", "position": 2 },
-        { "title": "Moverte sin parar hasta que suene el timer", "position": 3 },
-        { "title": "Marcar el hábito como cumplido", "position": 4 }
-      ]
-    },
-    {
       "templateId": "top_3_dia",
-      "name": "Elegir mis 3 tareas del día",
-      "days": ["daily"],
+      "name": "Elegir tres prioridades realistas",
+      "name_en": "Choose three realistic priorities",
+      "days": [
+        "daily"
+      ],
       "icon": "🎯",
       "category": "foco_productividad",
-      "why": "Limitar la lista a 3 evita la parálisis de \"todo es urgente\" y fuerza a priorizar en vez de improvisar.",
+      "why": "Limitar la atención a tres prioridades reduce la competencia entre pendientes y hace más visible qué necesita ocurrir primero.",
       "tasks": [
-        { "title": "Abrir tu lista de tareas en Brainy", "position": 1 },
-        { "title": "Elegir solo 3 tareas para hoy", "position": 2 },
-        { "title": "Ordenarlas de la más importante a la menos", "position": 3 },
-        { "title": "Empezar por la primera antes de revisar el celular", "position": 4 },
-        { "title": "Marcar el hábito como cumplido al final del día", "position": 5 }
-      ]
+        {
+          "title": "Mira lo que tienes pendiente para hoy.",
+          "title_en": "Look at what you have pending today.",
+          "position": 1
+        },
+        {
+          "title": "Elige una tarea necesaria, una importante y una opcional.",
+          "title_en": "Choose one necessary task, one important task, and one optional task.",
+          "position": 2
+        },
+        {
+          "title": "Ordénalas según lo que conviene empezar primero.",
+          "title_en": "Put them in the order that makes the most sense to start.",
+          "position": 3
+        },
+        {
+          "title": "Escribe la primera acción física y concreta de la prioridad principal.",
+          "title_en": "Write the first physical, concrete action for your main priority.",
+          "position": 4
+        },
+        {
+          "title": "Dedica dos minutos a comenzar esa acción.",
+          "title_en": "Spend two minutes starting that action.",
+          "position": 5
+        }
+      ],
+      "why_en": "Limiting your attention to three priorities reduces competition between unfinished tasks and makes it clearer what needs to happen first."
     },
     {
       "templateId": "pausa_pantallas",
-      "name": "Pausa de pantallas a media tarde",
-      "days": ["daily"],
+      "name": "Hacer una pausa breve de pantallas",
+      "name_en": "Take a short screen break",
+      "days": [
+        "daily"
+      ],
       "icon": "🧘",
       "category": "foco_productividad",
-      "why": "Una pausa sensorial corta previene el hiperfoco agotador y baja la sobreestimulación acumulada.",
+      "why": "Una pausa breve puede ayudar a reducir la saturación y facilita volver con una intención más clara.",
       "tasks": [
-        { "title": "Poner una alarma a mitad de la tarde", "position": 1 },
-        { "title": "Al sonar, soltar el celular o la pantalla", "position": 2 },
-        { "title": "Hacer algo sin pantalla por 5 a 10 minutos", "position": 3 },
-        { "title": "Volver a tu tarea después de la pausa", "position": 4 },
-        { "title": "Marcar el hábito como cumplido", "position": 5 }
-      ]
+        {
+          "title": "Termina la frase o acción que estás haciendo ahora.",
+          "title_en": "Finish the sentence or action you are doing now.",
+          "position": 1
+        },
+        {
+          "title": "Deja la pantalla fuera de tu campo de visión.",
+          "title_en": "Move the screen out of your line of sight.",
+          "position": 2
+        },
+        {
+          "title": "Mira a lo lejos, estira el cuerpo o ve a buscar agua.",
+          "title_en": "Look into the distance, stretch, or get some water.",
+          "position": 3
+        },
+        {
+          "title": "Mantén la pausa entre cinco y diez minutos.",
+          "title_en": "Keep the break between five and ten minutes.",
+          "position": 4
+        },
+        {
+          "title": "Antes de volver, decide cuál será tu única acción siguiente.",
+          "title_en": "Before returning, choose the one action you will do next.",
+          "position": 5
+        }
+      ],
+      "why_en": "A short pause can reduce overload and make it easier to return with a clearer intention."
     },
     {
-      "templateId": "cuidado_personal",
-      "name": "Cuidado personal diario",
-      "days": ["daily"],
-      "icon": "🧴",
-      "category": "salud_energia",
-      "why": "Encadenar los pasos de higiene (habit stacking) reduce la carga de decisión: uno lleva al otro sin pensar cada vez.",
-      "note": "El paso 4 es configurable: el usuario elige qué variante quiere al armar este hábito, no se asigna automáticamente.",
+      "templateId": "arranque_dos_minutos",
+      "name": "Hacer un arranque de dos minutos",
+      "name_en": "Start with two minutes",
+      "days": [
+        "daily"
+      ],
+      "icon": "🚀",
+      "category": "foco_productividad",
+      "why": "Reducir una tarea a una primera acción diminuta hace que empezar requiera menos decisiones y menos preparación.",
       "tasks": [
-        { "title": "Lavarte la cara o ducharte", "position": 1 },
-        { "title": "Cepillarte los dientes", "position": 2 },
-        { "title": "Aplicar hidratante o protector solar", "position": 3 },
-        { "title": "Paso configurable: rutina facial extendida (sérum/tónico) o cuidado de vello facial (afeitar/recortar barba)", "position": 4 },
-        { "title": "Marcar el hábito como cumplido", "position": 5 }
-      ]
+        {
+          "title": "Elige una tarea que estés evitando.",
+          "title_en": "Choose a task you have been avoiding.",
+          "position": 1
+        },
+        {
+          "title": "Define una acción que puedas hacer en menos de dos minutos.",
+          "title_en": "Define one action you can do in under two minutes.",
+          "position": 2
+        },
+        {
+          "title": "Haz únicamente esa acción.",
+          "title_en": "Do only that action.",
+          "position": 3
+        },
+        {
+          "title": "Decide si quieres continuar o detenerte; el arranque ya cuenta.",
+          "title_en": "Decide whether to continue or stop; getting started already counts.",
+          "position": 4
+        }
+      ],
+      "why_en": "Reducing a task to one tiny first action means getting started requires fewer decisions and less preparation."
+    },
+    {
+      "templateId": "hidratacion_anclaje",
+      "name": "Empezar el día con agua y luz",
+      "name_en": "Start the day with water and light",
+      "days": [
+        "daily"
+      ],
+      "icon": "💧",
+      "category": "rutinas_organizacion",
+      "why": "Repetir una secuencia corta al despertar reduce decisiones y crea un comienzo reconocible para el día.",
+      "tasks": [
+        {
+          "title": "Sirve o toma el vaso de agua que tengas disponible.",
+          "title_en": "Pour or pick up a glass of water.",
+          "position": 1
+        },
+        {
+          "title": "Bebe el agua antes de pasar a otra actividad.",
+          "title_en": "Drink it before moving on to another activity.",
+          "position": 2
+        },
+        {
+          "title": "Si tienes medicación indicada para esa hora, tómala según la indicación profesional.",
+          "title_en": "If you have medication prescribed for this time, take it as directed by your healthcare professional.",
+          "position": 3
+        },
+        {
+          "title": "Abre la cortina o acércate unos minutos a la luz natural.",
+          "title_en": "Open the curtains or spend a few minutes near natural light.",
+          "position": 4
+        },
+        {
+          "title": "Elige una sola acción amable con la que empezar el día.",
+          "title_en": "Choose one gentle action to begin your day.",
+          "position": 5
+        }
+      ],
+      "why_en": "Repeating a short sequence after waking reduces the number of decisions you need to make and gives the day a familiar starting point."
     },
     {
       "templateId": "orden_5_min",
-      "name": "Orden rápido de 5 minutos",
-      "days": ["daily"],
+      "name": "Ordenar una zona durante cinco minutos",
+      "name_en": "Tidy one area for five minutes",
+      "days": [
+        "daily"
+      ],
       "icon": "🧹",
       "category": "rutinas_organizacion",
-      "why": "Limitar el orden a una sola superficie y un timer corto evita que \"ordenar\" se sienta como un proyecto gigante.",
+      "why": "Una zona concreta y un tiempo corto hacen que ordenar se sienta como una acción terminable, no como un proyecto sin límites.",
       "tasks": [
-        { "title": "Poner un timer de 5 minutos", "position": 1 },
-        { "title": "Elegir una sola superficie (mesa, cama, escritorio)", "position": 2 },
-        { "title": "Guardar todo lo que no pertenece ahí", "position": 3 },
-        { "title": "Tirar la basura visible", "position": 4 },
-        { "title": "Marcar el hábito como cumplido cuando suene el timer", "position": 5 }
-      ]
+        {
+          "title": "Elige una sola superficie o zona pequeña.",
+          "title_en": "Choose one surface or small area.",
+          "position": 1
+        },
+        {
+          "title": "Reserva cinco minutos para esa zona.",
+          "title_en": "Set aside five minutes for that area.",
+          "position": 2
+        },
+        {
+          "title": "Devuelve a su lugar lo que claramente pertenece a otro sitio.",
+          "title_en": "Put away anything that clearly belongs somewhere else.",
+          "position": 3
+        },
+        {
+          "title": "Retira basura, vasos o platos visibles.",
+          "title_en": "Remove any visible trash, cups, or dishes.",
+          "position": 4
+        },
+        {
+          "title": "Detente al terminar el tiempo, aunque la zona no quede perfecta.",
+          "title_en": "Stop when the time is up, even if the area is not perfect.",
+          "position": 5
+        }
+      ],
+      "why_en": "Focusing on one specific area for a short amount of time makes tidying feel finishable instead of like an endless project."
+    },
+    {
+      "templateId": "primer_paso_manana",
+      "name": "️ Dejar preparado el primer paso de mañana",
+      "name_en": "️ Set up tomorrow’s first step",
+      "days": [
+        "daily"
+      ],
+      "icon": "🌤️",
+      "category": "rutinas_organizacion",
+      "why": "Decidir el primer paso con anticipación reduce la fricción de empezar al día siguiente.",
+      "tasks": [
+        {
+          "title": "Elige una sola prioridad para mañana.",
+          "title_en": "Choose one priority for tomorrow.",
+          "position": 1
+        },
+        {
+          "title": "Escríbela como una acción concreta, no como un proyecto completo.",
+          "title_en": "Write it as a concrete action, not a complete project.",
+          "position": 2
+        },
+        {
+          "title": "Deja visible el objeto o archivo que necesitarás primero.",
+          "title_en": "Leave the first item or file you will need somewhere visible.",
+          "position": 3
+        },
+        {
+          "title": "Retira una distracción evidente de ese espacio.",
+          "title_en": "Remove one obvious distraction from that space.",
+          "position": 4
+        }
+      ],
+      "why_en": "Deciding on the first step ahead of time reduces the friction of getting started the next day."
+    },
+    {
+      "templateId": "luz_solar",
+      "name": "️ Tomar unos minutos de luz natural",
+      "name_en": "️ Get a few minutes of natural light",
+      "days": [
+        "daily"
+      ],
+      "icon": "☀️",
+      "category": "salud_energia",
+      "why": "Incorporar luz natural al comienzo del día puede ayudar a crear una señal clara de activación y transición hacia las actividades diarias.",
+      "tasks": [
+        {
+          "title": "Abre las cortinas o busca el lugar con más luz disponible.",
+          "title_en": "Open the curtains or find the brightest available spot.",
+          "position": 1
+        },
+        {
+          "title": "Acércate a una ventana o sal al exterior si puedes hacerlo.",
+          "title_en": "Stand by a window or go outside if you can.",
+          "position": 2
+        },
+        {
+          "title": "Quédate allí durante unos cinco minutos.",
+          "title_en": "Stay there for about five minutes.",
+          "position": 3
+        },
+        {
+          "title": "Respira con calma o mueve suavemente el cuerpo mientras esperas.",
+          "title_en": "Breathe slowly or gently move your body while you wait.",
+          "position": 4
+        },
+        {
+          "title": "Al terminar, elige la siguiente acción sencilla de tu mañana.",
+          "title_en": "When you are done, choose the next simple action in your morning.",
+          "position": 5
+        }
+      ],
+      "why_en": "Adding natural light near the beginning of the day can create a clear cue that it is time to shift into your daily activities."
+    },
+    {
+      "templateId": "desayuno_energia",
+      "name": "Preparar un desayuno que me sostenga",
+      "name_en": "Make a breakfast that keeps me going",
+      "days": [
+        "daily"
+      ],
+      "icon": "🥚",
+      "category": "salud_energia",
+      "why": "Tener una opción sencilla y repetible reduce decisiones y evita que preparar el desayuno se convierta en otra tarea abrumadora.",
+      "tasks": [
+        {
+          "title": "Mira qué opción sencilla tienes disponible hoy.",
+          "title_en": "See which simple option is available today.",
+          "position": 1
+        },
+        {
+          "title": "Añade una fuente de proteína si forma parte de tu alimentación habitual.",
+          "title_en": "Add a source of protein if that is part of the way you normally eat.",
+          "position": 2
+        },
+        {
+          "title": "Prepara la versión más simple de ese desayuno.",
+          "title_en": "Make the simplest version of that breakfast.",
+          "position": 3
+        },
+        {
+          "title": "Siéntate y come los primeros minutos sin hacer otra tarea a la vez.",
+          "title_en": "Sit down and spend the first few minutes eating without doing another task.",
+          "position": 4
+        }
+      ],
+      "why_en": "Having a simple, repeatable option reduces decisions and keeps making breakfast from becoming another overwhelming task."
+    },
+    {
+      "templateId": "movimiento_corto",
+      "name": "Moverme durante unos minutos",
+      "name_en": "Move for a few minutes",
+      "days": [
+        "daily"
+      ],
+      "icon": "🏃",
+      "category": "salud_energia",
+      "why": "Empezar con pocos minutos reduce la barrera inicial y permite que el movimiento cuente incluso en días de poca energía.",
+      "tasks": [
+        {
+          "title": "Elige la forma de movimiento más fácil para hoy.",
+          "title_en": "Choose the easiest kind of movement for today.",
+          "position": 1
+        },
+        {
+          "title": "Reserva entre cinco y diez minutos.",
+          "title_en": "Set aside five to ten minutes.",
+          "position": 2
+        },
+        {
+          "title": "Empieza con un minuto suave, sin buscar intensidad.",
+          "title_en": "Start with one gentle minute without aiming for intensity.",
+          "position": 3
+        },
+        {
+          "title": "Continúa hasta completar el tiempo elegido.",
+          "title_en": "Continue until you reach the amount of time you chose.",
+          "position": 4
+        },
+        {
+          "title": "Detente o sigue un poco más según cómo te sientas.",
+          "title_en": "Stop or keep going a little longer based on how you feel.",
+          "position": 5
+        }
+      ],
+      "why_en": "Starting with just a few minutes lowers the barrier to getting started and lets movement count even on low-energy days."
+    },
+    {
+      "templateId": "cuidado_personal",
+      "name": "Hacer mi cuidado personal básico",
+      "name_en": "Do my basic personal care",
+      "days": [
+        "daily"
+      ],
+      "icon": "🧴",
+      "category": "salud_energia",
+      "why": "Una secuencia mínima y estable reduce la cantidad de decisiones necesarias para empezar a cuidarte.",
+      "tasks": [
+        {
+          "title": "Ve al baño y comienza por la acción que te resulte más fácil.",
+          "title_en": "Go to the bathroom and begin with whichever action feels easiest.",
+          "position": 1
+        },
+        {
+          "title": "Cepíllate los dientes.",
+          "title_en": "Brush your teeth.",
+          "position": 2
+        },
+        {
+          "title": "Lávate la cara o dúchate, según lo que necesites hoy.",
+          "title_en": "Wash your face or take a shower, depending on what you need today.",
+          "position": 3
+        },
+        {
+          "title": "Haz tu cuidado elegido: hidratante, protector solar, sérum, afeitado o barba.",
+          "title_en": "Do your chosen care step: moisturizer, sunscreen, serum, shaving, or beard care.",
+          "position": 4
+        },
+        {
+          "title": "Deja los productos juntos para encontrarlos fácilmente la próxima vez.",
+          "title_en": "Keep the products together so they are easy to find next time.",
+          "position": 5
+        }
+      ],
+      "note": "El paso 4 conserva su carácter configurable. La variante debe elegirse al crear la rutina y no asignarse automáticamente.",
+      "note_en": "Step 4 remains customizable. The variation should be selected when the routine is created rather than assigned automatically.",
+      "why_en": "A small, consistent sequence reduces how many decisions it takes to start caring for yourself."
+    },
+    {
+      "templateId": "pausa_agua_movimiento",
+      "name": "Hacer una pausa de agua y movimiento",
+      "name_en": "Take a water and movement break",
+      "days": [
+        "daily"
+      ],
+      "icon": "💧",
+      "category": "salud_energia",
+      "why": "Una pausa breve combina dos acciones fáciles y crea un punto de reinicio durante el día.",
+      "tasks": [
+        {
+          "title": "Levántate del lugar donde estás.",
+          "title_en": "Stand up from where you are.",
+          "position": 1
+        },
+        {
+          "title": "Bebe un vaso de agua.",
+          "title_en": "Drink a glass of water.",
+          "position": 2
+        },
+        {
+          "title": "Mueve hombros, cuello o piernas durante un minuto.",
+          "title_en": "Move your shoulders, neck, or legs for one minute.",
+          "position": 3
+        },
+        {
+          "title": "Elige con qué acción concreta volverás.",
+          "title_en": "Choose the concrete action you will return to.",
+          "position": 4
+        }
+      ],
+      "why_en": "A short break combines two easy actions and creates a reset point in the middle of the day."
     },
     {
       "templateId": "brain_dump_nocturno",
-      "name": "Brain dump nocturno",
-      "days": ["daily"],
+      "name": "Vaciar la cabeza antes de dormir",
+      "name_en": "Clear my head before bed",
+      "days": [
+        "daily"
+      ],
       "icon": "📝",
       "category": "calma_regulacion",
-      "why": "Sacar los pensamientos de la cabeza antes de dormir reduce la rumiación que retrasa el sueño en TDAH.",
+      "why": "Poner los pendientes fuera de la cabeza permite cerrar el día sin intentar resolverlos todos antes de dormir.",
       "tasks": [
-        { "title": "Agarrar papel o abrir notas", "position": 1 },
-        { "title": "Escribir todo lo que ronda la cabeza durante 5 minutos", "position": 2 },
-        { "title": "Marcar con una estrella lo más urgente", "position": 3 },
-        { "title": "Pasar eso a la lista de mañana", "position": 4 },
-        { "title": "Marcar el hábito como cumplido", "position": 5 }
-      ]
+        {
+          "title": "Elige papel o una nota digital.",
+          "title_en": "Choose paper or a digital note.",
+          "position": 1
+        },
+        {
+          "title": "Escribe durante cinco minutos todo lo que siga dando vueltas.",
+          "title_en": "Spend five minutes writing down anything still on your mind.",
+          "position": 2
+        },
+        {
+          "title": "Marca únicamente lo que necesita atención mañana.",
+          "title_en": "Mark only what needs attention tomorrow.",
+          "position": 3
+        },
+        {
+          "title": "Convierte uno de esos pendientes en una acción pequeña.",
+          "title_en": "Turn one of those items into a small action.",
+          "position": 4
+        },
+        {
+          "title": "Cierra la nota y deja el resto para otro momento.",
+          "title_en": "Close the note and leave the rest for another time.",
+          "position": 5
+        }
+      ],
+      "why_en": "Moving unfinished thoughts out of your head helps you close the day without trying to solve everything before sleep."
     },
     {
       "templateId": "rutina_cierre_sueno",
-      "name": "Rutina de cierre para dormir",
-      "days": ["daily"],
+      "name": "Cerrar el día con menos estímulos",
+      "name_en": "End the day with less stimulation",
+      "days": [
+        "daily"
+      ],
       "icon": "🌙",
       "category": "calma_regulacion",
-      "why": "La higiene del sueño es el área con más evidencia de impacto directo en los síntomas de TDAH.",
+      "why": "Repetir una secuencia tranquila ayuda a pasar de la actividad del día a un momento de descanso con menos decisiones.",
       "tasks": [
-        { "title": "Dejar el celular cargando fuera del cuarto o lejos de la cama", "position": 1 },
-        { "title": "Bajar la luz principal del espacio", "position": 2 },
-        { "title": "Preparar ropa o agenda para mañana", "position": 3 },
-        { "title": "Hacer una acción de cierre (leer, respirar, estirar)", "position": 4 },
-        { "title": "Acostarte a la misma hora todos los días", "position": 5 },
-        { "title": "Marcar el hábito como cumplido", "position": 6 }
-      ]
+        {
+          "title": "Reduce la luz principal del espacio.",
+          "title_en": "Dim the main lights in the room.",
+          "position": 1
+        },
+        {
+          "title": "Prepara una sola cosa que necesitarás mañana.",
+          "title_en": "Prepare one thing you will need tomorrow.",
+          "position": 2
+        },
+        {
+          "title": "Haz tu higiene básica de noche.",
+          "title_en": "Do your basic nighttime hygiene.",
+          "position": 3
+        },
+        {
+          "title": "Elige una actividad tranquila: leer, respirar o estirar.",
+          "title_en": "Choose a calming activity: reading, breathing, or stretching.",
+          "position": 4
+        },
+        {
+          "title": "Activa el modo No molestar.",
+          "title_en": "Turn on Do Not Disturb.",
+          "position": 5
+        },
+        {
+          "title": "Deja el teléfono fuera de alcance como último paso.",
+          "title_en": "Leave your phone out of reach as the final step.",
+          "position": 6
+        }
+      ],
+      "why_en": "Repeating a calming sequence can make it easier to shift from the day’s activity into a time for rest, with fewer decisions to make."
+    },
+    {
+      "templateId": "reinicio_bloqueo",
+      "name": "Reiniciarme cuando me siento bloqueado",
+      "name_en": "Reset when I feel stuck",
+      "days": [
+        "daily"
+      ],
+      "icon": "🧩",
+      "category": "calma_regulacion",
+      "why": "Nombrar el bloqueo y reducir el siguiente paso evita que la única opción parezca ser resolver todo de una vez.",
+      "tasks": [
+        {
+          "title": "Detente y apoya ambos pies en el suelo.",
+          "title_en": "Pause and place both feet on the floor.",
+          "position": 1
+        },
+        {
+          "title": "Nombra qué te está frenando: duda, cansancio, miedo o demasiadas opciones.",
+          "title_en": "Name what is holding you back: uncertainty, fatigue, fear, or too many options.",
+          "position": 2
+        },
+        {
+          "title": "Reduce lo pendiente a la acción más pequeña que puedas ver.",
+          "title_en": "Reduce what is pending to the smallest action you can see.",
+          "position": 3
+        },
+        {
+          "title": "Haz esa acción durante dos minutos.",
+          "title_en": "Do that action for two minutes.",
+          "position": 4
+        },
+        {
+          "title": "Decide el siguiente paso solo después de terminar esos dos minutos.",
+          "title_en": "Choose the next step only after those two minutes are over.",
+          "position": 5
+        }
+      ],
+      "why_en": "Naming what is blocking you and shrinking the next step keeps “solve everything at once” from feeling like the only option."
     }
   ]
 }

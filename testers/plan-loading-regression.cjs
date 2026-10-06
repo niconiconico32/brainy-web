@@ -25,7 +25,9 @@ function serve() {
     try {
       const type = file.endsWith('.html') ? 'text/html'
         : file.endsWith('.json') ? 'application/json'
-        : file.endsWith('.png') ? 'image/png' : 'application/javascript';
+        : file.endsWith('.png') ? 'image/png'
+          : file.endsWith('.jpg') || file.endsWith('.jpeg') ? 'image/jpeg'
+            : 'application/javascript';
       res.writeHead(200, { 'Content-Type': type });
       res.end(fs.readFileSync(file));
     } catch {
@@ -444,46 +446,69 @@ async function main() {
       }
     });
 
-    check('25. existen exactamente tres placeholders testimoniales', async () => {
+    check('25. existen exactamente tres testimonios con 5 estrellas y nombre', async () => {
       await seed({ profileDiagnosisVariant: 'follow_through' });
-      const r = await page.evaluate(() => ({
-        cards: document.querySelectorAll('.testimonial-placeholder').length,
-        avatars: document.querySelectorAll('.testimonial-placeholder__avatar').length,
-        stars: document.querySelectorAll('.testimonial-placeholder__stars').length,
-        starsPer: [...document.querySelectorAll('.testimonial-placeholder')]
-          .map((c) => c.querySelectorAll('.testimonial-placeholder__stars span').length),
-        lines: document.querySelectorAll('.testimonial-placeholder__line').length,
-        names: document.querySelectorAll('.testimonial-placeholder__name').length,
-        hidden: document.querySelector('.testimonials').getAttribute('aria-hidden')
-      }));
+      const r = await page.evaluate(() => {
+        const cards = [...document.querySelectorAll('.testimonial-card')];
+        return {
+          cards: cards.length,
+          // Los placeholders CSS se eliminaron al pasar a contenido real.
+          placeholders: document.querySelectorAll('.testimonial-placeholder').length,
+          avatars: document.querySelectorAll('.testimonial-card__avatar').length,
+          stars: document.querySelectorAll('.testimonial-card__stars').length,
+          starsPer: cards.map((c) => (c.querySelector('.testimonial-card__stars').textContent.match(/★/g) || []).length),
+          names: document.querySelectorAll('.testimonial-card__name').length,
+          quotes: document.querySelectorAll('.testimonial-card__quote').length,
+          nameTexts: cards.map((c) => c.querySelector('.testimonial-card__name').textContent.trim()),
+          quoteLengths: cards.map((c) => c.querySelector('.testimonial-card__quote').textContent.trim().length),
+          hidden: document.querySelector('.testimonials').getAttribute('aria-hidden')
+        };
+      });
       assert.equal(r.cards, 3);
+      assert.equal(r.placeholders, 0, 'los placeholders CSS ya no deben existir');
       assert.equal(r.avatars, 3);
       assert.equal(r.stars, 3);
       assert.deepEqual(r.starsPer, [5, 5, 5], 'cinco estrellas por tarjeta');
-      assert.ok(r.lines >= 6);
       assert.equal(r.names, 3);
+      assert.equal(r.quotes, 3);
+      // Nombres distintos y citacion con contenido real.
+      assert.equal(new Set(r.nameTexts).size, 3, 'los nombres deben ser distintos');
+      r.quoteLengths.forEach((l, i) => assert.ok(l > 40, `testimonio ${i + 1} sin texto`));
+      // Sigue siendo decorativo: no debe entrar al lector de pantalla.
       assert.equal(r.hidden, 'true');
     });
 
-    check('26. no hay testimonios ni nombres reales', async () => {
+    check('26. los testimonios no usan afirmaciones prohibidas', async () => {
       await seed({ profileDiagnosisVariant: 'follow_through' });
-      const text = await page.evaluate(() => document.querySelector('.testimonials').textContent.trim());
-      assert.equal(text, '', 'los placeholders no deben contener texto');
-      assert.equal(await page.evaluate(() => document.querySelectorAll('.testimonials img, .testimonials svg').length), 0);
       const all = await page.evaluate(() => document.getElementById('funnelRoot').textContent);
-      for (const bad of ['MellowFlow', 'million', '% results', 'verified results']) {
+      for (const bad of ['MellowFlow', 'million', 'millón', '% results', 'verified results', 'scientifically proven', 'clinically proven']) {
         assert.equal(all.includes(bad), false, `afirmacion no permitida: ${bad}`);
       }
     });
 
-    check('27. no existen imagenes externas', async () => {
+    check('27. las fotos de los testimonios son locales', async () => {
       await seed({ profileDiagnosisVariant: 'follow_through' });
-      const r = await page.evaluate(() => ({
-        remotes: [...document.querySelectorAll('img')].map((i) => i.src).filter((s) => /^https?:|base64|^data:/.test(s)),
-        inTestimonials: document.querySelectorAll('.testimonials img').length
-      }));
-      assert.deepEqual(r.remotes, []);
-      assert.equal(r.inTestimonials, 0);
+      // Las fotos van con loading="lazy": solo cargan al entrar en viewport.
+      await page.evaluate(() => document.querySelector('.testimonials').scrollIntoView());
+      await page.waitForTimeout(300);
+      const r = await page.evaluate(() => {
+        const base = location.origin;
+        const imgs = [...document.querySelectorAll('.testimonials img')];
+        return {
+          remotes: [...document.querySelectorAll('img')].map((i) => i.src)
+            .filter((s) => !s.startsWith(base) || /^data:/.test(s)),
+          inTestimonials: imgs.length,
+          todasLocales: imgs.every((i) => (i.getAttribute('src') || '').startsWith('assets/testimonialAvatars/')),
+          cargadas: imgs.every((i) => i.naturalWidth > 0),
+          // La figura es decorativa: la foto no lleva alt.
+          sinAlt: imgs.every((i) => i.getAttribute('alt') === '')
+        };
+      });
+      assert.deepEqual(r.remotes, [], 'no debe haber imagenes remotas ni base64');
+      assert.equal(r.inTestimonials, 3);
+      assert.equal(r.todasLocales, true, 'las fotos deben salir de assets/testimonialAvatars');
+      assert.equal(r.cargadas, true, 'las fotos deben cargar');
+      assert.equal(r.sinAlt, true, 'el bloque es decorativo (aria-hidden)');
     });
 
     check('28. los progressbars tienen ARIA correcto', async () => {

@@ -2826,28 +2826,139 @@
             display: none;
 }
 
-/* La fila completa es el boton que selecciona: no hay zona partida. */
-.pick-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            min-height: 56px;
-            padding: 12px 14px;
+/* Fila = boton que selecciona + zona de desplegable. La card se comporta
+   como bloque para que el chevron sea un control hermano, no anidado. */
+.pick-row {
             border: 1px solid transparent;
             border-radius: 16px;
             background: var(--funnel-surface);
-            font: inherit;
-            text-align: left;
-            cursor: pointer;
             transition: border-color 0.18s ease, box-shadow 0.18s ease;
         }
 
 
-.pick-card.selected {
+.pick-row.is-selected {
             border-color: var(--funnel-accent);
             box-shadow: 0 0 0 3px rgba(21, 152, 117, 0.12);
         }
+
+
+.pick-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: stretch;
+        }
+
+
+.pick-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+            min-height: 56px;
+            padding: 12px 6px 12px 14px;
+            border: 0;
+            border-radius: 16px;
+            background: transparent;
+            font: inherit;
+            text-align: left;
+            cursor: pointer;
+        }
+
+
+/* Zona tactile del desplegable: 44px minimo. */
+.pick-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            min-height: 56px;
+            padding: 0 10px 0 4px;
+            border: 0;
+            border-radius: 16px;
+            background: transparent;
+            cursor: pointer;
+        }
+
+
+.pick-toggle:focus-visible {
+            outline: 3px solid var(--funnel-accent);
+            outline-offset: -3px;
+}
+
+
+.pick-chev {
+            font-size: 0.9rem;
+            color: var(--funnel-muted);
+            transition: transform 0.2s ease;
+        }
+
+
+.pick-row.is-open .pick-chev {
+            transform: rotate(180deg);
+}
+
+
+.pick-steps {
+            grid-column: 1 / -1;
+            padding: 2px 14px 14px 16px;
+            border-top: 1px solid var(--funnel-border);
+            margin-top: 2px;
+        }
+
+
+.pick-steps[hidden] {
+            display: none;
+}
+
+
+.pick-steps-list {
+            margin: 10px 0 0;
+            padding: 0;
+            list-style: none;
+            display: grid;
+            gap: 8px;
+        }
+
+
+.pick-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            font-size: 0.88rem;
+            line-height: 1.45;
+            color: var(--funnel-text);
+}
+
+
+.pick-step-num {
+            flex: 0 0 auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 19px;
+            height: 19px;
+            margin-top: 1px;
+            border-radius: 50%;
+            background: rgba(36, 37, 33, 0.06);
+            font-size: 0.68rem;
+            font-weight: 800;
+            color: var(--funnel-muted);
+}
+
+
+.pick-step-text {
+            flex: 1;
+            min-width: 0;
+}
+
+
+.pick-step-min {
+            margin-left: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--funnel-muted);
+            white-space: nowrap;
+}
 
 
 .pick-emoji {
@@ -2885,7 +2996,7 @@
         }
 
 
-.pick-card.selected .pick-check {
+.pick-row.is-selected .pick-check {
             background: var(--funnel-accent);
             border-color: var(--funnel-accent);
             color: #fff;
@@ -4127,41 +4238,17 @@
         // Los JSON de tareas y rutinas solo traen español. Estos son los titulos
         // en ingles, indexados por el texto español original. Si un titulo nuevo
         // no aparece aqui, se muestra tal cual viene del JSON (en español).
-        const TASK_TITLE_EN = {
-            'Escribir ese informe/ensayo que vengo postergando': 'Write that report or essay I keep putting off',
-            'Armar mi CV/portafolio y postularme a algo pendiente': 'Build my CV or portfolio and apply to something pending',
-            'Empezar a estudiar para un examen o certificación': 'Start studying for an exam or certification',
-            'Ordenar mi clóset/pieza': 'Organize my closet or one room',
-            'Poner al día mis finanzas': 'Get my finances in order',
-            'Resolver ese trámite pendiente': 'Handle that pending errand',
-            'Armar y empezar una rutina de ejercicio': 'Set up and start an exercise routine',
-            'Preparar comidas para la semana (meal prep)': 'Meal prep for the week',
-            'Armar una rutina matutina para levantarme y arrancar el día': 'Build a morning routine to get up and start the day',
-            'Vaciar la cabeza cuando hay demasiados pensamientos (brain dump)': 'Clear your head when there are too many thoughts (brain dump)',
-            'Armar una rutina de noche para dormir mejor': 'Build an evening routine to sleep better',
-            'Tomar una decisión que vengo posponiendo': 'Make a decision I keep postponing'
-        };
-
-        const ROUTINE_NAME_EN = {
-            'Hidratación y anclaje matutino': 'Morning hydration and anchoring',
-            'Salir a la luz temprano': 'Get outside in the light early',
-            'Desayuno con energía estable': 'A steady-energy breakfast',
-            'Movimiento diario corto': 'Short daily movement',
-            'Elegir mis 3 tareas del día': 'Choose my 3 tasks for the day',
-            'Pausa de pantallas a media tarde': 'Screen break in the mid-afternoon',
-            'Cuidado personal diario': 'Daily self-care',
-            'Orden rápido de 5 minutos': '5-minute quick tidy',
-            'Brain dump nocturno': 'Nightly brain dump',
-            'Rutina de cierre para dormir': 'Wind-down routine for sleep'
-        };
-
-        // Aplica el diccionario al titulo segun el idioma activo. Los pasos no
-        // se traducen: en esta pantalla ya no se muestran.
-        function localizeItemTitle(value, dictionary) {
-            if (currentLocale() !== 'en' || !value) {
-                return value;
+        // Los JSON de tareas y rutinas son bilingües (title/title_en, name/name_en).
+        // El idioma se resuelve en render y en el payload; no hay diccionarios
+        // duplicados en el código.
+        function pickLocaleField(item, base) {
+            if (!item) {
+                return '';
             }
-            return dictionary[value] || value;
+            if (currentLocale() === 'en') {
+                return item[`${base}_en`] || item[base] || '';
+            }
+            return item[base] || item[`${base}_en`] || '';
         }
 
 
@@ -5135,10 +5222,10 @@
 
         const UI_COPY = {
             es: {
-                languageHeadline: 'Elige tu idioma', languageSub: 'Puedes cambiarlo más adelante.', spanish: 'Español', english: 'English', start: 'Iniciar', restart: 'Empezar de nuevo', saved: 'Tu progreso se guarda automáticamente en este dispositivo.', back: '‹ Volver', next: 'Siguiente →', age: '¿Qué edad tienes?', agePlaceholder: 'Ej.: 25', ageError: 'Necesitamos tu edad para personalizar los ejemplos.', emailError: 'Ingresa un email válido para guardar tu plan.', emailNote: 'Usaremos este correo para preparar tu cuenta y vincular tu plan.', optin: 'Quiero recibir novedades, consejos y ofertas de Brainy.', today: 'Hoy', companion: 'TU COMPAÑERO', mission: 'TU MISIÓN', divided: 'Brainy lo divide en:', smallSteps: 'Los pasos pequeños también cuentan.', selectAll: 'Selecciona todas las opciones que correspondan.', loadingArea: 'Enfocando tu área', loadingTime: 'Ajustando el ritmo a tu tiempo', task: 'tarea', tasks: 'tareas', routine: 'rutina', routines: 'rutinas', maxOnly: 'Solo {max}. Selecciona una elegida para cambiarla.', selected: 'Elegiste', minimum: 'mínimo', upTo: 'hasta', steps: 'pasos', tapToSee: 'toca para ver', select: 'Seleccionar', noData: 'No se pudieron cargar los datos. Recarga la página o inténtalo de nuevo.', noTasks: 'No hay tareas seleccionadas.', noRoutines: 'No hay rutinas seleccionadas.'
+                languageHeadline: 'Elige tu idioma', languageSub: 'Puedes cambiarlo más adelante.', spanish: 'Español', english: 'English', start: 'Iniciar', restart: 'Empezar de nuevo', saved: 'Tu progreso se guarda automáticamente en este dispositivo.', back: '‹ Volver', next: 'Siguiente →', age: '¿Qué edad tienes?', agePlaceholder: 'Ej.: 25', ageError: 'Necesitamos tu edad para personalizar los ejemplos.', emailError: 'Ingresa un email válido para guardar tu plan.', emailNote: 'Usaremos este correo para preparar tu cuenta y vincular tu plan.', optin: 'Quiero recibir novedades, consejos y ofertas de Brainy.', today: 'Hoy', companion: 'TU COMPAÑERO', mission: 'TU MISIÓN', divided: 'Brainy lo divide en:', smallSteps: 'Los pasos pequeños también cuentan.', selectAll: 'Selecciona todas las opciones que correspondan.', loadingArea: 'Enfocando tu área', loadingTime: 'Ajustando el ritmo a tu tiempo', task: 'tarea', tasks: 'tareas', routine: 'rutina', routines: 'rutinas', maxOnly: 'Solo {max}. Selecciona una elegida para cambiarla.', selected: 'Elegiste', minimum: 'mínimo', upTo: 'hasta', steps: 'pasos', tapToSee: 'toca para ver los pasos', min: 'min', seeSteps: 'Ver los pasos de', select: 'Seleccionar', noData: 'No se pudieron cargar los datos. Recarga la página o inténtalo de nuevo.', noTasks: 'No hay tareas seleccionadas.', noRoutines: 'No hay rutinas seleccionadas.'
             },
             en: {
-                languageHeadline: 'Choose your language', languageSub: 'You can change it later.', spanish: 'Español', english: 'English', start: 'Get started', restart: 'Start over', saved: 'Your progress is saved automatically on this device.', back: '‹ Back', next: 'Next →', age: 'How old are you?', agePlaceholder: 'e.g. 25', ageError: 'We need your age to tailor the examples.', emailError: 'Enter a valid email to save your plan.', emailNote: 'We will use this email to prepare your account and link your plan.', optin: 'I want to receive Brainy news, tips, and offers.', today: 'Today', companion: 'YOUR COMPANION', mission: 'YOUR MISSION', divided: 'Brainy breaks it down into:', smallSteps: 'Small steps count too.', selectAll: 'Select all that apply.', loadingArea: 'Focusing on your area', loadingTime: 'Adjusting the pace to your time', task: 'task', tasks: 'tasks', routine: 'routine', routines: 'routines', maxOnly: 'Only {max}. Select one you chose to replace it.', selected: 'Selected', minimum: 'minimum', upTo: 'up to', steps: 'steps', tapToSee: 'tap to view', select: 'Select', noData: 'We could not load the data. Reload the page or try again.', noTasks: 'No tasks selected.', noRoutines: 'No routines selected.'
+                languageHeadline: 'Choose your language', languageSub: 'You can change it later.', spanish: 'Español', english: 'English', start: 'Get started', restart: 'Start over', saved: 'Your progress is saved automatically on this device.', back: '‹ Back', next: 'Next →', age: 'How old are you?', agePlaceholder: 'e.g. 25', ageError: 'We need your age to tailor the examples.', emailError: 'Enter a valid email to save your plan.', emailNote: 'We will use this email to prepare your account and link your plan.', optin: 'I want to receive Brainy news, tips, and offers.', today: 'Today', companion: 'YOUR COMPANION', mission: 'YOUR MISSION', divided: 'Brainy breaks it down into:', smallSteps: 'Small steps count too.', selectAll: 'Select all that apply.', loadingArea: 'Focusing on your area', loadingTime: 'Adjusting the pace to your time', task: 'task', tasks: 'tasks', routine: 'routine', routines: 'routines', maxOnly: 'Only {max}. Select one you chose to replace it.', selected: 'Selected', minimum: 'minimum', upTo: 'up to', steps: 'steps', tapToSee: 'tap to view the steps', min: 'min', seeSteps: 'See the steps for', select: 'Select', noData: 'We could not load the data. Reload the page or try again.', noTasks: 'No tasks selected.', noRoutines: 'No routines selected.'
             }
         };
 
@@ -5794,11 +5881,13 @@
                 templateId: task.templateId,
                 id: task.templateId,
                 title: task.title,
+                title_en: task.title_en || task.title,
                 emoji: task.emoji || '',
                 metric: task.metric || null,
                 difficulty: task.difficulty || 'medium',
                 subtasks: (task.subtasks || []).map((s) => ({
                     title: s.title,
+                    title_en: s.title_en || s.title,
                     duration: s.duration || null
                 })),
                 category: cat.id,
@@ -5813,15 +5902,18 @@
                 templateId: routine.templateId,
                 id: routine.templateId,
                 name: routine.name,
+                name_en: routine.name_en || routine.name,
                 title: routine.name,
                 icon: routine.icon || '',
                 days: canonicalRoutineDays(routine.days),
                 tasks: (routine.tasks || []).map((t) => ({
                     title: t.title,
+                    title_en: t.title_en || t.title,
                     position: t.position
                 })),
                 subtasks: (routine.tasks || []).map((t) => ({
                     title: t.title,
+                    title_en: t.title_en || t.title,
                     duration: null
                 })),
                 category: cat.id,
@@ -6005,12 +6097,12 @@
             const now = new Date().toISOString();
             const tasks = funnelState.selectedTasks.map((t) => ({
                 templateId: t.templateId || t.id,
-                title: t.title,
+                title: pickLocaleField(t, 'title'),
                 emoji: t.emoji || '',
                 metric: t.metric || null,
                 difficulty: normalizeDifficulty(t.difficulty),
                 subtasks: (t.subtasks || []).map((s) => ({
-                    title: s.title,
+                    title: pickLocaleField(s, 'title'),
                     duration: normalizeDuration(s.duration)
                 }))
             }));
@@ -6019,11 +6111,11 @@
                 const eggPayload = { catalogId: egg.catalogId };
                 return {
                     templateId: r.templateId || r.id,
-                    name: r.name || r.title,
+                    name: pickLocaleField({ name: r.name, name_en: r.name_en }, 'name'),
                     days: canonicalRoutineDays(r.days),
                     icon: r.icon || '',
                     steps: (r.steps || r.tasks || []).map((t) => ({
-                        title: t.title,
+                        title: pickLocaleField(t, 'title'),
                         duration: normalizeDuration(t.duration)
                     })),
                     egg: eggPayload
@@ -8714,7 +8806,6 @@
             const min = step.min || 1;
             const max = step.max;
             const selected = funnelState[key];
-            const titleDictionary = step.source === 'tasks' ? TASK_TITLE_EN : ROUTINE_NAME_EN;
 
             let categories = [];
             if (step.source === 'tasks') {
@@ -8740,14 +8831,35 @@
                         <div class="picker-list" hidden>
                             ${cat.items.map((item) => {
                                 const isSel = selected.some((s) => s.id === item.id);
-                                return `
-                                    <button type="button" class="pick-card ${isSel ? 'selected' : ''}" data-id="${item.id}" data-select="${item.id}" aria-pressed="${isSel ? 'true' : 'false'}">
-                                        ${item.emoji ? `<span class="pick-emoji">${item.emoji}</span>` : ''}
-                                        <span class="pick-body">
-                                            <strong>${localizeItemTitle(item.title, titleDictionary)}</strong>
+                                const steps = item.subtasks || [];
+                                const hasSteps = steps.length > 0;
+                                const stepsHtml = steps.map((s, si) => `
+                                    <li class="pick-step">
+                                        <span class="pick-step-num" aria-hidden="true">${si + 1}</span>
+                                        <span class="pick-step-text">
+                                            <span class="pick-step-title">${pickLocaleField(s, 'title')}</span>
+                                            ${s.duration != null ? `<span class="pick-step-min">${s.duration} ${ui('min')}</span>` : ''}
                                         </span>
-                                        <span class="pick-check" aria-hidden="true">✓</span>
-                                    </button>`;
+                                    </li>`).join('');
+                                return `
+                                    <div class="pick-row ${isSel ? 'is-selected' : ''}" data-id="${item.id}">
+                                        <button type="button" class="pick-card" data-select="${item.id}" aria-pressed="${isSel ? 'true' : 'false'}">
+                                            ${item.emoji ? `<span class="pick-emoji">${item.emoji}</span>` : ''}
+                                            <span class="pick-body">
+                                                <strong>${pickLocaleField(item, 'title')}</strong>
+                                                ${hasSteps ? `<span class="pick-meta">${steps.length} ${ui('steps')} · ${ui('tapToSee')}</span>` : ''}
+                                            </span>
+                                            <span class="pick-check" aria-hidden="true">✓</span>
+                                        </button>
+                                        ${hasSteps ? `
+                                        <button type="button" class="pick-toggle" data-expand="${item.id}" aria-expanded="false" aria-controls="steps-${item.id}">
+                                            <span class="pick-chev" aria-hidden="true">▾</span>
+                                            <span class="sr-only">${ui('seeSteps')}</span>
+                                        </button>
+                                        <div class="pick-steps" id="steps-${item.id}" hidden>
+                                            <ol class="pick-steps-list">${stepsHtml}</ol>
+                                        </div>` : ''}
+                                    </div>`;
                             }).join('')}
                         </div>
                     </section>`).join('');
@@ -8774,11 +8886,14 @@
             function refreshUI() {
                 const sel = funnelState[key];
                 counter.textContent = String(sel.length);
-                document.querySelectorAll('.pick-card').forEach((card) => {
-                    const id = card.dataset.id;
+                document.querySelectorAll('.pick-row').forEach((row) => {
+                    const id = row.dataset.id;
                     const isSel = sel.some((s) => s.id === id);
-                    card.classList.toggle('selected', isSel);
-                    card.setAttribute('aria-pressed', String(isSel));
+                    row.classList.toggle('is-selected', isSel);
+                    const card = row.querySelector('.pick-card');
+                    if (card) {
+                        card.setAttribute('aria-pressed', String(isSel));
+                    }
                 });
                 nextBtn.disabled = sel.length < min;
             }
@@ -8791,6 +8906,22 @@
                     const open = list.hidden;
                     list.hidden = !open;
                     cat.classList.toggle('open', open);
+                    btn.setAttribute('aria-expanded', String(open));
+                });
+            });
+
+            // Desplegable de pasos de cada item. No toca el estado: solo deja
+            // ver de que trata antes de elegir. Es independiente del selector.
+            document.querySelectorAll('[data-expand]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const row = btn.closest('.pick-row');
+                    const steps = row.querySelector('.pick-steps');
+                    if (!steps) {
+                        return;
+                    }
+                    const open = steps.hidden;
+                    steps.hidden = !open;
+                    row.classList.toggle('is-open', open);
                     btn.setAttribute('aria-expanded', String(open));
                 });
             });
@@ -8842,7 +8973,7 @@
             const taskRows = tasks.map((item) => `
                     <div class="plan-row">
                         <span class="plan-emoji">${item.emoji || categoryMeta(item.category).emoji}</span>
-                        <span class="plan-name">${localizeItemTitle(item.title, TASK_TITLE_EN)}</span>
+                        <span class="plan-name">${pickLocaleField(item, 'title')}</span>
                         <span class="plan-meta">${(item.subtasks || []).length} ${ui('steps')}</span>
                     </div>`).join('') || `<div class="data-error">${ui('noTasks')}</div>`;
 
@@ -8851,7 +8982,7 @@
                 return `
                     <div class="plan-row">
                         <span class="plan-egg">${eggPlanHtml(egg)}</span>
-                        <span class="plan-name">${egg.name} <span class="plan-sep">—</span> ${localizeItemTitle(item.name || item.title, ROUTINE_NAME_EN)}</span>
+                        <span class="plan-name">${egg.name} <span class="plan-sep">—</span> ${pickLocaleField(item, 'name')}</span>
                     </div>`;
                 }).join('') || `<div class="data-error">${ui('noRoutines')}</div>`;
 

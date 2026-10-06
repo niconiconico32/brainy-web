@@ -7,53 +7,197 @@
       "tasks": [
         {
           "templateId": "escribir_informe",
-          "title": "Escribir ese informe/ensayo que vengo postergando",
+          "title": "Avanzar con ese informe o ensayo pendiente",
+          "title_en": "Make progress on that report or essay",
           "emoji": "📝",
           "metric": "words_written",
-          "difficulty": "high",
+          "difficulty": "alta",
           "subtasks": [
-            { "title": "Abrir el documento (o crear uno nuevo) y escribir solo el título", "duration": 5 },
-            { "title": "Anotar 3 ideas sueltas que ya tenés en la cabeza, sin ordenarlas", "duration": 10 },
-            { "title": "Poner un timer de 10 minutos y escribir sin corregir nada", "duration": 10 },
-            { "title": "Ordenar esas ideas en el orden en que van a aparecer", "duration": 10 },
-            { "title": "Convertir cada idea en un párrafo, una a la vez", "duration": 20 },
-            { "title": "Escribir la introducción al final, no al principio", "duration": 10 },
-            { "title": "Leerlo una vez en voz alta para revisar", "duration": 5 },
-            { "title": "Guardar o enviar el documento", "duration": 5 }
+            {
+              "title": "Abre el documento y escribe un título provisional",
+              "title_en": "Open the document and add a working title",
+              "duration": 2
+            },
+            {
+              "title": "Resume en una frase qué quieres comunicar",
+              "title_en": "Summarize what you want to communicate in one sentence",
+              "duration": 3
+            },
+            {
+              "title": "Anota tres ideas sin preocuparte por el orden",
+              "title_en": "Write down three ideas without worrying about the order",
+              "duration": 5
+            },
+            {
+              "title": "Ordena las ideas de la forma más simple posible",
+              "title_en": "Put the ideas in the simplest order that makes sense",
+              "duration": 5
+            },
+            {
+              "title": "Desarrolla solo la primera idea en un párrafo",
+              "title_en": "Develop only the first idea into a paragraph",
+              "duration": 15
+            },
+            {
+              "title": "Continúa con un párrafo más o deja indicado dónde retomar",
+              "title_en": "Write one more paragraph, or leave a note showing exactly where to pick up",
+              "duration": 15
+            },
+            {
+              "title": "Escribe la introducción cuando el cuerpo ya esté claro",
+              "title_en": "Write the introduction once the main body feels clearer",
+              "duration": 10
+            },
+            {
+              "title": "Haz una revisión rápida de claridad y guarda la siguiente acción",
+              "title_en": "Do a quick clarity check and save the next action for later",
+              "duration": 10
+            }
           ]
         },
         {
           "templateId": "armar_cv_postular",
-          "title": "Armar mi CV/portafolio y postularme a algo pendiente",
+          "title": "Actualizar mi CV y enviar una postulación",
+          "title_en": "Update my résumé and submit an application",
           "emoji": "📄",
           "metric": "applications_sent",
-          "difficulty": "medium",
+          "difficulty": "media",
           "subtasks": [
-            { "title": "Crear una carpeta nueva llamada \"Postulación\"", "duration": 5 },
-            { "title": "Abrir tu último CV o una plantilla y guardarlo con la fecha de hoy", "duration": 5 },
-            { "title": "Actualizar solo el dato más reciente (último trabajo o estudio)", "duration": 10 },
-            { "title": "Elegir 3 postulaciones para hoy, no busques todas las opciones que existen", "duration": 10 },
-            { "title": "Adjuntar el CV actualizado a la primera postulación", "duration": 10 },
-            { "title": "Escribir 2 líneas de mensaje genérico (podés reusarlo)", "duration": 5 },
-            { "title": "Enviar la primera postulación", "duration": 5 },
-            { "title": "Enviar las otras 2 usando el mismo mensaje", "duration": 10 }
+            {
+              "title": "Busca la versión más reciente de tu CV",
+              "title_en": "Find the most recent version of your résumé",
+              "duration": 3
+            },
+            {
+              "title": "Crea una copia para editar sin perder el original",
+              "title_en": "Make a copy so you can edit it without losing the original",
+              "duration": 2
+            },
+            {
+              "title": "Actualiza solo tu experiencia o estudio más reciente",
+              "title_en": "Update only your most recent job or education entry",
+              "duration": 10
+            },
+            {
+              "title": "Elige una oportunidad concreta para postular",
+              "title_en": "Choose one specific opportunity to apply for",
+              "duration": 10
+            },
+            {
+              "title": "Ajusta el título y las tres líneas más relevantes para esa oportunidad",
+              "title_en": "Tailor the headline and the three most relevant lines to that opportunity",
+              "duration": 10
+            },
+            {
+              "title": "Escribe un mensaje breve que puedas reutilizar",
+              "title_en": "Write a short message you can reuse",
+              "duration": 5
+            },
+            {
+              "title": "Adjunta los archivos y revisa nombre, correo y enlaces",
+              "title_en": "Attach the files and check your name, email, and links",
+              "duration": 5
+            },
+            {
+              "title": "Envía la postulación; después decide si tienes energía para otra",
+              "title_en": "Send the application, then decide whether you have the energy for another",
+              "duration": 5
+            }
           ]
         },
         {
           "templateId": "estudiar_examen",
           "title": "Empezar a estudiar para un examen o certificación",
+          "title_en": "Start studying for an exam or certification",
           "emoji": "📚",
           "metric": "minutes_studied",
-          "difficulty": "medium",
+          "difficulty": "media",
           "subtasks": [
-            { "title": "Abrir el temario o índice del curso", "duration": 5 },
-            { "title": "Marcar los 3 temas que menos manejás", "duration": 5 },
-            { "title": "Poner un timer de 25 minutos para un solo tema", "duration": 25 },
-            { "title": "Cerrar el resto de pestañas y abrir solo el material de ese tema", "duration": 5 },
-            { "title": "Leer o ver una sección y anotar 3 ideas clave", "duration": 20 },
-            { "title": "Escribir un mini-resumen de 5 líneas de lo que leíste", "duration": 10 },
-            { "title": "Descansar 5 minutos", "duration": 5 },
-            { "title": "Repetir con el siguiente tema marcado", "duration": 25 }
+            {
+              "title": "Abre el temario y elige un solo tema para hoy",
+              "title_en": "Open the syllabus and choose just one topic for today",
+              "duration": 5
+            },
+            {
+              "title": "Convierte ese tema en una pregunta que quieras poder responder",
+              "title_en": "Turn that topic into a question you want to be able to answer",
+              "duration": 3
+            },
+            {
+              "title": "Deja visible únicamente el material que necesitas",
+              "title_en": "Keep only the material you need in view",
+              "duration": 2
+            },
+            {
+              "title": "Estudia una sección durante 20 minutos",
+              "title_en": "Study one section for 20 minutes",
+              "duration": 20
+            },
+            {
+              "title": "Cierra el material y anota tres ideas que recuerdes",
+              "title_en": "Close the material and write down three ideas you remember",
+              "duration": 5
+            },
+            {
+              "title": "Intenta responder la pregunta inicial con tus propias palabras",
+              "title_en": "Try to answer your original question in your own words",
+              "duration": 5
+            },
+            {
+              "title": "Anota qué parte sigue confusa, sin intentar resolverla toda ahora",
+              "title_en": "Note what still feels unclear without trying to solve all of it now",
+              "duration": 3
+            },
+            {
+              "title": "Deja escrito el punto exacto desde donde continuarás",
+              "title_en": "Write down the exact point where you will continue next time",
+              "duration": 2
+            }
+          ]
+        },
+        {
+          "templateId": "responder_mensaje_pendiente",
+          "title": "️ Responder ese mensaje o correo pendiente",
+          "title_en": "️ Reply to that message or email I have been avoiding",
+          "emoji": "✉️",
+          "metric": "messages_sent",
+          "difficulty": "baja",
+          "subtasks": [
+            {
+              "title": "Abre únicamente la conversación que estás evitando",
+              "title_en": "Open only the conversation you have been avoiding",
+              "duration": 2
+            },
+            {
+              "title": "Lee el último mensaje una sola vez",
+              "title_en": "Read the latest message once",
+              "duration": 3
+            },
+            {
+              "title": "Escribe en una frase qué necesita la otra persona",
+              "title_en": "Write one sentence describing what the other person needs from you",
+              "duration": 2
+            },
+            {
+              "title": "Redacta una respuesta breve con saludo, respuesta y siguiente paso",
+              "title_en": "Draft a short reply with a greeting, your answer, and the next step",
+              "duration": 5
+            },
+            {
+              "title": "Quita explicaciones que no sean necesarias",
+              "title_en": "Remove any explanation that is not needed",
+              "duration": 2
+            },
+            {
+              "title": "Revisa destinatario y archivos adjuntos",
+              "title_en": "Check the recipient and any attachments",
+              "duration": 2
+            },
+            {
+              "title": "Envía el mensaje antes de volver a editarlo",
+              "title_en": "Send the message before editing it again",
+              "duration": 1
+            }
           ]
         }
       ]
@@ -65,53 +209,197 @@
       "tasks": [
         {
           "templateId": "ordenar_closet",
-          "title": "Ordenar mi clóset/pieza",
+          "title": "Ordenar una parte de mi clóset o habitación",
+          "title_en": "Tidy one part of my closet or room",
           "emoji": "👕",
           "metric": null,
-          "difficulty": "medium",
+          "difficulty": "media",
           "subtasks": [
-            { "title": "Poner música o un podcast (opcional, ayuda a arrancar)", "duration": 5 },
-            { "title": "Sacar solo un cajón o un estante, no todo el clóset de una vez", "duration": 5 },
-            { "title": "Vaciarlo completo sobre la cama", "duration": 10 },
-            { "title": "Hacer 3 pilas: me queda / no me queda / dudas", "duration": 10 },
-            { "title": "Doblar y guardar solo la pila \"me queda\"", "duration": 15 },
-            { "title": "Meter la pila \"no me queda\" en una bolsa y cerrarla ya", "duration": 5 },
-            { "title": "Guardar la pila \"dudas\" en una caja aparte por una semana", "duration": 5 },
-            { "title": "Repetir con el siguiente cajón o estante otro día", "duration": 10 }
+            {
+              "title": "Elige una zona pequeña: un cajón, un estante o una superficie",
+              "title_en": "Choose a small area: one drawer, one shelf, or one surface",
+              "duration": 2
+            },
+            {
+              "title": "Prepara tres lugares: guardar, sacar y decidir después",
+              "title_en": "Set up three spots: keep, remove, and decide later",
+              "duration": 3
+            },
+            {
+              "title": "Retira únicamente los objetos de esa zona",
+              "title_en": "Take out only the items from that area",
+              "duration": 5
+            },
+            {
+              "title": "Clasifica cada objeto sin reorganizar el resto de la habitación",
+              "title_en": "Sort each item without reorganizing the rest of the room",
+              "duration": 10
+            },
+            {
+              "title": "Devuelve a su sitio lo que vas a conservar",
+              "title_en": "Put back what you want to keep",
+              "duration": 10
+            },
+            {
+              "title": "Pon lo que saldrá de casa dentro de una bolsa",
+              "title_en": "Place anything leaving your home in a bag",
+              "duration": 5
+            },
+            {
+              "title": "Guarda las dudas en una caja con una fecha para revisarlas",
+              "title_en": "Put uncertain items in a box and add a date to revisit them",
+              "duration": 3
+            },
+            {
+              "title": "Detente aquí y elige otra zona para un día distinto",
+              "title_en": "Stop here and choose another area for a different day",
+              "duration": 2
+            }
           ]
         },
         {
           "templateId": "poner_al_dia_finanzas",
-          "title": "Poner al día mis finanzas",
+          "title": "Revisar mis cuentas sin abrumarme",
+          "title_en": "Check my finances without getting overwhelmed",
           "emoji": "💸",
           "metric": null,
-          "difficulty": "medium",
+          "difficulty": "media",
           "subtasks": [
-            { "title": "Abrir la app del banco o tu cuenta principal", "duration": 5 },
-            { "title": "Anotar el saldo actual, nada más", "duration": 5 },
-            { "title": "Listar las cuentas pendientes que recordás de memoria", "duration": 5 },
-            { "title": "Revisar el correo buscando la palabra \"factura\" o \"pago\"", "duration": 10 },
-            { "title": "Ordenar esa lista de menor a mayor monto", "duration": 5 },
-            { "title": "Pagar la más chica primero", "duration": 10 },
-            { "title": "Pagar las siguientes una por una", "duration": 15 },
-            { "title": "Anotar en el calendario la fecha del próximo corte", "duration": 5 }
+            {
+              "title": "Abre tu cuenta principal y mira el saldo disponible",
+              "title_en": "Open your main account and check the available balance",
+              "duration": 3
+            },
+            {
+              "title": "Anota los pagos pendientes que recuerdes",
+              "title_en": "Write down any outstanding payments you remember",
+              "duration": 5
+            },
+            {
+              "title": "Añade fecha y monto a los pagos más próximos",
+              "title_en": "Add the due date and amount for the most urgent ones",
+              "duration": 10
+            },
+            {
+              "title": "Elige uno según urgencia, vencimiento o recargo",
+              "title_en": "Choose one based on urgency, due date, or late fees",
+              "duration": 3
+            },
+            {
+              "title": "Págalo o déjalo programado",
+              "title_en": "Pay it or schedule the payment",
+              "duration": 10
+            },
+            {
+              "title": "Guarda el comprobante en un lugar fácil de encontrar",
+              "title_en": "Save the receipt somewhere easy to find",
+              "duration": 2
+            },
+            {
+              "title": "Continúa con otro solo si todavía tienes energía",
+              "title_en": "Move on to another only if you still have the energy",
+              "duration": 10
+            },
+            {
+              "title": "Agenda una fecha breve para revisar lo que quedó pendiente",
+              "title_en": "Schedule a short check-in for anything still outstanding",
+              "duration": 2
+            }
           ]
         },
         {
           "templateId": "resolver_tramite",
-          "title": "Resolver ese trámite pendiente",
+          "title": "Avanzar con ese trámite pendiente",
+          "title_en": "Make progress on that pending form or errand",
           "emoji": "📑",
           "metric": null,
-          "difficulty": "medium",
+          "difficulty": "media",
           "subtasks": [
-            { "title": "Escribir en una nota qué trámite es, en una sola frase", "duration": 5 },
-            { "title": "Buscar en internet \"requisitos para [ese trámite]\"", "duration": 10 },
-            { "title": "Hacer una lista de los documentos que pide", "duration": 5 },
-            { "title": "Juntar los documentos que ya tenés a mano", "duration": 10 },
-            { "title": "Marcar cuáles te faltan y dónde conseguirlos", "duration": 10 },
-            { "title": "Sacar el turno/cita o completar el primer formulario", "duration": 15 },
-            { "title": "Poner un recordatorio con fecha y hora en el calendario", "duration": 5 },
-            { "title": "Dejar la carpeta lista el día anterior", "duration": 5 }
+            {
+              "title": "Escribe en una frase qué resultado necesitas conseguir",
+              "title_en": "Write the outcome you need in one sentence",
+              "duration": 2
+            },
+            {
+              "title": "Busca la información en la fuente oficial del trámite",
+              "title_en": "Find the information on the official website or source",
+              "duration": 10
+            },
+            {
+              "title": "Copia los requisitos en una lista breve",
+              "title_en": "Copy the requirements into a short checklist",
+              "duration": 5
+            },
+            {
+              "title": "Marca lo que ya tienes y lo que todavía falta",
+              "title_en": "Mark what you already have and what is still missing",
+              "duration": 5
+            },
+            {
+              "title": "Consigue solo el primer documento pendiente",
+              "title_en": "Get only the first missing document",
+              "duration": 15
+            },
+            {
+              "title": "Reserva la cita o completa la primera parte del formulario",
+              "title_en": "Book the appointment or complete the first part of the form",
+              "duration": 15
+            },
+            {
+              "title": "Guarda documentos y confirmaciones en una sola carpeta",
+              "title_en": "Save the documents and confirmations in one folder",
+              "duration": 5
+            },
+            {
+              "title": "Anota el próximo paso con fecha, lugar y hora si corresponde",
+              "title_en": "Note the next step, including the date, place, and time if needed",
+              "duration": 3
+            }
+          ]
+        },
+        {
+          "templateId": "organizar_semana_realista",
+          "title": "️ Organizar mi semana sin llenarla de pendientes",
+          "title_en": "️ Plan my week without filling every moment",
+          "emoji": "🗓️",
+          "metric": null,
+          "difficulty": "media",
+          "subtasks": [
+            {
+              "title": "Mira los compromisos que ya tienen fecha",
+              "title_en": "Look at the commitments that already have a date",
+              "duration": 5
+            },
+            {
+              "title": "Anota todo lo demás en una lista temporal",
+              "title_en": "Put everything else in a temporary list",
+              "duration": 5
+            },
+            {
+              "title": "Elige tres resultados importantes para la semana",
+              "title_en": "Choose three important outcomes for the week",
+              "duration": 5
+            },
+            {
+              "title": "Asigna un día probable a cada uno, sin llenar cada espacio",
+              "title_en": "Give each one a likely day without filling every open space",
+              "duration": 5
+            },
+            {
+              "title": "Divide el primero en una acción de menos de 15 minutos",
+              "title_en": "Break the first one into an action that takes less than 15 minutes",
+              "duration": 5
+            },
+            {
+              "title": "Deja al menos un bloque libre para imprevistos",
+              "title_en": "Leave at least one open block for the unexpected",
+              "duration": 2
+            },
+            {
+              "title": "Decide qué pendiente no harás esta semana",
+              "title_en": "Decide which pending task you will not do this week",
+              "duration": 3
+            }
           ]
         }
       ]
@@ -123,51 +411,187 @@
       "tasks": [
         {
           "templateId": "empezar_rutina_ejercicio",
-          "title": "Armar y empezar una rutina de ejercicio",
+          "title": "Empezar a moverme sin exigirme de más",
+          "title_en": "Start moving without pushing myself too hard",
           "emoji": "💪",
           "metric": "workouts_completed",
-          "difficulty": "medium",
+          "difficulty": "media",
           "subtasks": [
-            { "title": "Elegir un solo tipo de ejercicio para empezar (por ejemplo caminar)", "duration": 5 },
-            { "title": "Dejar la ropa de ejercicio a la vista la noche anterior", "duration": 2 },
-            { "title": "Ponerte la ropa de ejercicio, nada más por ahora", "duration": 5 },
-            { "title": "Salir por la puerta o pararte frente al espacio de entrenamiento", "duration": 2 },
-            { "title": "Hacer solo 5 minutos, sin pensar en más", "duration": 5 },
-            { "title": "Si querés seguir, seguí; si no, ya cumpliste", "duration": 2 },
-            { "title": "Registrar en la app que lo hiciste", "duration": 2 }
+            {
+              "title": "Elige un movimiento sencillo y adecuado para ti",
+              "title_en": "Choose one simple type of movement that feels right for you",
+              "duration": 3
+            },
+            {
+              "title": "Decide dónde lo harás hoy",
+              "title_en": "Decide where you will do it today",
+              "duration": 1
+            },
+            {
+              "title": "Ponte ropa y calzado cómodos",
+              "title_en": "Put on comfortable clothes and shoes",
+              "duration": 5
+            },
+            {
+              "title": "Empieza con dos minutos de movimiento suave",
+              "title_en": "Start with two minutes of gentle movement",
+              "duration": 2
+            },
+            {
+              "title": "Continúa durante cinco minutos más",
+              "title_en": "Continue for five more minutes",
+              "duration": 5
+            },
+            {
+              "title": "Decide si quieres seguir o terminar por hoy; ambas opciones cuentan",
+              "title_en": "Decide whether to keep going or stop for today; both choices count",
+              "duration": 1
+            },
+            {
+              "title": "Anota cómo te sentiste y cuándo te gustaría repetirlo",
+              "title_en": "Note how you felt and when you might like to do it again",
+              "duration": 2
+            }
           ]
         },
         {
           "templateId": "meal_prep",
-          "title": "Preparar comidas para la semana (meal prep)",
+          "title": "Dejar algunas comidas de la semana resueltas",
+          "title_en": "Get a few meals ready for the week",
           "emoji": "🍱",
           "metric": null,
-          "difficulty": "medium",
+          "difficulty": "media",
           "subtasks": [
-            { "title": "Elegir solo 2 recetas simples para toda la semana", "duration": 10 },
-            { "title": "Hacer una lista de ingredientes de esas 2 recetas", "duration": 10 },
-            { "title": "Comprar o pedir solo esos ingredientes", "duration": 20 },
-            { "title": "Sacar todos los ingredientes y ponerlos en la mesada", "duration": 10 },
-            { "title": "Cocinar la primera receta completa", "duration": 30 },
-            { "title": "Guardar en porciones individuales", "duration": 10 },
-            { "title": "Cocinar la segunda receta", "duration": 30 },
-            { "title": "Guardar y etiquetar con el día", "duration": 10 }
+            {
+              "title": "Elige dos comidas sencillas que realmente comerías",
+              "title_en": "Choose two simple meals you would actually want to eat",
+              "duration": 10
+            },
+            {
+              "title": "Revisa qué ingredientes ya tienes",
+              "title_en": "Check which ingredients you already have",
+              "duration": 5
+            },
+            {
+              "title": "Anota únicamente lo que falta",
+              "title_en": "Write down only what is missing",
+              "duration": 5
+            },
+            {
+              "title": "Compra o pide esos ingredientes",
+              "title_en": "Buy or order those ingredients",
+              "duration": 20
+            },
+            {
+              "title": "Despeja una parte de la cocina para trabajar",
+              "title_en": "Clear one part of the kitchen to work in",
+              "duration": 5
+            },
+            {
+              "title": "Lava y prepara los ingredientes que comparten ambas comidas",
+              "title_en": "Wash and prep the ingredients both meals have in common",
+              "duration": 15
+            },
+            {
+              "title": "Cocina primero la opción más fácil",
+              "title_en": "Cook the easier option first",
+              "duration": 30
+            },
+            {
+              "title": "Divide y guarda las porciones; deja la segunda receta para otro momento si lo necesitas",
+              "title_en": "Portion and store it; leave the second recipe for another time if you need to",
+              "duration": 10
+            }
           ]
         },
         {
           "templateId": "rutina_matutina",
-          "title": "Armar una rutina matutina para levantarme y arrancar el día",
+          "title": "Preparar una mañana con menos decisiones",
+          "title_en": "Set up a morning with fewer decisions",
           "emoji": "🌅",
           "metric": null,
-          "difficulty": "medium",
+          "difficulty": "media",
           "subtasks": [
-            { "title": "Poner el despertador lejos de la cama", "duration": 5 },
-            { "title": "Dejar un vaso de agua al lado de donde te vas a levantar", "duration": 2 },
-            { "title": "Al sonar, pararte y tomar el agua antes de mirar el celular", "duration": 3 },
-            { "title": "Abrir una cortina o prender una luz", "duration": 2 },
-            { "title": "Hacer una sola acción física (estirar o lavarte la cara)", "duration": 5 },
-            { "title": "Vestirte con la ropa que dejaste elegida la noche anterior", "duration": 5 },
-            { "title": "Recién ahí empezar la primera tarea del día", "duration": 2 }
+            {
+              "title": "Elige tres acciones que quieres repetir al levantarte",
+              "title_en": "Choose three actions you want to repeat after waking up",
+              "duration": 5
+            },
+            {
+              "title": "Ponlas en el orden más fácil de recordar",
+              "title_en": "Put them in the easiest order to remember",
+              "duration": 3
+            },
+            {
+              "title": "Deja agua y un objeto clave en un lugar visible",
+              "title_en": "Leave water and one essential item somewhere visible",
+              "duration": 3
+            },
+            {
+              "title": "Elige la ropa que usarás en la próxima mañana",
+              "title_en": "Choose what you will wear the next morning",
+              "duration": 5
+            },
+            {
+              "title": "Configura una alarma que te obligue a incorporarte para apagarla",
+              "title_en": "Set an alarm that makes you sit up or get out of bed to turn it off",
+              "duration": 3
+            },
+            {
+              "title": "Prueba la secuencia una mañana sin intentar hacerla perfecta",
+              "title_en": "Try the sequence for one morning without expecting it to be perfect",
+              "duration": 10
+            },
+            {
+              "title": "Quita o simplifica el paso que haya creado más fricción",
+              "title_en": "Remove or simplify the step that created the most friction",
+              "duration": 5
+            }
+          ]
+        },
+        {
+          "templateId": "preparar_cita_salud",
+          "title": "Pedir o preparar una cita de salud pendiente",
+          "title_en": "Book or prepare for a health appointment",
+          "emoji": "🩺",
+          "metric": null,
+          "difficulty": "media",
+          "subtasks": [
+            {
+              "title": "Escribe qué tipo de atención necesitas",
+              "title_en": "Write down the type of care you need",
+              "duration": 2
+            },
+            {
+              "title": "Revisa un centro o profesional disponible",
+              "title_en": "Look up one available clinic or healthcare professional",
+              "duration": 10
+            },
+            {
+              "title": "Elige una fecha que puedas sostener",
+              "title_en": "Choose a date you can realistically make",
+              "duration": 5
+            },
+            {
+              "title": "Reserva la cita o deja preparada la solicitud",
+              "title_en": "Book the appointment or prepare the request",
+              "duration": 10
+            },
+            {
+              "title": "Guarda la confirmación y la dirección",
+              "title_en": "Save the confirmation and address",
+              "duration": 3
+            },
+            {
+              "title": "Anota hasta tres temas que quieres consultar",
+              "title_en": "Write down up to three things you want to discuss",
+              "duration": 5
+            },
+            {
+              "title": "Programa un recordatorio para el día anterior",
+              "title_en": "Set a reminder for the day before",
+              "duration": 2
+            }
           ]
         }
       ]
@@ -179,49 +603,177 @@
       "tasks": [
         {
           "templateId": "vaciar_cabeza",
-          "title": "Vaciar la cabeza cuando hay demasiados pensamientos (brain dump)",
+          "title": "Sacar de mi cabeza todo lo pendiente",
+          "title_en": "Get everything that is pending out of my head",
           "emoji": "🧠",
           "metric": null,
-          "difficulty": "low",
+          "difficulty": "baja",
           "subtasks": [
-            { "title": "Agarrar papel o abrir notas, sin pensar en el formato", "duration": 5 },
-            { "title": "Poner un timer de 5 minutos", "duration": 2 },
-            { "title": "Escribir todo lo que ronda la cabeza, sin ordenar ni juzgar", "duration": 5 },
-            { "title": "Cuando termine el timer, parar aunque no hayas terminado", "duration": 1 },
-            { "title": "Marcar las 3 cosas que más pesan", "duration": 3 },
-            { "title": "Elegir 1 de esas 3 para convertirla en una tarea concreta", "duration": 5 },
-            { "title": "Guardar o tirar la hoja, lo que te sirva más", "duration": 2 }
+            {
+              "title": "Elige papel o una nota digital, lo que tengas más cerca",
+              "title_en": "Choose paper or a digital note—whichever is closest",
+              "duration": 1
+            },
+            {
+              "title": "Escribe el título “Lo que está ocupando mi mente”",
+              "title_en": "Add the title “What’s taking up space in my mind”",
+              "duration": 1
+            },
+            {
+              "title": "Anota todo durante cinco minutos, sin ordenar ni corregir",
+              "title_en": "Write everything down for five minutes without organizing or editing",
+              "duration": 5
+            },
+            {
+              "title": "Detente cuando termine el tiempo, aunque queden cosas",
+              "title_en": "Stop when the time is up, even if there is more to add",
+              "duration": 1
+            },
+            {
+              "title": "Rodea las tres ideas que más atención necesitan",
+              "title_en": "Circle the three items that need the most attention",
+              "duration": 3
+            },
+            {
+              "title": "Elige una y conviértela en una acción pequeña y concreta",
+              "title_en": "Choose one and turn it into a small, concrete action",
+              "duration": 5
+            },
+            {
+              "title": "Guarda el resto para revisarlo después, sin resolverlo ahora",
+              "title_en": "Save the rest for later without trying to solve it now",
+              "duration": 1
+            }
           ]
         },
         {
           "templateId": "rutina_noche",
-          "title": "Armar una rutina de noche para dormir mejor",
+          "title": "Preparar una noche más tranquila",
+          "title_en": "Set myself up for a calmer evening",
           "emoji": "🌙",
           "metric": null,
-          "difficulty": "low",
+          "difficulty": "baja",
           "subtasks": [
-            { "title": "Poner una alarma 30 minutos antes de la hora de dormir", "duration": 2 },
-            { "title": "Dejar el celular cargando fuera del cuarto o lejos de la cama", "duration": 3 },
-            { "title": "Bajar la luz principal del espacio", "duration": 2 },
-            { "title": "Anotar una cosa buena del día (cierre simbólico del día)", "duration": 5 },
-            { "title": "Preparar algo para mañana (ropa, agenda) para bajar la carga mental", "duration": 5 },
-            { "title": "Acostarte aunque no tengas sueño todavía", "duration": 2 }
+            {
+              "title": "Elige una hora aproximada para empezar a bajar el ritmo",
+              "title_en": "Choose an approximate time to start winding down",
+              "duration": 3
+            },
+            {
+              "title": "Define tres acciones sencillas para cerrar el día",
+              "title_en": "Pick three simple actions to close out the day",
+              "duration": 5
+            },
+            {
+              "title": "Reduce la luz del espacio cuando llegue esa hora",
+              "title_en": "Dim the lights when that time arrives",
+              "duration": 2
+            },
+            {
+              "title": "Prepara una sola cosa que facilitará la mañana siguiente",
+              "title_en": "Prepare one thing that will make the next morning easier",
+              "duration": 5
+            },
+            {
+              "title": "Elige una actividad breve y tranquila para terminar el día",
+              "title_en": "Choose a short, calming activity to end the day",
+              "duration": 5
+            },
+            {
+              "title": "Activa No molestar y deja el teléfono fuera de alcance como último paso",
+              "title_en": "Turn on Do Not Disturb and leave your phone out of reach as the final step",
+              "duration": 2
+            }
           ]
         },
         {
           "templateId": "tomar_decision",
-          "title": "Tomar una decisión que vengo posponiendo",
+          "title": "️ Tomar una decisión que llevo postergando",
+          "title_en": "️ Make a decision I have been putting off",
           "emoji": "⚖️",
           "metric": null,
-          "difficulty": "medium",
+          "difficulty": "media",
           "subtasks": [
-            { "title": "Escribir la decisión en una frase clara", "duration": 5 },
-            { "title": "Listar máximo 3 opciones, no más", "duration": 5 },
-            { "title": "Escribir 1 pro y 1 contra de cada opción", "duration": 10 },
-            { "title": "Ponerte un plazo límite (por ejemplo, hoy antes de dormir)", "duration": 2 },
-            { "title": "Preguntarte qué elegirías si tuvieras que decidir en 10 segundos", "duration": 3 },
-            { "title": "Elegir esa opción", "duration": 2 },
-            { "title": "Dar el primer paso concreto de esa decisión ya mismo", "duration": 5 }
+            {
+              "title": "Escribe la decisión en una frase concreta",
+              "title_en": "Write the decision as one clear sentence",
+              "duration": 3
+            },
+            {
+              "title": "Define cuándo necesitas haber decidido",
+              "title_en": "Decide when you need to have made it",
+              "duration": 2
+            },
+            {
+              "title": "Limita las opciones a un máximo de tres",
+              "title_en": "Narrow the options down to no more than three",
+              "duration": 5
+            },
+            {
+              "title": "Elige el criterio que más importa en este momento",
+              "title_en": "Choose the criterion that matters most right now",
+              "duration": 3
+            },
+            {
+              "title": "Descarta cualquier opción que no cumpla ese criterio",
+              "title_en": "Remove any option that does not meet that criterion",
+              "duration": 5
+            },
+            {
+              "title": "Escoge una opción suficientemente buena, no perfecta",
+              "title_en": "Choose an option that is good enough, not perfect",
+              "duration": 3
+            },
+            {
+              "title": "Da el primer paso reversible que te acerque a esa decisión",
+              "title_en": "Take the first reversible step toward that decision",
+              "duration": 5
+            }
+          ]
+        },
+        {
+          "templateId": "preparar_conversacion",
+          "title": "Preparar una conversación que estoy evitando",
+          "title_en": "Prepare for a conversation I have been avoiding",
+          "emoji": "💬",
+          "metric": null,
+          "difficulty": "media",
+          "subtasks": [
+            {
+              "title": "Escribe qué necesitas comunicar en una frase",
+              "title_en": "Write what you need to communicate in one sentence",
+              "duration": 3
+            },
+            {
+              "title": "Separa lo que observaste de lo que estás interpretando",
+              "title_en": "Separate what you observed from what you are assuming",
+              "duration": 5
+            },
+            {
+              "title": "Anota cómo te hizo sentir y qué necesitas ahora",
+              "title_en": "Note how it made you feel and what you need now",
+              "duration": 5
+            },
+            {
+              "title": "Define una petición concreta y posible",
+              "title_en": "Define one specific, reasonable request",
+              "duration": 5
+            },
+            {
+              "title": "Elige un momento razonable para conversar",
+              "title_en": "Choose a sensible time to talk",
+              "duration": 3
+            },
+            {
+              "title": "Ensaya una apertura breve y respetuosa",
+              "title_en": "Practice a short, respectful opening",
+              "duration": 5
+            },
+            {
+              "title": "Envía el mensaje para coordinar o inicia la conversación",
+              "title_en": "Send a message to arrange it or begin the conversation",
+              "duration": 3
+            }
           ]
         }
       ]
