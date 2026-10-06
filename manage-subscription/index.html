@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>Manage your Brainy subscription</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f7f5ff;
+            color: #24123f;
+            --mng-accent: #280d8c;
+            --mng-accent-soft: #eef0ff;
+            --mng-border: #cfc5e0;
+            --mng-muted: #625775;
+            --mng-error: #a5263c;
+            --mng-focus: #6b4df6;
+        }
+        * { box-sizing: border-box; }
+        body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px 16px; }
+        main { width: min(100%, 440px); background: #fff; border: 1px solid #e8e1f5; border-radius: 24px; padding: 32px 24px; box-shadow: 0 18px 50px rgba(36, 18, 63, .1); }
+        h1 { margin: 0 0 10px; font-size: 1.6rem; line-height: 1.25; }
+        p { line-height: 1.55; }
+        .muted { color: var(--mng-muted); }
+        .lead { margin: 0 0 8px; }
+        label { display: block; margin: 20px 0 7px; font-weight: 650; }
+        input { width: 100%; border: 1px solid var(--mng-border); border-radius: 12px; padding: 13px 14px; font: inherit; color: inherit; background: #fff; }
+        button, .link { display: inline-block; border: 0; border-radius: 12px; padding: 13px 17px; margin-top: 22px; font: inherit; font-weight: 700; text-decoration: none; cursor: pointer; }
+        button { width: 100%; background: var(--mng-accent); color: #fff; }
+        button:disabled { opacity: .6; cursor: wait; }
+        button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid var(--mng-focus); outline-offset: 2px; }
+        .secondary { width: 100%; background: var(--mng-accent-soft); color: var(--mng-accent); }
+        .actions { display: grid; gap: 10px; margin-top: 4px; }
+        .forgot { display: inline-block; margin-top: 16px; color: var(--mng-accent); font-weight: 600; }
+        .error { color: var(--mng-error); }
+        .help { margin-top: 26px; padding-top: 20px; border-top: 1px solid #eee8fa; font-size: .93rem; color: var(--mng-muted); }
+        .help a { color: var(--mng-accent); }
+        .spinner { display: inline-block; width: 15px; height: 15px; margin-right: 9px; vertical-align: -2px; border: 2px solid rgba(255,255,255,.45); border-top-color: #fff; border-radius: 50%; animation: mng-spin .7s linear infinite; }
+        .spinner-dark { border-color: rgba(40,13,140,.25); border-top-color: var(--mng-accent); }
+        @keyframes mng-spin { to { transform: rotate(360deg); } }
+        @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.4s; } }
+        [hidden] { display: none !important; }
+        @media (max-width: 380px) {
+            main { padding: 24px 18px; border-radius: 20px; }
+            h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section id="formState">
+            <h1>Manage your Brainy subscription</h1>
+            <p class="muted lead">Sign in with the Brainy credentials you received by email to manage or cancel your free trial or subscription.</p>
+            <form id="loginForm" novalidate>
+                <label for="emailInput">Email</label>
+                <input id="emailInput" name="email" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" inputmode="email" required>
+                <label for="passwordInput">Password</label>
+                <input id="passwordInput" name="password" type="password" autocomplete="current-password" required>
+                <p id="loginError" class="error" role="alert" aria-live="assertive" hidden></p>
+                <button id="submitButton" type="submit">Continue to subscription management</button>
+            </form>
+            <a class="forgot" href="/reset-password/">Forgot your password?</a>
+            <p class="muted" id="formHint" style="font-size:.93rem;">Cancelling stops future renewals. You’ll keep access until the end of your current free trial or billing period.</p>
+        </section>
+
+        <section id="workingState" hidden>
+            <h1 id="workingTitle">Signing you in…</h1>
+            <p id="workingMessage" class="muted" role="status" aria-live="polite">
+                <span class="spinner spinner-dark" aria-hidden="true"></span><span id="workingText">Checking your Brainy account.</span>
+            </p>
+        </section>
+
+        <section id="noSubscriptionState" hidden>
+            <h1>We couldn’t find an active subscription for this account.</h1>
+            <p class="muted">You can also use the “Manage subscription” link in your payment confirmation email — it opens your personal Customer Portal directly.</p>
+            <div class="actions">
+                <button class="secondary" type="button" id="noSubscriptionRetry">Retry</button>
+            </div>
+            <p class="help">Can’t access your account? Contact <a href="mailto:hello@brainyadhd.com">hello@brainyadhd.com</a> using the email associated with your Brainy account.</p>
+        </section>
+
+        <section id="networkErrorState" hidden>
+            <h1>Connection problem</h1>
+            <p id="networkErrorMessage" class="muted" role="alert" aria-live="assertive">We couldn’t reach the service. Check your connection and try again — your session stays open.</p>
+            <div class="actions">
+                <button class="secondary" type="button" id="networkRetry">Retry</button>
+            </div>
+            <p class="help">Can’t access your account? Contact <a href="mailto:hello@brainyadhd.com">hello@brainyadhd.com</a> using the email associated with your Brainy account.</p>
+        </section>
+
+        <section id="invalidUrlState" hidden>
+            <h1>We couldn’t open your subscription portal</h1>
+            <p class="muted" role="alert" aria-live="assertive">For your security we only open the RevenueCat Customer Portal over a verified HTTPS link, and that link wasn’t available. Nothing has been changed on your subscription.</p>
+            <p class="help">Can’t access your account? Contact <a href="mailto:hello@brainyadhd.com">hello@brainyadhd.com</a> using the email associated with your Brainy account. You can also use the “Manage subscription” link in your payment confirmation email.</p>
+        </section>
+
+        <section id="unavailableState" hidden>
+            <h1>Subscription management is unavailable</h1>
+            <p id="unavailableMessage" class="muted" role="alert" aria-live="assertive">We couldn’t look up your subscription right now. Nothing has been changed on your account.</p>
+            <div class="actions">
+                <button class="secondary" type="button" id="unavailableRetry">Retry</button>
+            </div>
+            <p class="help">Can’t access your account? Contact <a href="mailto:hello@brainyadhd.com">hello@brainyadhd.com</a> using the email associated with your Brainy account. You can also use the “Manage subscription” link in your payment confirmation email.</p>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+    <script src="../assets/revenuecat-sdk.js"></script>
+    <script src="../assets/revenuecat.js"></script>
+    <script src="../assets/manage-subscription.js"></script>
+    <!-- SANDBOX CONFIG: public RevenueCat Web Billing sandbox key. Replace with
+         the production public Web SDK key, or delete this block to disable the
+         page (it then shows "Subscription management is unavailable"). -->
+    <script>
+        window.__BRAINY_MANAGE_SUBSCRIPTION_CONFIG__ = {
+            revenuecatWebApiKey: 'strp_sb_mozjaozAfCdAQiBTzzSUnwQD'
+        };
+    </script>
+    <script>
+        // Config pública. Solo claves públicas: Supabase anon key y RevenueCat
+        // Web SDK key. Ninguna secret key en frontend.
+        var MANAGE_SUBSCRIPTION_CONFIG = {
+            supabaseUrl: 'https://auth.brainyadhd.com',
+            supabaseAnonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndkcXdncWZpc2l0ZXN3YmJkdXJnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU1MDgxNTUsImV4cCI6MjA4MTA4NDE1NX0.oLadI1C5H89CWqGAz0NjDjbp_zwDGsl726YMVvlqIYg',
+            revenuecatWebApiKey: ''
+        };
+        window.brainyManageSubscriptionConfig = MANAGE_SUBSCRIPTION_CONFIG;
+
+        var __deployedConfig__ = window.__BRAINY_MANAGE_SUBSCRIPTION_CONFIG__;
+        if (__deployedConfig__ && typeof __deployedConfig__ === 'object') {
+            Object.keys(__deployedConfig__).forEach(function (key) {
+                if (key in MANAGE_SUBSCRIPTION_CONFIG) {
+                    MANAGE_SUBSCRIPTION_CONFIG[key] = __deployedConfig__[key];
+                }
+            });
+        }
+    </script>
+    <script>
+        (function () {
+            'use strict';
+
+            var cfg = window.brainyManageSubscriptionConfig;
+            var sdk = window.BrainyManageSubscription;
+            var supabaseSdk = window.supabase;
+            var revenuecat = window.BrainyRevenueCat;
+
+            var formState = document.getElementById('formState');
+            var workingState = document.getElementById('workingState');
+            var workingTitle = document.getElementById('workingTitle');
+            var workingText = document.getElementById('workingText');
+            var noSubscriptionState = document.getElementById('noSubscriptionState');
+            var networkErrorState = document.getElementById('networkErrorState');
+            var invalidUrlState = document.getElementById('invalidUrlState');
+            var unavailableState = document.getElementById('unavailableState');
+
+            var form = document.getElementById('loginForm');
+            var emailInput = document.getElementById('emailInput');
+            var passwordInput = document.getElementById('passwordInput');
+            var loginError = document.getElementById('loginError');
+            var submitButton = document.getElementById('submitButton');
+
+            var GENERIC_INVALID = 'We couldn’t sign you in. Check your email and password and try again.';
+            var GENERIC_MISSING = 'Enter the email and password from your Brainy credentials email.';
+
+            // Los parámetros de identidad/gestión nunca se leen. Se borran de la
+            // URL antes de nada para que no queden en historial ni en capturas.
+            if (sdk) {
+                sdk.scrubIdentityParams(window.location, window.history);
+            }
+
+            function clearPassword() {
+                passwordInput.value = '';
+            }
+
+            function showLoginError(message) {
+                loginError.textContent = message;
+                loginError.hidden = false;
+            }
+
+            function clearLoginError() {
+                loginError.hidden = true;
+                loginError.textContent = '';
+            }
+
+            function showOnly(section) {
+                [formState, workingState, noSubscriptionState, networkErrorState,
+                 invalidUrlState, unavailableState].forEach(function (node) {
+                    node.hidden = node !== section;
+                });
+            }
+
+            function backToForm(message) {
+                clearPassword();
+                setBusy(false);
+                showOnly(formState);
+                clearLoginError();
+                if (message) {
+                    showLoginError(message);
+                }
+                emailInput.focus();
+            }
+
+            function setBusy(busy) {
+                submitButton.disabled = busy;
+                submitButton.setAttribute('aria-busy', busy ? 'true' : 'false');
+                if (busy) {
+                    submitButton.innerHTML = '<span class="spinner" aria-hidden="true"></span>Signing you in…';
+                } else {
+                    submitButton.textContent = 'Continue to subscription management';
+                }
+            }
+
+            function describeUnavailable(reason) {
+                var node = document.getElementById('unavailableMessage');
+                var messages = {
+                    auth_unavailable: 'This page couldn’t start its secure sign-in. Nothing has been changed on your account.',
+                    identity_missing: 'We couldn’t verify your Brainy account identity. Nothing has been changed on your account.',
+                    identity_invalid: 'We couldn’t verify your Brainy account identity. Nothing has been changed on your account.',
+                    revenuecat_unavailable: 'The subscription service didn’t load. Nothing has been changed on your account.',
+                    revenuecat_key_missing: 'The subscription service isn’t configured on this site yet.',
+                    revenuecat_configuration_failed: 'We couldn’t connect your account to the subscription service.',
+                    revenuecat_identity_mismatch: 'For your security we couldn’t match your account to the subscription service.',
+                    revenuecat_lookup_failed: 'We couldn’t read your subscription right now.'
+                };
+                node.textContent = messages[reason] || messages.revenuecat_lookup_failed;
+            }
+
+            var unavailableRetry = document.getElementById('unavailableRetry');
+            var networkRetry = document.getElementById('networkRetry');
+
+            // Cliente Supabase aislado para esta página. `persistSession: false`
+            // mantiene la sesión solo en memoria: nada de access token, refresh
+            // token ni email en localStorage/cookies, y sin interferir con el
+            // funnel, que tiene su propio cliente.
+            var client = null;
+            if (supabaseSdk && typeof supabaseSdk.createClient === 'function') {
+                client = supabaseSdk.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, {
+                    auth: {
+                        persistSession: false,
+                        autoRefreshToken: false,
+                        detectSessionInUrl: false
+                    }
+                });
+            }
+
+            var flow = sdk ? sdk.createFlow({
+                supabase: client,
+                revenuecat: revenuecat,
+                apiKey: cfg.revenuecatWebApiKey,
+                navigate: function (url) {
+                    // Navegación en la MISMA pestaña: se origina en el clic del
+                    // usuario y no depende de que un bloqueador permita un popup.
+                    window.location.assign(url);
+                },
+                clearPassword: clearPassword,
+                onState: function (state, detail) {
+                    if (state === 'form') {
+                        backToForm(detail.reason === 'missing_credentials' ? GENERIC_MISSING : GENERIC_INVALID);
+                        return;
+                    }
+                    if (state === 'authenticating') {
+                        setBusy(true);
+                        showOnly(workingState);
+                        workingTitle.textContent = 'Signing you in…';
+                        workingText.textContent = 'Checking your Brainy account.';
+                        return;
+                    }
+                    if (state === 'configuring') {
+                        showOnly(workingState);
+                        workingTitle.textContent = 'Finding your subscription…';
+                        workingText.textContent = 'Looking up your subscription.';
+                        return;
+                    }
+                    if (state === 'redirecting') {
+                        submitButton.disabled = true;
+                        showOnly(workingState);
+                        workingTitle.textContent = 'Opening your subscription portal…';
+                        workingText.textContent = 'Taking you to the RevenueCat Customer Portal.';
+                        return;
+                    }
+                    if (state === 'no-subscription') {
+                        submitButton.disabled = false;
+                        showOnly(noSubscriptionState);
+                        document.getElementById('noSubscriptionRetry').focus();
+                        return;
+                    }
+                    if (state === 'network-error') {
+                        submitButton.disabled = false;
+                        showOnly(networkErrorState);
+                        networkRetry.focus();
+                        return;
+                    }
+                    if (state === 'invalid-url') {
+                        submitButton.disabled = false;
+                        showOnly(invalidUrlState);
+                        return;
+                    }
+                    if (state === 'unavailable') {
+                        submitButton.disabled = false;
+                        describeUnavailable(detail.reason);
+                        showOnly(unavailableState);
+                        unavailableRetry.focus();
+                    }
+                }
+            }) : null;
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                if (!flow) {
+                    describeUnavailable('auth_unavailable');
+                    showOnly(unavailableState);
+                    unavailableRetry.focus();
+                    return;
+                }
+                // `isBusy()` + `submitButton.disabled` evitan el doble envío.
+                if (flow.isBusy()) {
+                    return;
+                }
+                clearLoginError();
+                flow.signIn(emailInput.value, passwordInput.value);
+            });
+
+            networkRetry.addEventListener('click', function () {
+                if (!flow || flow.isBusy()) {
+                    return;
+                }
+                if (!flow.hasVerifiedSession()) {
+                    // No hay identidad verificada en memoria: se pide el login
+                    // de nuevo. No se conserva ninguna credencial.
+                    backToForm(GENERIC_INVALID);
+                    return;
+                }
+                showOnly(workingState);
+                workingTitle.textContent = 'Finding your subscription…';
+                workingText.textContent = 'Looking up your subscription.';
+                // Se reintenta solo el paso de RevenueCat. La sesión NO se
+                // cierra por un error temporal.
+                flow.retryRevenueCatStep();
+            });
+
+            document.getElementById('noSubscriptionRetry').addEventListener('click', function () {
+                backToForm(null);
+            });
+
+            unavailableRetry.addEventListener('click', function () {
+                backToForm(null);
+            });
+
+            emailInput.focus();
+        })();
+    </script>
+</body>
+</html>

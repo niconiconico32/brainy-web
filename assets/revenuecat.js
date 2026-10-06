@@ -1,8 +1,9 @@
 /* BrainyRevenueCat — servicio cliente de RevenueCat Web SDK para el funnel.
  *
  * Encapsula: identidad Supabase verificada, configuración única, offerings,
- * compra con locales ES y clasificación de errores. Nunca maneja ni expone
- * claves privadas, tokens de redención ni datos de pago sensibles.
+ * compra con locales ES, clasificación de errores y la URL de gestión de la
+ * suscripción (Customer Portal). Nunca maneja ni expone claves privadas,
+ * tokens de redención ni datos de pago sensibles.
  */
 (function () {
     'use strict';
@@ -106,9 +107,60 @@
         return instance.getCustomerInfo();
     }
 
+    // Contrato verificado contra el SDK vendorizado (purchases-js 1.60.1) y sus
+    // tipos (`CustomerInfo.managementURL: string | null`):
+    //   - método de customer info: `instance.getCustomerInfo()` -> Promise<CustomerInfo>
+    //   - propiedad de la URL de gestión: `customerInfo.managementURL`
+    //     (mapeada desde `subscriber.management_url`; null cuando no existe)
+    // No hay ningún método `manageSubscription`/`cancel` en el Web SDK: la
+    // cancelación se hace exclusivamente en el Customer Portal que abre esa URL.
+    function isValidManagementUrl(value) {
+        if (typeof value !== 'string') {
+            return false;
+        }
+        var trimmed = value.trim();
+        if (!trimmed) {
+            return false;
+        }
+        var parsed = null;
+        try {
+            parsed = new URL(trimmed);
+        } catch (error) {
+            return false;
+        }
+        // Fail closed: solo Customer Portal HTTPS. Nada de http:, javascript:,
+        // data: ni esquemas propios.
+        return parsed.protocol === 'https:' && !!parsed.hostname && !/\s/.test(trimmed);
+    }
+
+    // Devuelve la URL HTTPS del Customer Portal para el App User ID configurado,
+    // o `null` si RevenueCat no expone ninguna. Nunca compra, nunca consulta
+    // offerings, nunca restaura compras, nunca toca entitlements y nunca acepta
+    // una URL aportada por el llamador.
+    function getManagementURL() {
+        if (!instance) {
+            return Promise.reject(new Error('RevenueCat is not configured'));
+        }
+        var appUserId = getSdkAppUserId();
+        if (!isUuid(appUserId)) {
+            return Promise.reject(new Error('RevenueCat management URL requires a valid UUID App User ID'));
+        }
+        return getCustomerInfo().then(function (customerInfo) {
+            if (!customerInfo || typeof customerInfo !== 'object') {
+                return null;
+            }
+            var url = customerInfo.managementURL;
+            return isValidManagementUrl(url) ? url.trim() : null;
+        });
+    }
+
+    function isUuid(value) {
+        return typeof value === 'string' &&
+            /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+    }
+
     function isValidPlanId(planId) {
-        return typeof planId === 'string' &&
-            /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(planId);
+        return isUuid(planId);
     }
 
     function isEntitledTo(customerInfo, entitlementId) {
@@ -197,6 +249,9 @@
         getSdkAppUserId: getSdkAppUserId,
         getOfferings: getOfferings,
         getCustomerInfo: getCustomerInfo,
+        isUuid: isUuid,
+        isValidManagementUrl: isValidManagementUrl,
+        getManagementURL: getManagementURL,
         isValidPlanId: isValidPlanId,
         isEntitledTo: isEntitledTo,
         purchase: purchase,
