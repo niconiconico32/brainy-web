@@ -10,6 +10,8 @@
     "test:revenuecat-metadata": "node testers/revenuecat-metadata-regression.cjs",
     "test:manage-subscription": "node testers/manage-subscription-regression.cjs",
     "test:manage-subscription:ui": "node testers/manage-subscription-ui.cjs",
+    "test:minimal-success": "node testers/minimal-success-regression.cjs",
+    "shots:minimal-success": "node testers/minimal-success-shots.cjs",
     "test:funnel-ui": "node testers/funnel-ui-regression.cjs",
     "shots:funnel-ui": "node testers/funnel-ui-shots.cjs",
     "test:good-hands": "node testers/good-hands-regression.cjs",

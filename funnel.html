@@ -188,6 +188,13 @@
         }
 
 
+        /* El atributo hidden debe ganar a display:inline-flex: en la pantalla
+           terminal la flecha Atrás no se muestra. */
+        .back-btn[hidden] {
+            display: none;
+        }
+
+
         .back-btn {
             display: inline-flex;
             align-items: center;
@@ -3224,57 +3231,8 @@
         }
 
 
-        .handoff-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 18px;
-            margin-top: 16px;
-        }
-
-
-        .handoff-check {
-            width: 74px;
-            height: 74px;
-            border-radius: 50%;
-            background: var(--dopamine);
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            font-weight: 900;
-            box-shadow: 0 0 0 8px rgba(201, 253, 90, 0.18);
-        }
-
-
-        .handoff-main {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-
         .handoff-open {
             width: 100%;
-        }
-
-
-        .handoff-hint {
-            margin: 10px 4px 0;
-            font-size: 0.84rem;
-            color: var(--muted);
-        }
-
-
-        .handoff-stores {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 14px;
-            flex-wrap: wrap;
         }
 
 
@@ -3294,38 +3252,193 @@
         }
 
 
-        .handoff-note {
-            margin-top: 12px;
-            font-size: 0.84rem;
-            font-weight: 700;
-            color: var(--muted);
-        }
+          /* ============================================================
+             Pantalla terminal post-compra.
+             Una sola confirmacion, sin acciones: no abre la app, no
+             instala nada, no lleva a ningun sitio. Solo confirma que
+             la compra y el plan se completaron y que el correo con
+             las instrucciones esta en camino.
+             Sin botones, sin enlaces y sin elementos enfocables.
+             ============================================================ */
+          .step-done {
+              padding: 24px;
+              border-radius: 26px;
+              box-shadow: 0 2px 10px rgba(36, 37, 33, 0.04);
+          }
 
 
-        .handoff-desk-title {
-            margin: 0 0 8px;
-            font-weight: 900;
-            font-size: 1.02rem;
-        }
+          .step-done-inner {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              text-align: center;
+          }
 
 
-        .handoff-steps {
-            text-align: left;
-            margin: 0 auto 14px;
-            padding-left: 20px;
-            max-width: 340px;
-            font-size: 0.9rem;
-            line-height: 1.7;
-            color: var(--muted);
-        }
+          .done-badge {
+              display: grid;
+              place-items: center;
+              width: 76px;
+              height: 76px;
+              border-radius: 50%;
+              background: var(--funnel-accent-soft);
+              color: var(--funnel-accent-strong);
+              margin-bottom: 18px;
+          }
 
 
-        .handoff-copy {
-            margin-top: 4px;
-        }
+          .done-badge svg {
+              width: 38px;
+              height: 38px;
+              display: block;
+          }
 
 
-        .paywall-summary {
+          .done-eyebrow {
+              display: inline-flex;
+              align-items: center;
+              padding: 7px 13px;
+              border-radius: 999px;
+              background: var(--funnel-accent-soft);
+              color: var(--funnel-accent-strong);
+              font-size: 0.74rem;
+              font-weight: 800;
+              letter-spacing: 0.08em;
+              text-transform: uppercase;
+              margin-bottom: 14px;
+          }
+
+
+          .step-done h1 {
+              margin: 0 0 10px;
+              font-size: 1.55rem;
+              line-height: 1.22;
+              letter-spacing: -0.01em;
+              text-wrap: balance;
+          }
+
+
+          .done-lede {
+              margin: 0;
+              color: var(--funnel-muted);
+              font-size: 0.98rem;
+              line-height: 1.55;
+              max-width: 42ch;
+              text-wrap: pretty;
+          }
+
+
+          .done-mail {
+              display: flex;
+              gap: 14px;
+              align-items: flex-start;
+              width: 100%;
+              margin-top: 22px;
+              padding: 18px;
+              border-radius: 18px;
+              background: var(--funnel-accent-soft);
+              text-align: left;
+          }
+
+
+          .done-mail-icon {
+              flex: 0 0 auto;
+              display: grid;
+              place-items: center;
+              width: 40px;
+              height: 40px;
+              border-radius: 12px;
+              background: rgba(255, 255, 255, 0.85);
+              color: var(--funnel-accent-strong);
+          }
+
+
+          .done-mail-icon svg {
+              width: 21px;
+              height: 21px;
+              display: block;
+          }
+
+
+          .done-mail-title {
+              margin: 0 0 4px;
+              font-size: 0.97rem;
+              font-weight: 800;
+              color: var(--funnel-accent-strong);
+          }
+
+
+          .done-mail-text {
+              margin: 0;
+              font-size: 0.93rem;
+              line-height: 1.5;
+              color: var(--funnel-text);
+          }
+
+
+          .done-note {
+              margin: 16px 0 0;
+              font-size: 0.88rem;
+              line-height: 1.5;
+              color: var(--funnel-muted);
+              max-width: 40ch;
+              text-wrap: pretty;
+          }
+
+
+          .done-close {
+              margin: 18px 0 0;
+              font-size: 0.9rem;
+              font-weight: 700;
+              color: var(--funnel-accent-strong);
+          }
+
+
+          @media (min-width: 768px) {
+              .step-done {
+                  padding: 44px;
+              }
+          }
+
+
+          @media (max-width: 360px) {
+              .step-done {
+                  padding: 20px 18px;
+              }
+          }
+
+
+          /* Centrado vertical a CUALQUIER anchura, no solo en desktop.
+             En movil la cadena main > .shell > .funnel-root es block, asi que
+             margin-block:auto no tendria espacio que repartir. Estas reglas solo
+             se activan cuando la tarjeta terminal esta montada (:has), de modo
+             que el resto de pantallas del funnel no cambia.
+             Si el contenido no cabe (pantallas bajas) los margenes colapsan a 0
+             y la tarjeta se ve completa con scroll normal. */
+          body:has(.step-done) main.shell {
+              display: flex;
+              flex-direction: column;
+              min-height: 100vh;
+          }
+
+          body:has(.step-done) .funnel-root {
+              display: flex;
+              flex-direction: column;
+              flex: 1 1 auto;
+          }
+
+          .funnel-root > .step-done {
+              margin-block: auto;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+              .funnel-root > .step-done {
+                  animation: none;
+              }
+          }
+
+
+          .paywall-summary {
             display: flex;
             gap: 8px;
             justify-content: center;
@@ -3828,40 +3941,6 @@
         .paywall-recovery p {
             font-size: 0.9rem;
             margin-bottom: 12px;
-        }
-
-
-        .success-checks {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 6px 0 16px;
-            padding: 0;
-        }
-
-
-        .success-checks li {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.94rem;
-            font-weight: 700;
-            color: var(--text);
-        }
-
-
-        .success-checks .ok {
-            width: 26px;
-            height: 26px;
-            flex-shrink: 0;
-            border-radius: 50%;
-            background: var(--dopamine);
-            color: var(--text);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
         }
 
 
@@ -5763,10 +5842,19 @@
             const label = document.getElementById('funnelProgressLabel');
             const activeStage = stageIndexOfStep(step);
             const progressPair = stageProgress();
-            const finished = currentStepIndex >= steps.length - 1;
+            const isTerminal = step.type === 'success' || step.type === 'handoff';
+            // En la pantalla terminal las dos etapas quedan completas: el
+            // funnel ya terminó. `finished` mantenía solo el último paso como
+            // 'done', así que success mostraba la segunda etapa a medias.
+            const finished = currentStepIndex >= steps.length - 1 || isTerminal;
             progress.hidden = false;
-            document.getElementById(FUNNEL_STAGES[0].fillId).style.width = `${progressPair[0] * 100}%`;
-            document.getElementById(FUNNEL_STAGES[1].fillId).style.width = `${progressPair[1] * 100}%`;
+            if (isTerminal) {
+                document.getElementById(FUNNEL_STAGES[0].fillId).style.width = '100%';
+                document.getElementById(FUNNEL_STAGES[1].fillId).style.width = '100%';
+            } else {
+                document.getElementById(FUNNEL_STAGES[0].fillId).style.width = `${progressPair[0] * 100}%`;
+                document.getElementById(FUNNEL_STAGES[1].fillId).style.width = `${progressPair[1] * 100}%`;
+            }
             progress.querySelectorAll('.funnel-stage').forEach((node, index) => {
                 let state = 'idle';
                 if (finished || index < activeStage) {
@@ -6379,18 +6467,6 @@
 
         // Deep link web -> app. Identity is resolved by the Supabase UUID and
         // claim token; do not put email or other PII in the URL or QR payload.
-        function buildClaimLink(redeemUrl) {
-            const token = hasRealPlan()
-                ? funnelState.claimToken
-                : 'demo-' + (funnelState.planId || Date.now());
-            let link = `${FUNNEL_CONFIG.appDeepLinkScheme}://claim?token=${encodeURIComponent(token)}`;
-            if (redeemUrl) {
-                link += `&redeem_url=${encodeURIComponent(redeemUrl)}`;
-            }
-            return link;
-        }
-
-
         function revenuecatConfig() {
             return {
                 apiKey: FUNNEL_CONFIG.revenuecatWebApiKey || '',
@@ -6398,33 +6474,6 @@
                 entitlementId: FUNNEL_CONFIG.revenuecatEntitlementId || 'brainy Pro',
                 termsUrl: FUNNEL_CONFIG.revenuecatTermsUrl || ''
             };
-        }
-
-
-        function storeButtonsHtml() {
-            const buttons = [];
-            if (FUNNEL_CONFIG.iosStoreUrl) {
-                buttons.push(`<a class="store-btn" href="${FUNNEL_CONFIG.iosStoreUrl}" target="_blank" rel="noopener" data-action="store" data-store="ios">App Store</a>`);
-            }
-            if (FUNNEL_CONFIG.androidStoreUrl) {
-                buttons.push(`<a class="store-btn" href="${FUNNEL_CONFIG.androidStoreUrl}" target="_blank" rel="noopener" data-action="store" data-store="android">Google Play</a>`);
-            }
-            return buttons.join('');
-        }
-
-
-        function qrSvgHtml(content) {
-            if (!window.qrcode || !content) {
-                return '';
-            }
-            try {
-                const qr = window.qrcode(0, 'M');
-                qr.addData(content);
-                qr.make();
-                return `<div class="handoff-qr">${qr.createSvgTag({ cellSize: 4, margin: 2 })}</div>`;
-            } catch (e) {
-                return '';
-            }
         }
 
 
@@ -8601,6 +8650,77 @@
         }
 
 
+/* ============================================================
+           Pantalla terminal post-compra. Presentación ÚNICA y sin
+           acciones: sustituye a la antigua que pedía instalar la app,
+           mostrar un QR y copiar el enlace de activación.
+
+           No hace nada: no compra, no navega, no llama a la app, no
+           enlaza a ningún sitio. Solo confirma que la compra y el plan
+           se completaron y avisa de que el correo con las instrucciones
+           está en camino.
+
+           Se usa "recibirás", nunca "hemos enviado": el webhook puede
+           seguir procesando la entrega cuando el usuario ve esto.
+           ============================================================ */
+        function renderTerminalDone(existingPro) {
+            // Icono decorativo: aria-hidden, sin texto alternativo.
+            const checkIcon = `
+                <div class="done-badge" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                        <path d="M5 12.75l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>`;
+            const mailIcon = `
+                <span class="done-mail-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" focusable="false">
+                        <rect x="2.75" y="5.25" width="18.5" height="13.5" rx="2.25"
+                              stroke="currentColor" stroke-width="1.7"/>
+                        <path d="M3.5 7.5l8.5 6 8.5-6" stroke="currentColor" stroke-width="1.7"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>`;
+
+            // alreadyPro: el backend NO emite credenciales nuevas, así que no
+            // se promete ningún correo. Solo se confirma el acceso existente.
+            const title = existingPro
+                ? localizedText('Tu acceso Pro ya está activo', 'Your Pro access is already active')
+                : localizedText('Tu plan está listo', 'Your plan is ready');
+            const lede = existingPro
+                ? localizedText('Tu cuenta ya tiene acceso a Brainy Pro. Puedes cerrar esta ventana e iniciar sesión con tu cuenta habitual.', 'Your account already has access to Brainy Pro. You can close this window and sign in with your usual account.')
+                : localizedText('Tu compra se completó correctamente y tu plan personalizado de Brainy ya fue creado.', 'Your purchase completed successfully and your personalized Brainy plan has been created.');
+
+            const mailBlock = existingPro ? '' : `
+                <div class="done-mail">
+                    ${mailIcon}
+                    <div>
+                        <p class="done-mail-title">${localizedText('Revisa tu correo', 'Check your email')}</p>
+                        <p class="done-mail-text">${localizedText('En pocos segundos recibirás un email con tus datos de acceso y las instrucciones para entrar a Brainy.', 'In a few seconds you’ll receive an email with your access details and the instructions to sign in to Brainy.')}</p>
+                    </div>
+                </div>
+                <p class="done-note">${localizedText('Si no lo encuentras después de unos minutos, revisa las carpetas Spam o Promociones.', 'If you don’t find it after a few minutes, check your Spam or Promotions folders.')}</p>`;
+
+            const closing = existingPro ? '' :
+                `<p class="done-close">${localizedText('Puedes cerrar esta ventana.', 'You can close this window.')}</p>`;
+
+            // role="status" + aria-live="polite": el lector de pantalla
+            // anuncia la confirmación sin robar el foco. Sin tabindex, sin
+            // botones y sin enlaces: nada enfocable.
+            document.getElementById('funnelRoot').innerHTML = `
+                ${cardOpen('step-done')}
+                    <div class="step-done-inner" role="status" aria-live="polite">
+                        ${checkIcon}
+                        <span class="done-eyebrow">${localizedText('Todo listo', 'All set')}</span>
+                        <h1>${title}</h1>
+                        <p class="done-lede">${lede}</p>
+                        ${mailBlock}
+                        ${closing}
+                    </div>
+                </article>`;
+        }
+
+
         function renderSuccess(step) {
             const platform = isMobileDevice() ? 'mobile' : 'desktop';
             const redeemUrl = funnelState.pendingRedemptionUrl || null;
@@ -8652,164 +8772,15 @@
             });
             ensurePlan();
             window.brainyUserPlanPayload = buildUserPlanPayload();
-
-            const link = buildClaimLink(redeemUrl);
-            const storesHtml = storeButtonsHtml();
-            const recoveryNote = !redeemUrl && funnelState.planId
-                ? `<p class="handoff-hint">${existingPro ? localizedText('Abre la app para continuar con tu cuenta existente.', 'Open the app to continue with your existing account.') : localizedText('Abre la app para completar la activación con tu cuenta identificada.', 'Open the app to finish activation with your identified account.')}</p>`
-                : '';
-            const checks = (existingPro
-                ? [localizedText('Cuenta existente detectada', 'Existing account detected'), localizedText('Tu plan está guardado', 'Your plan is saved'), localizedText('Continúa en la app para finalizar', 'Continue in the app to finish')]
-                : redeemUrl
-                    ? [localizedText('Suscripción activada', 'Subscription active'), localizedText('Tu plan está guardado', 'Your plan is saved'), localizedText('Tareas y rutinas preparadas', 'Tasks and routines prepared')]
-                    : [localizedText('Compra recibida por RevenueCat', 'Purchase received by RevenueCat'), localizedText('Tu plan está guardado', 'Your plan is saved'), localizedText('Continúa en la app para completar la activación', 'Continue in the app to finish activation')]
-            ).map((c) => `<li><span class="ok">✓</span>${c}</li>`).join('');
-
-            let mainArea;
-            if (isMobileDevice()) {
-                mainArea = `
-                    <div class="handoff-main">
-                        <a class="btn btn-dopamine handoff-open" href="${link}" id="openAppBtn">Abrir Brainy →</a>
-                         <p class="handoff-hint">${localizedText('Si no se abre automáticamente, toca el botón de tu tienda.', 'If it does not open automatically, tap your store button.')}</p>
-                        <div class="handoff-stores">${storesHtml}</div>
-                         <div class="handoff-note" id="handoffNote" hidden>${localizedText('¿No se abrió? Instala Brainy y vuelve a tocar el botón.', 'Did it not open? Install Brainy and tap the button again.')}</div>
-                    </div>`;
-            } else {
-                mainArea = `
-                    <div class="handoff-main">
-                         <p class="handoff-desk-title">${localizedText('Continúa en tu teléfono', 'Continue on your phone')}</p>
-                        <ol class="handoff-steps">
-                             <li>${localizedText('Instala Brainy (App Store o Google Play).', 'Install Brainy (App Store or Google Play).')}</li>
-                             <li>${localizedText('Escanea el código con la cámara de tu celular.', 'Scan the code with your phone camera.')}</li>
-                             <li>${localizedText('Tu plan y tu suscripción estarán esperándote.', 'Your plan and subscription will be waiting for you.')}</li>
-                        </ol>
-                        ${qrSvgHtml(link)}
-                         <button class="btn btn-ghost handoff-copy" type="button" id="copyLinkBtn" data-link="${link}">${localizedText('Copiar enlace', 'Copy link')}</button>
-                         <p class="handoff-hint">${localizedText('Ábrelo en el navegador del celular y Brainy cargará tu plan.', 'Open it in your phone browser and Brainy will load your plan.')}</p>
-                        <div class="handoff-stores">${storesHtml}</div>
-                    </div>`;
-            }
-
-            document.getElementById('funnelRoot').innerHTML = `
-                ${cardOpen()}
-                    ${headHtml({ ...step, headline: existingPro ? 'Tu cuenta ya está lista' : (redeemUrl ? step.headline : 'Tu pago está listo para continuar') })}
-                    <ul class="success-checks">${checks}</ul>
-                    ${recoveryNote}
-                    <div class="handoff-wrap">
-                        <div class="handoff-check">✓</div>
-                        ${mainArea}
-                    </div>
-                    <p class="manage-subscription-note">${localizedText('¿Necesitas cancelar? ', 'Need to cancel? ')}<a href="/manage-subscription/">${localizedText('Gestionar suscripción', 'Manage subscription')}</a></p>
-                </article>`;
-
-            const openBtn = document.getElementById('openAppBtn');
-            if (openBtn) {
-                openBtn.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    track('purchase_handoff_click', { platform: 'mobile', destination: 'app' });
-                    window.location.href = buildClaimLink(redeemUrl);
-                    const open = document.getElementById('handoffNote');
-                    setTimeout(() => {
-                        if (open) {
-                            open.hidden = false;
-                        }
-                    }, 1200);
-                });
-            }
-
-            const copyBtn = document.getElementById('copyLinkBtn');
-            if (copyBtn) {
-                copyBtn.addEventListener('click', () => {
-                    const target = buildClaimLink(redeemUrl);
-                    const done = () => {
-                        copyBtn.textContent = localizedText('¡Copiado!', 'Copied!');
-                        setTimeout(() => { copyBtn.textContent = localizedText('Copiar enlace', 'Copy link'); }, 2200);
-                    };
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(target).then(done).catch(() => done());
-                    } else {
-                        done();
-                    }
-                    track('purchase_handoff_click', { platform: 'desktop', destination: 'copy_link' });
-                });
-            }
+            renderTerminalDone(existingPro);
         }
 
 
         function renderHandoff(step) {
             track('handoff_view', { platform: isMobileDevice() ? 'mobile' : 'desktop' });
             ensurePlan();
-            const link = buildClaimLink();
-            const storesHtml = storeButtonsHtml();
             window.brainyUserPlanPayload = buildUserPlanPayload();
-
-            let mainArea;
-            if (isMobileDevice()) {
-                mainArea = `
-                    <div class="handoff-main">
-                        <a class="btn btn-dopamine handoff-open" href="${link}" id="openAppBtn">${step.cta} →</a>
-                        <p class="handoff-hint">${localizedText('Si no se abre automáticamente, toca el botón de tu tienda.', 'If it does not open automatically, tap your store button.')}</p>
-                        <div class="handoff-stores">${storesHtml}</div>
-                        <div class="handoff-note" id="handoffNote" hidden>${localizedText('¿No se abrió? Instala Brainy y vuelve a tocar el botón.', 'Did it not open? Install Brainy and tap the button again.')}</div>
-                    </div>`;
-            } else {
-                const copyLink = funnelState.claimToken && FUNNEL_CONFIG.appDeepLinkScheme
-                    ? buildClaimLink()
-                    : null;
-                mainArea = `
-                    <div class="handoff-main">
-                        <p class="handoff-desk-title">${localizedText('Continúa en tu teléfono', 'Continue on your phone')}</p>
-                        <ol class="handoff-steps">
-                            <li>${localizedText('Instala Brainy (App Store o Google Play).', 'Install Brainy (App Store or Google Play).')}</li>
-                            <li>${localizedText('Toca el botón «Abrir en el celular».', 'Tap the “Open on phone” button.')}</li>
-                            <li>${localizedText('Tu plan estará esperándote con tu token de activación.', 'Your plan will be waiting with your activation token.')}</li>
-                        </ol>
-                        ${copyLink ? `
-                             <button class="btn btn-ghost handoff-copy" type="button" id="copyLinkBtn" data-link="${copyLink}">${localizedText('Copiar enlace de activación', 'Copy activation link')}</button>
-                             <p class="field-note">${localizedText('Ábrelo en el navegador del celular y Brainy cargará tu plan.', 'Open it in your phone browser and Brainy will load your plan.')}</p>` : ''}
-                        <div class="handoff-stores">${storesHtml}</div>
-                    </div>`;
-            }
-
-            document.getElementById('funnelRoot').innerHTML = `
-                ${cardOpen()}
-                    ${headHtml(step)}
-                    <div class="handoff-wrap">
-                        <div class="handoff-check">✓</div>
-                        ${mainArea}
-                    </div>
-                    <p class="manage-subscription-note">${localizedText('¿Necesitas cancelar? ', 'Need to cancel? ')}<a href="/manage-subscription/">${localizedText('Gestionar suscripción', 'Manage subscription')}</a></p>
-                </article>`;
-
-            const openBtn = document.getElementById('openAppBtn');
-            if (openBtn) {
-                openBtn.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    track('handoff_click', { platform: 'mobile', destination: 'app' });
-                    const open = document.getElementById('handoffNote');
-                    window.location.href = buildClaimLink();
-                    setTimeout(() => {
-                        open.hidden = false;
-                    }, 1200);
-                });
-            }
-
-            const copyBtn = document.getElementById('copyLinkBtn');
-            if (copyBtn) {
-                copyBtn.addEventListener('click', () => {
-                    const target = buildClaimLink();
-                    const done = () => {
-                        copyBtn.textContent = localizedText('¡Copiado!', 'Copied!');
-                        setTimeout(() => { copyBtn.textContent = localizedText('Copiar enlace de activación', 'Copy activation link'); }, 2200);
-                    };
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(target).then(done).catch(() => done());
-                    } else {
-                        done();
-                    }
-                    track('handoff_click', { platform: 'desktop', destination: 'copy_link' });
-                });
-            }
+            renderTerminalDone(!!funnelState.alreadyPro);
         }
 
 

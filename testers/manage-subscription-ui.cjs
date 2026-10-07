@@ -294,7 +294,10 @@ async function testFunnelAndSupportLinks(browser, baseUrl) {
   assert.ok(links.includes('Manage subscription'), `support enlaza a /manage-subscription/: ${JSON.stringify(links)}`);
   // El funnel enlaza a /manage-subscription/, nunca directo a Stripe.
   const funnelHtml = fs.readFileSync(path.join(ROOT, 'funnel.html'), 'utf8');
-  assert.equal((funnelHtml.match(/<a href="\/manage-subscription\/">/g) || []).length, 2);
+  // El funnel ya no enlaza a /manage-subscription/: la pantalla terminal lo
+  // elimino por requisito de diseno. support.html sigue siendo la via de entrada.
+  assert.equal((funnelHtml.match(/<a href="\/manage-subscription\/">/g) || []).length, 0);
+  assert.match(funnelHtml, /manage-subscription-note/, 'el paywall conserva la aclaracion en texto');
   assert.equal(/href="https:\/\/billing\.stripe\.com/.test(funnelHtml), false, 'el funnel no enlaza directo a Stripe');
   // El funnel carga la config Live desde site-config.js.
   assert.match(funnelHtml, /assets\/site-config\.js/);

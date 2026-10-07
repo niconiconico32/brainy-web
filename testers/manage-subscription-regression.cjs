@@ -201,8 +201,18 @@ function testNoPiiExposure() {
 function testInternalLinks() {
   assert.match(support, /<a href="\/manage-subscription\/">Manage subscription<\/a>/);
   assert.match(support, /footer-links[\s\S]*\/manage-subscription\//);
-  assert.equal((funnel.match(/<a href="\/manage-subscription\/">/g) || []).length, 2,
-    'paywall/success y handoff enlazan a /manage-subscription/');
+  // Rediseño de la pantalla terminal: el enlace "Gestionar suscripción" se
+  // eliminó de ella, así que el funnel ya no enlaza a /manage-subscription/.
+  // El paywall conserva su aclaración en texto y support.html sigue siendo la
+  // vía de entrada.
+  assert.equal((funnel.match(/<a href="\/manage-subscription\/">/g) || []).length, 0,
+    'la pantalla terminal ya no enlaza a /manage-subscription/');
+  const terminal = funnel.slice(funnel.indexOf('function renderTerminalDone'), funnel.indexOf('function renderHandoff'));
+  assert.equal(/manage-subscription/.test(terminal), false,
+    'la pantalla terminal no debe enlazar a /manage-subscription/');
+  // El paywall conserva la aclaración de cancelación (solo texto, sin CTA).
+  assert.match(funnel, /id="paywallExpired"[\s\S]{0,400}manage-subscription-note/,
+    'el paywall conserva su aclaración de cancelación');
   // Ningun enlace interno va directo a Stripe: la pagina es el unico punto.
   for (const f of ['funnel.html', 'support.html', PAGE_PATH]) {
     const src = fs.readFileSync(path.join(ROOT, f), 'utf8');
