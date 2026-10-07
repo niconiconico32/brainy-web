@@ -3254,167 +3254,115 @@
 
           /* ============================================================
              Pantalla terminal post-compra.
-             Una sola confirmacion, sin acciones: no abre la app, no
-             instala nada, no lleva a ningun sitio. Solo confirma que
-             la compra y el plan se completaron y que el correo con
-             las instrucciones esta en camino.
+             Presentacion informativa y sin acciones: solo confirma que
+             la compra y el plan se completaron y explica como entrar
+             cuando el usuario tenga la app. Sin tarjeta pesada: el
+             unico bloque blanco es el de las instrucciones.
              Sin botones, sin enlaces y sin elementos enfocables.
              ============================================================ */
           .step-done {
-              padding: 24px;
-              border-radius: 26px;
-              box-shadow: 0 2px 10px rgba(36, 37, 33, 0.04);
+              width: 100%;
+              max-width: 520px;
+              margin-inline: auto;
+              padding: 28px 22px;
+              background: none;
+              border: 0;
+              box-shadow: none;
+              text-align: center;
           }
-
 
           .step-done-inner {
               display: flex;
               flex-direction: column;
               align-items: center;
-              text-align: center;
           }
 
-
-          .done-badge {
-              display: grid;
-              place-items: center;
-              width: 76px;
-              height: 76px;
-              border-radius: 50%;
-              background: var(--funnel-accent-soft);
-              color: var(--funnel-accent-strong);
-              margin-bottom: 18px;
-          }
-
-
-          .done-badge svg {
-              width: 38px;
-              height: 38px;
+          .done-logo {
+              width: 150px;
+              max-width: 42vw;
+              height: auto;
               display: block;
+              margin-bottom: 20px;
           }
-
-
-          .done-eyebrow {
-              display: inline-flex;
-              align-items: center;
-              padding: 7px 13px;
-              border-radius: 999px;
-              background: var(--funnel-accent-soft);
-              color: var(--funnel-accent-strong);
-              font-size: 0.74rem;
-              font-weight: 800;
-              letter-spacing: 0.08em;
-              text-transform: uppercase;
-              margin-bottom: 14px;
-          }
-
 
           .step-done h1 {
-              margin: 0 0 10px;
-              font-size: 1.55rem;
-              line-height: 1.22;
-              letter-spacing: -0.01em;
+              margin: 0 0 12px;
+              font-size: 1.85rem;
+              line-height: 1.2;
+              letter-spacing: -0.015em;
+              color: var(--funnel-text);
               text-wrap: balance;
           }
 
-
           .done-lede {
               margin: 0;
+              max-width: 40ch;
               color: var(--funnel-muted);
-              font-size: 0.98rem;
+              font-size: 1rem;
               line-height: 1.55;
-              max-width: 42ch;
               text-wrap: pretty;
           }
 
+          .done-subtitle {
+              margin: 26px 0 10px;
+              font-size: 0.95rem;
+              font-weight: 800;
+              color: var(--funnel-text);
+          }
 
-          .done-mail {
-              display: flex;
-              gap: 14px;
-              align-items: flex-start;
+          .done-steps {
               width: 100%;
-              margin-top: 22px;
-              padding: 18px;
+              margin: 0;
+              padding: 18px 18px 16px;
+              list-style: none;
+              counter-reset: done-step;
+              background: var(--funnel-surface);
+              border: 1px solid var(--funnel-border);
               border-radius: 18px;
-              background: var(--funnel-accent-soft);
+              box-shadow: var(--funnel-shadow);
               text-align: left;
           }
 
-
-          .done-mail-icon {
-              flex: 0 0 auto;
-              display: grid;
-              place-items: center;
-              width: 40px;
-              height: 40px;
-              border-radius: 12px;
-              background: rgba(255, 255, 255, 0.85);
-              color: var(--funnel-accent-strong);
-          }
-
-
-          .done-mail-icon svg {
-              width: 21px;
-              height: 21px;
-              display: block;
-          }
-
-
-          .done-mail-title {
-              margin: 0 0 4px;
-              font-size: 0.97rem;
-              font-weight: 800;
-              color: var(--funnel-accent-strong);
-          }
-
-
-          .done-mail-text {
-              margin: 0;
-              font-size: 0.93rem;
+          .done-steps li {
+              counter-increment: done-step;
+              position: relative;
+              padding-left: 34px;
+              font-size: 0.95rem;
               line-height: 1.5;
               color: var(--funnel-text);
           }
 
+          .done-steps li + li {
+              margin-top: 12px;
+          }
+
+          .done-steps li::before {
+              content: counter(done-step);
+              position: absolute;
+              left: 0;
+              top: 1px;
+              display: grid;
+              place-items: center;
+              width: 22px;
+              height: 22px;
+              border-radius: 50%;
+              background: var(--funnel-accent-soft);
+              color: var(--funnel-accent-strong);
+              font-size: 0.76rem;
+              font-weight: 800;
+              font-variant-numeric: tabular-nums;
+          }
 
           .done-note {
               margin: 16px 0 0;
-              font-size: 0.88rem;
+              max-width: 40ch;
+              font-size: 0.86rem;
               line-height: 1.5;
               color: var(--funnel-muted);
-              max-width: 40ch;
               text-wrap: pretty;
           }
 
-
-          .done-close {
-              margin: 18px 0 0;
-              font-size: 0.9rem;
-              font-weight: 700;
-              color: var(--funnel-accent-strong);
-          }
-
-
-          @media (min-width: 768px) {
-              .step-done {
-                  padding: 44px;
-              }
-          }
-
-
-          @media (max-width: 360px) {
-              .step-done {
-                  padding: 20px 18px;
-              }
-          }
-
-
-          /* Centrado vertical a CUALQUIER anchura, no solo en desktop.
-             En movil la cadena main > .shell > .funnel-root es block, asi que
-             margin-block:auto no tendria espacio que repartir. Estas reglas solo
-             se activan cuando la tarjeta terminal esta montada (:has), de modo
-             que el resto de pantallas del funnel no cambia.
-             Si el contenido no cabe (pantallas bajas) los margenes colapsan a 0
-             y la tarjeta se ve completa con scroll normal. */
+          /* Centrado vertical a cualquier anchura, solo en esta pantalla. */
           body:has(.step-done) main.shell {
               display: flex;
               flex-direction: column;
@@ -3429,6 +3377,43 @@
 
           .funnel-root > .step-done {
               margin-block: auto;
+          }
+
+          @media (min-width: 768px) {
+              .step-done {
+                  padding: 40px 32px;
+              }
+
+              .done-logo {
+                  width: 160px;
+              }
+
+              .step-done h1 {
+                  font-size: 2.1rem;
+              }
+          }
+
+          @media (max-width: 360px) {
+              .step-done {
+                  padding: 24px 16px;
+              }
+
+              .done-logo {
+                  width: 132px;
+              }
+
+              .step-done h1 {
+                  font-size: 1.6rem;
+              }
+
+              .done-steps {
+                  padding: 16px 14px 14px;
+              }
+
+              .done-steps li {
+                  padding-left: 30px;
+                  font-size: 0.92rem;
+              }
           }
 
           @media (prefers-reduced-motion: reduce) {
@@ -5843,18 +5828,19 @@
             const activeStage = stageIndexOfStep(step);
             const progressPair = stageProgress();
             const isTerminal = step.type === 'success' || step.type === 'handoff';
-            // En la pantalla terminal las dos etapas quedan completas: el
-            // funnel ya terminó. `finished` mantenía solo el último paso como
-            // 'done', así que success mostraba la segunda etapa a medias.
-            const finished = currentStepIndex >= steps.length - 1 || isTerminal;
-            progress.hidden = false;
+            // En la pantalla terminal ya no se muestra el encabezado de
+            // etapas: la confirmacion es un cierre, no un paso del funnel.
             if (isTerminal) {
-                document.getElementById(FUNNEL_STAGES[0].fillId).style.width = '100%';
-                document.getElementById(FUNNEL_STAGES[1].fillId).style.width = '100%';
-            } else {
-                document.getElementById(FUNNEL_STAGES[0].fillId).style.width = `${progressPair[0] * 100}%`;
-                document.getElementById(FUNNEL_STAGES[1].fillId).style.width = `${progressPair[1] * 100}%`;
+                progress.hidden = true;
+                label.textContent = '';
+                label.hidden = true;
+                syncBackVisibility();
+                return;
             }
+            const finished = currentStepIndex >= steps.length - 1;
+            progress.hidden = false;
+            document.getElementById(FUNNEL_STAGES[0].fillId).style.width = `${progressPair[0] * 100}%`;
+            document.getElementById(FUNNEL_STAGES[1].fillId).style.width = `${progressPair[1] * 100}%`;
             progress.querySelectorAll('.funnel-stage').forEach((node, index) => {
                 let state = 'idle';
                 if (finished || index < activeStage) {
@@ -8664,58 +8650,37 @@
            seguir procesando la entrega cuando el usuario ve esto.
            ============================================================ */
         function renderTerminalDone(existingPro) {
-            // Icono decorativo: aria-hidden, sin texto alternativo.
-            const checkIcon = `
-                <div class="done-badge" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" focusable="false">
-                        <path d="M5 12.75l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.4"
-                              stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>`;
-            const mailIcon = `
-                <span class="done-mail-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" focusable="false">
-                        <rect x="2.75" y="5.25" width="18.5" height="13.5" rx="2.25"
-                              stroke="currentColor" stroke-width="1.7"/>
-                        <path d="M3.5 7.5l8.5 6 8.5-6" stroke="currentColor" stroke-width="1.7"
-                              stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </span>`;
+            // Sin tarjeta pesada y sin acciones: solo confirmacion e instrucciones.
+            // El logo es decorativo y la imagen no aporta informacion nueva.
+            const logo = `<img class="done-logo" src="assets/logomain.png" alt="" aria-hidden="true" width="150" height="150">`;
 
-            // alreadyPro: el backend NO emite credenciales nuevas, así que no
-            // se promete ningún correo. Solo se confirma el acceso existente.
+            // alreadyPro: el backend NO emite credenciales nuevas, asi que no se
+            // promete ningun correo. Se mantiene su copy y su variante.
             const title = existingPro
                 ? localizedText('Tu acceso Pro ya está activo', 'Your Pro access is already active')
-                : localizedText('Tu plan está listo', 'Your plan is ready');
+                : localizedText('¡Tu plan ya está listo!', 'Your plan is ready!');
             const lede = existingPro
                 ? localizedText('Tu cuenta ya tiene acceso a Brainy Pro. Puedes cerrar esta ventana e iniciar sesión con tu cuenta habitual.', 'Your account already has access to Brainy Pro. You can close this window and sign in with your usual account.')
-                : localizedText('Tu compra se completó correctamente y tu plan personalizado de Brainy ya fue creado.', 'Your purchase completed successfully and your personalized Brainy plan has been created.');
+                : localizedText('En los próximos segundos recibirás un correo con tus datos de acceso y las instrucciones para ver tu plan en Brainy.', 'In the next few seconds you’ll receive an email with your access details and the instructions to see your plan in Brainy.');
 
-            const mailBlock = existingPro ? '' : `
-                <div class="done-mail">
-                    ${mailIcon}
-                    <div>
-                        <p class="done-mail-title">${localizedText('Revisa tu correo', 'Check your email')}</p>
-                        <p class="done-mail-text">${localizedText('En pocos segundos recibirás un email con tus datos de acceso y las instrucciones para entrar a Brainy.', 'In a few seconds you’ll receive an email with your access details and the instructions to sign in to Brainy.')}</p>
-                    </div>
-                </div>
-                <p class="done-note">${localizedText('Si no lo encuentras después de unos minutos, revisa las carpetas Spam o Promociones.', 'If you don’t find it after a few minutes, check your Spam or Promotions folders.')}</p>`;
+            const steps = existingPro ? '' : `
+                <p class="done-subtitle">${localizedText('Cuando tengas la app:', 'Once you have the app:')}</p>
+                <ol class="done-steps">
+                    <li>${localizedText('Elige «Ya tengo una Cuenta».', 'Choose “I already have an account”.')}</li>
+                    <li>${localizedText('Selecciona ingresar con correo y contraseña.', 'Select sign in with email and password.')}</li>
+                    <li>${localizedText('Escribe las credenciales que recibirás en el correo.', 'Enter the credentials you’ll receive by email.')}</li>
+                </ol>
+                <p class="done-note">${localizedText('Si no encuentras el mensaje después de unos minutos, revisa Spam o Promociones.', 'If you don’t find the message after a few minutes, check Spam or Promotions.')}</p>`;
 
-            const closing = existingPro ? '' :
-                `<p class="done-close">${localizedText('Puedes cerrar esta ventana.', 'You can close this window.')}</p>`;
-
-            // role="status" + aria-live="polite": el lector de pantalla
-            // anuncia la confirmación sin robar el foco. Sin tabindex, sin
-            // botones y sin enlaces: nada enfocable.
+            // role="status" + aria-live="polite": el lector de pantalla anuncia
+            // la confirmacion sin robar el foco. Nada enfocable.
             document.getElementById('funnelRoot').innerHTML = `
                 ${cardOpen('step-done')}
                     <div class="step-done-inner" role="status" aria-live="polite">
-                        ${checkIcon}
-                        <span class="done-eyebrow">${localizedText('Todo listo', 'All set')}</span>
+                        ${logo}
                         <h1>${title}</h1>
                         <p class="done-lede">${lede}</p>
-                        ${mailBlock}
-                        ${closing}
+                        ${steps}
                     </div>
                 </article>`;
         }
