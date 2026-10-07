@@ -562,7 +562,6 @@
         }
 
 
-
         /* ---- Pantalla de generacion del plan ---- */
 
         .step-plan-loading {
@@ -2360,7 +2359,6 @@
         }
 
 
-
 /* ---- Pantalla "sistema de huevos y mascotas" (interstitial_3) ---- */
 
 .step-egg-system {
@@ -3446,447 +3444,455 @@
         /* ---- Paywall rediseñado ---- */
 
         .step-paywall {
-            background: transparent;
-            border: 0;
-            box-shadow: none;
-            padding: 0;
-            border-radius: 0;
+            padding: 26px 20px 30px;
         }
 
 
-        .paywall-head {
-            text-align: center;
+        /* ---- Encabezado: titulo a la izquierda, logo real a la derecha ---- */
+        .paywall-top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
         }
 
 
-        .paywall-head h1 {
-            margin-top: 0;
-            font-family: var(--funnel-serif);
-            font-size: clamp(1.5rem, 6.4vw, 2.05rem);
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            line-height: 1.14;
+        .paywall-top-text {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+
+        .paywall-top h1 {
+            margin: 0 0 5px;
+            font-family: var(--funnel-sans);
+            font-size: 1.42rem;
+            font-weight: 800;
+            line-height: 1.16;
+            letter-spacing: -0.02em;
+            color: var(--funnel-text);
             text-wrap: balance;
         }
 
 
-        .paywall-head .sub {
-            max-width: 40ch;
-            margin-left: auto;
-            margin-right: auto;
+        .paywall-top .sub {
+            margin: 0;
+            font-size: 0.93rem;
+            line-height: 1.45;
+            color: var(--funnel-muted);
         }
 
 
-        /* Banner del contador */
+        .paywall-logo {
+            flex: 0 0 auto;
+            width: 76px;
+            height: 76px;
+            object-fit: contain;
+        }
+
+
+        /* ---- 3 filas de beneficios: nunca cortan palabras ---- */
+        .paywall-benefits {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+
+        .paywall-benefit {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            padding: 10px 13px;
+            border-radius: 13px;
+            background: var(--funnel-surface);
+            border: 1px solid var(--funnel-border);
+        }
+
+
+        .paywall-benefit svg {
+            flex: 0 0 auto;
+            width: 18px;
+            height: 18px;
+            color: var(--funnel-accent);
+        }
+
+
+        .paywall-benefit-text {
+            min-width: 0;
+            font-size: 0.86rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--funnel-text);
+            overflow-wrap: break-word;
+        }
+
+
+        /* ---- Countdown: solo se adapta el contenedor ---- */
         .paywall-banner {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-top: 20px;
-            padding: 12px 16px;
-            border-radius: 18px;
-            background: var(--funnel-accent-soft);
-            border: 1px solid rgba(21, 152, 117, 0.22);
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+            padding: 9px 12px;
+            border-radius: 12px;
+            background: var(--funnel-surface);
+            border: 1px solid var(--funnel-border);
         }
 
 
         .paywall-banner-label {
-            font-size: 0.7rem;
+            font-size: 0.66rem;
             font-weight: 800;
-            letter-spacing: 0.08em;
-            line-height: 1.3;
-            color: var(--funnel-accent-strong);
+            letter-spacing: 0.09em;
+            color: var(--funnel-muted);
         }
 
 
         .paywall-countdown-numbers {
             display: inline-flex;
-            align-items: flex-start;
-            gap: 6px;
+            align-items: baseline;
+            gap: 3px;
+            font-variant-numeric: tabular-nums;
         }
 
 
         .paywall-countdown-unit {
             display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 40px;
+            align-items: baseline;
+            gap: 3px;
         }
 
 
         .paywall-countdown-value {
-            font-size: 1.5rem;
+            font-size: 1.05rem;
             font-weight: 800;
-            line-height: 1;
-            font-variant-numeric: tabular-nums;
-            color: var(--funnel-text);
-        }
-
-
-        .paywall-countdown-sep {
-            font-size: 1.3rem;
-            font-weight: 800;
-            line-height: 1;
             color: var(--funnel-accent-strong);
         }
 
 
-        .paywall-countdown-caption {
-            margin-top: 3px;
-            font-size: 0.58rem;
-            font-weight: 700;
-            letter-spacing: 0.06em;
+        .paywall-countdown-sep {
+            font-size: 1rem;
+            font-weight: 800;
             color: var(--funnel-muted);
         }
 
 
-        /* Tarjetas de oferta: toda la tarjeta es seleccionable via radio */
+        .paywall-countdown-caption {
+            font-size: 0.6rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            color: var(--funnel-muted);
+        }
+
+
+        /* ---- Tarjetas de plan ---- */
         .plan-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin: 20px 0 0;
+            display: grid;
+            gap: 10px;
         }
 
 
         .plan-card {
-            position: relative;
             display: flex;
-            align-items: center;
-            gap: 12px;
-            min-height: 44px;
-            padding: 16px;
-            border: 2px solid var(--funnel-border);
-            border-radius: 22px;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 16px;
             background: var(--funnel-surface);
-            box-shadow: var(--funnel-shadow);
+            border: 1px solid rgba(36, 37, 33, 0.16);
             cursor: pointer;
-            transition: border-color 0.15s ease, background 0.15s ease;
+            transition: border-color .18s ease, background-color .18s ease;
         }
 
 
         .plan-card.selected {
             border-color: var(--funnel-accent);
-            background: #F6FCF9;
+            background: var(--funnel-accent-soft);
+            box-shadow: 0 0 0 1px var(--funnel-accent);
         }
 
 
         .plan-card:focus-within {
-            outline: 3px solid var(--funnel-accent);
-            outline-offset: 3px;
+            outline: 3px solid rgba(21, 152, 117, 0.35);
+            outline-offset: 2px;
         }
 
 
-        /* Radio real, accesible por teclado, visualmente discreto. */
         .plan-card-radio {
             position: absolute;
             opacity: 0;
-            width: 44px;
-            height: 44px;
-            margin: 0;
-            cursor: pointer;
+            width: 1px;
+            height: 1px;
+            pointer-events: none;
         }
 
 
         .plan-card-radio:focus-visible ~ .plan-card-state {
-            outline: 3px solid var(--funnel-accent);
+            outline: 3px solid rgba(21, 152, 117, 0.45);
             outline-offset: 3px;
-            border-radius: 999px;
+            border-radius: 50%;
         }
 
 
         .plan-card-main {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
             flex: 1 1 auto;
             min-width: 0;
+            display: block;
         }
 
 
         .plan-card-head {
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
             gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
         }
 
 
         .plan-card-title {
-            font-size: 1.02rem;
-            font-weight: 700;
-            line-height: 1.25;
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--funnel-text);
         }
 
 
         .plan-badge {
-            padding: 3px 9px;
+            display: inline-flex;
+            padding: 3px 8px;
             border-radius: 999px;
-            background: var(--funnel-accent-soft);
-            border: 1px solid rgba(21, 152, 117, 0.25);
-            font-size: 0.64rem;
+            background: var(--funnel-accent-strong);
+            color: #fff;
+            font-size: 0.6rem;
             font-weight: 800;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            color: var(--funnel-accent-strong);
+            letter-spacing: 0.08em;
+        }
+
+
+        .plan-badge-trial {
+            background: var(--funnel-accent);
+            color: #fff;
         }
 
 
         .plan-card-price-row {
             display: flex;
             align-items: baseline;
+            gap: 6px;
             flex-wrap: wrap;
-            gap: 8px;
         }
 
 
         .plan-card-price {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -0.01em;
+            color: var(--funnel-text);
+            white-space: nowrap;
+        }
+
+
+        .plan-card-line {
+            display: block;
+            font-size: 0.83rem;
+            line-height: 1.4;
             color: var(--funnel-text);
         }
 
+        .plan-card-line-strong {
+            font-weight: 700;
+        }
 
-        .plan-card-period,
-        .plan-card-daily,
-        .plan-card-note,
-        .plan-card-trial {
-            font-size: 0.8rem;
-            line-height: 1.4;
+        .plan-card-line-muted {
             color: var(--funnel-muted);
-        }
-
-
-        .plan-card-daily,
-        .plan-card-save,
-        .plan-card-compare,
-        .plan-card-trial {
-            display: block;
-        }
-
-
-        .plan-card-save {
-            font-size: 0.8rem;
-            font-weight: 800;
-            color: var(--funnel-accent-strong);
-        }
-
-
-        /* La comparacion es una referencia, no un precio anterior tachado. */
-        .plan-card-compare {
-            font-size: 0.76rem;
-            color: var(--funnel-muted);
+            font-size: 0.79rem;
         }
 
 
         .plan-card-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
             flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            gap: 4px;
+            padding-top: 2px;
         }
 
 
-        /* Check visible + texto "Selected": nunca solo el color. */
         .plan-card-check {
+            display: grid;
+            place-items: center;
             width: 22px;
             height: 22px;
             border-radius: 50%;
-            border: 2px solid rgba(36, 37, 33, 0.18);
-            background: #fff;
-            position: relative;
+            border: 2px solid rgba(36, 37, 33, 0.28);
+            background: transparent;
         }
 
 
         .plan-card.selected .plan-card-check {
-            border-color: var(--funnel-accent);
-            background: var(--funnel-accent);
+            border-color: var(--funnel-accent-strong);
+            background: var(--funnel-accent-strong);
         }
 
 
         .plan-card.selected .plan-card-check::after {
             content: '';
-            position: absolute;
-            left: 6px;
-            top: 3px;
-            width: 5px;
-            height: 9px;
-            border: solid #fff;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
+            width: 10px;
+            height: 6px;
+            border-left: 2px solid #fff;
+            border-bottom: 2px solid #fff;
+            transform: rotate(-45deg) translate(1px, -1px);
         }
 
 
         .plan-card-selected-text {
             font-size: 0.62rem;
             font-weight: 800;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
             color: var(--funnel-accent-strong);
         }
 
 
-        .paywall-expired {
-            margin: 12px 0 0;
+        /* ---- Timeline del trial (solo anual con trial real) ---- */
+        .paywall-timeline {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
             padding: 12px 14px;
-            border-radius: 16px;
-            background: #FBE3E6;
-            border: 1px solid #E9B4BB;
-            font-size: 0.88rem;
-            font-weight: 700;
-            text-align: center;
-            color: #8C2F3B;
+            border-radius: 14px;
+            background: var(--funnel-surface);
+            border: 1px solid var(--funnel-border);
         }
 
 
+        .paywall-timeline-point {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+
+        .paywall-timeline-point:last-child {
+            text-align: right;
+        }
+
+
+        .paywall-timeline-label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--funnel-muted);
+        }
+
+
+        .paywall-timeline-amount {
+            font-size: 0.94rem;
+            font-weight: 800;
+            color: var(--funnel-text);
+            white-space: nowrap;
+        }
+
+
+        .paywall-timeline-rule {
+            height: 1px;
+            background: var(--funnel-border);
+        }
+
+
+        .paywall-expired {
+            margin: 10px 0 0;
+            text-align: center;
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--danger);
+        }
+
+
+        /* ---- CTA ---- */
         .paywall-cta {
             width: 100%;
+            min-height: 48px;
+            margin-top: 14px;
+            font-size: 1rem;
+            font-weight: 800;
         }
 
 
-        .step-paywall .btn[disabled] {
-            background: #E7E5DE;
-            color: #8A8C86;
-            box-shadow: none;
-            opacity: 1;
-        }
-
-
-        .paywall-disclosure {
-            margin: 16px 0 0;
-            font-size: 0.8rem;
-            line-height: 1.55;
+        .paywall-cta-note {
+            margin: 9px 0 0;
+            text-align: center;
+            font-size: 0.82rem;
+            line-height: 1.45;
             color: var(--funnel-muted);
             text-wrap: pretty;
         }
 
 
-        .paywall-legal {
+        .step-paywall .btn[disabled] {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+
+        .paywall-footer {
             display: flex;
-            flex-wrap: wrap;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin: 12px 0 0;
+            flex-wrap: wrap;
+            margin-top: 14px;
             font-size: 0.8rem;
         }
 
 
-        .paywall-legal a {
-            color: var(--funnel-accent-strong);
-            font-weight: 700;
+        .paywall-footer a {
+            color: var(--funnel-muted);
+            text-decoration: none;
+        }
+
+
+        .paywall-footer a:hover {
             text-decoration: underline;
-            text-underline-offset: 2px;
-            padding: 4px 2px;
         }
 
 
-        .paywall-legal a:focus-visible {
-            outline: 2px solid var(--funnel-accent);
+        .paywall-footer a:focus-visible {
+            outline: 3px solid rgba(21, 152, 117, 0.45);
             outline-offset: 2px;
-            border-radius: 4px;
+            border-radius: 6px;
         }
 
 
-        .paywall-secure {
-            margin-top: 18px;
-            padding: 16px;
-            border: 1px solid var(--funnel-border);
-            border-radius: 20px;
-            background: var(--funnel-surface);
-            box-shadow: var(--funnel-shadow);
-            text-align: center;
-        }
-
-
-        .paywall-secure-head {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-
-        /* Escudo CSS puro: sin imagenes ni marcas de metodos de pago. */
-        .paywall-secure-icon {
-            width: 18px;
-            height: 20px;
-            border: 2px solid var(--funnel-accent);
-            border-radius: 4px 4px 9px 9px;
-            clip-path: polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%);
-            position: relative;
-        }
-
-
-        .paywall-secure-title {
-            font-size: 0.72rem;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            color: var(--funnel-accent-strong);
-        }
-
-
-        .paywall-secure-text {
-            margin: 10px 0 0;
-            font-size: 0.82rem;
-            line-height: 1.5;
-            color: var(--funnel-muted);
-        }
-
-
-        .paywall-secure-list {
-            list-style: none;
-            margin: 10px 0 0;
-            padding: 0;
-            display: grid;
-            gap: 4px;
-            font-size: 0.78rem;
-            color: var(--funnel-muted);
-        }
-
-
-        .paywall-secure-list li::before {
-            content: '✓';
-            margin-right: 6px;
-            color: var(--funnel-accent);
-            font-weight: 800;
-        }
-
-
-        @media (max-width: 420px) {
-            .paywall-banner {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
+        @media (min-width: 900px) {
+            .paywall-logo {
+                width: 100px;
+                height: 100px;
             }
 
-            .plan-card-price {
-                font-size: 1.35rem;
+            .paywall-top h1 {
+                font-size: 1.8rem;
             }
 
+            .paywall-top .sub {
+                font-size: 1rem;
+            }
+
+            .paywall-benefit {
+                font-size: 0.8rem;
+            }
+        }
+
+
+        @media (prefers-reduced-motion: reduce) {
             .plan-card {
-                padding: 14px;
-            }
-        }
-
-
-        @media (max-width: 340px) {
-            .plan-card-price-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 2px;
-            }
-
-            .plan-card-price {
-                font-size: 1.25rem;
-            }
-
-            .plan-card-title {
-                font-size: 0.98rem;
+                transition: none;
             }
         }
 
@@ -3904,18 +3910,6 @@
 
         /* Aclaración de cancelación en el paywall y enlace secundario en la
            pantalla de éxito/handoff. No altera el avance del funnel. */
-        .manage-subscription-note {
-            text-align: center;
-            font-size: 0.78rem;
-            color: var(--muted);
-            margin-top: 10px;
-        }
-
-        .manage-subscription-note a {
-            color: inherit;
-            font-weight: 700;
-        }
-
         .paywall-recovery {
             text-align: center;
             padding: 18px 6px 4px;
@@ -5305,6 +5299,108 @@
                 languageHeadline: 'Choose your language', languageSub: 'You can change it later.', spanish: 'Español', english: 'English', start: 'Get started', restart: 'Start over', saved: 'Your progress is saved automatically on this device.', back: '‹ Back', next: 'Next →', age: 'How old are you?', agePlaceholder: 'e.g. 25', ageError: 'We need your age to tailor the examples.', emailError: 'Enter a valid email to save your plan.', emailNote: 'We will use this email to prepare your account and link your plan.', optin: 'I want to receive Brainy news, tips, and offers.', today: 'Today', companion: 'YOUR COMPANION', mission: 'YOUR MISSION', divided: 'Brainy breaks it down into:', smallSteps: 'Small steps count too.', selectAll: 'Select all that apply.', loadingArea: 'Focusing on your area', loadingTime: 'Adjusting the pace to your time', task: 'task', tasks: 'tasks', routine: 'routine', routines: 'routines', maxOnly: 'Only {max}. Select one you chose to replace it.', selected: 'Selected', minimum: 'minimum', upTo: 'up to', steps: 'steps', tapToSee: 'tap to view the steps', min: 'min', seeSteps: 'See the steps for', select: 'Select', noData: 'We could not load the data. Reload the page or try again.', noTasks: 'No tasks selected.', noRoutines: 'No routines selected.'
             }
         };
+
+        /* Copy del paywall con claves semanticas propias.
+         *
+         * No comparte claves con UI_COPY para no reutilizar una misma clave con
+         * significados distintos. Los importes SIEMPRE llegan por placeholder:
+         * nunca se escribe un precio en el diccionario, sale del producto real.
+         *
+         * El funnel solo tiene dos locales (es, en). No se anade ninguno mas.
+         */
+        const PAYWALL_COPY = {
+            es: {
+                title: 'Tu plan personalizado está listo',
+                subtitle: 'Avanza con pequeños pasos creados para ti.',
+                benefitPlan: 'Plan personalizado',
+                benefitSteps: 'Pequeños pasos diarios',
+                benefitProgress: 'Progreso visible',
+                offerEndsIn: 'ESTA OFERTA TERMINA EN',
+                offerMinutes: 'MINUTOS',
+                offerSeconds: 'SEGUNDOS',
+                minutesLeft: 'Quedan {n} minutos de esta oferta.',
+                minuteLeft: 'Queda {n} minuto de esta oferta.',
+                annualName: 'Anual',
+                monthlyName: 'Mensual',
+                bestValue: 'MEJOR VALOR',
+                trialBadgeSeven: '{n} DÍAS GRATIS',
+                trialBadgeAny: 'PRUEBA GRATIS',
+                zeroToday: '{price} hoy',
+                perYear: '{price} al año',
+                thenPerYear: 'luego {price} al año',
+                onlyPerDay: 'Solo {daily} al día',
+                saveVsMonthly: 'Ahorra {save}% frente al mensual',
+                perMonth: '{price} al mes',
+                aboutPerDay: 'Aproximadamente {daily} al día',
+                chargedTodayCancelAnytime: 'Se cobra hoy · Cancela cuando quieras',
+                timelineToday: 'Hoy',
+                timelineTodayAmount: '{price}',
+                timelineDay: 'Día {n}',
+                timelineDayAmount: '{price}',
+                ctaAnnual: 'Probar por {price}',
+                ctaMonthly: 'Conseguir mi Plan',
+                ctaNoteAnnual: 'No pagarás nada hoy. Luego, {price} al año si no cancelas. Cancela cuando quieras.',
+                ctaNoteAnnualNoTrial: '{price} hoy y luego {price} al año si no cancelas. Cancela cuando quieras.',
+                ctaNoteMonthly: '{price} hoy y luego cada mes hasta que canceles. Cancela cuando quieras.',
+                offerExpired: 'Esta oferta ha terminado.',
+                checkoutUnavailable: 'Checkout no disponible en modo demo',
+                footerTerms: 'Términos',
+                footerPrivacy: 'Privacidad',
+                footerManage: 'Gestionar suscripción',
+                selectedPlan: 'Seleccionado'
+            },
+            en: {
+                title: 'Your personalized plan is ready',
+                subtitle: 'Build momentum with small steps made for you.',
+                benefitPlan: 'Personalized plan',
+                benefitSteps: 'Small daily steps',
+                benefitProgress: 'Progress you can see',
+                offerEndsIn: 'THIS OFFER ENDS IN',
+                offerMinutes: 'MINUTES',
+                offerSeconds: 'SECONDS',
+                minutesLeft: '{n} minutes left on this offer.',
+                minuteLeft: '{n} minute left on this offer.',
+                annualName: 'Annual',
+                monthlyName: 'Monthly',
+                bestValue: 'BEST VALUE',
+                trialBadgeSeven: '{n} DAYS FREE',
+                trialBadgeAny: 'FREE TRIAL',
+                zeroToday: '{price} today',
+                perYear: '{price}/year',
+                thenPerYear: 'then {price}/year',
+                onlyPerDay: 'Only {daily}/day',
+                saveVsMonthly: 'Save {save}% vs monthly',
+                perMonth: '{price}/month',
+                aboutPerDay: 'About {daily}/day',
+                chargedTodayCancelAnytime: 'Charged today · Cancel anytime',
+                timelineToday: 'Today',
+                timelineTodayAmount: '{price}',
+                timelineDay: 'Day {n}',
+                timelineDayAmount: '{price}',
+                ctaAnnual: 'Try for {price}',
+                ctaMonthly: 'Get my plan',
+                ctaNoteAnnual: 'No charge today. Then {price}/year unless canceled. Cancel anytime.',
+                ctaNoteAnnualNoTrial: '{price} charged today, then {price}/year unless canceled. Cancel anytime.',
+                ctaNoteMonthly: '{price} charged today, then monthly until canceled. Cancel anytime.',
+                offerExpired: 'This offer has expired.',
+                checkoutUnavailable: 'Checkout unavailable in demo mode',
+                footerTerms: 'Terms',
+                footerPrivacy: 'Privacy',
+                footerManage: 'Manage subscription',
+                selectedPlan: 'Selected'
+            }
+        };
+
+        function pw(key, vars) {
+            const locale = currentLocale();
+            let text = PAYWALL_COPY[locale][key];
+            if (text === undefined) text = PAYWALL_COPY.es[key];
+            if (text === undefined) return key;
+            Object.keys(vars || {}).forEach(function (name) {
+                text = text.split('{' + name + '}').join(vars[name]);
+            });
+            return text;
+        }
 
         function currentLocale() {
             return funnelState.locale === 'en' ? 'en' : 'es';
@@ -7548,7 +7644,7 @@
                                 <span class="diagnosis-badge">${localizedText('ALTO', 'HIGH')}</span>
                             </div>
                             <div class="diagnosis-visual diagnosis-visual--photo diagnosis-visual--${variant.id.replace(/_/g, '-')}" aria-hidden="true"><img class="diagnosis-visual-photo" src="assets/brainyStressed.png" alt="" decoding="async">${diagnosisVisualHtml(variant.id)}</div>
-                            
+
                             <div class="diagnosis-meter" role="img" aria-label="${localizedText('Nivel de fricción diario alto', 'High daily friction level')}">
                                 <span class="diagnosis-meter-track"></span>
                                 <span class="diagnosis-meter-dot"></span>
@@ -7799,8 +7895,6 @@
         }
 
 
-
-
         function renderPresell(step) {
             track('presell_view', {
                 tasksCount: funnelState.selectedTasks.length,
@@ -7915,7 +8009,9 @@
             }
             try {
                 // Reglas de decimales de la moneda, sin concatenar simbolos.
-                return new Intl.NumberFormat(currentLocale(), { style: 'currency', currency: currency }).format(amount);
+                // Formato de la MONEDA (no del idioma): los importes se leen
+                // igual en ES y EN, como $39.90 y $0.11.
+                return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency }).format(amount);
             } catch {
                 return '';
             }
@@ -7937,7 +8033,7 @@
 
         // Comparacion anual: mensual x 12. Solo si ambas monedas coinciden.
         function paywallAnnualComparison(annualProduct, monthlyProduct) {
-            const empty = { equivalent: null, savingsPercent: null, equivalentText: '', savingsText: '' };
+            const empty = { equivalent: null, savingsPercent: null, savingsText: '' };
             if (!annualProduct || !monthlyProduct) return empty;
             if (!annualProduct.numeric || !monthlyProduct.numeric) return empty;
             if (!annualProduct.currency || annualProduct.currency !== monthlyProduct.currency) return empty;
@@ -7946,11 +8042,9 @@
             const raw = 1 - (annualProduct.numeric / equivalent);
             // Math.floor: no exagerar el descuento. 0 o negativo no se muestra.
             const percent = Math.floor(raw * 100);
-            const formatted = formatPaywallMoney(equivalent, annualProduct.currency);
-            const result = { equivalent: equivalent, savingsPercent: null, equivalentText: '', savingsText: '' };
-            if (formatted) {
-                result.equivalentText = localizedText(`12 monthly payments: ${formatted}`, `12 monthly payments: ${formatted}`);
-            }
+            // NO se muestra el equivalente de 12 meses: puede sugerir que el
+            // plan anual se cobra mensualmente. Solo el ahorro real.
+            const result = { equivalent: equivalent, savingsPercent: null, savingsText: '' };
             if (raw > 0 && percent >= 1) {
                 result.savingsPercent = percent;
                 result.savingsText = localizedText(`Save ${percent}%`, `Save ${percent}%`);
@@ -7977,7 +8071,10 @@
             };
             const shape = labels[unit];
             if (!shape) return null;
-            return { text: (currentLocale() === 'en' ? shape.en : shape.es)(duration.number) };
+            // `days` se expone para el timeline; `text` sigue igual.
+            const days = unit === 'DAY' ? duration.number
+                : (unit === 'WEEK' ? duration.number * 7 : duration.number * 30);
+            return { text: (currentLocale() === 'en' ? shape.en : shape.es)(duration.number), days: days, unit: unit };
         }
 
 
@@ -8246,91 +8343,147 @@
                 return data.packages.find((entry) => entry.pkg.identifier === data.selectedId) || null;
             }
 
+            // Importes SIEMPRE del producto real: formatted / numeric / currency.
+            // El diccionario solo envuelve, nunca fija un precio.
+            function pwMoney(product, fallback) {
+                if (!product) return fallback || '';
+                return product.formatted || formatPaywallMoney(product.numeric, product.currency) || (fallback || '');
+            }
+
+            function pwDaily(product) {
+                if (!product || !product.numeric || !product.currency || !product.days) return '';
+                return formatPaywallMoney(product.numeric / product.days, product.currency);
+            }
+
+            const BENEFIT_ICONS = {
+                plan: '<path d="M12 3l2.1 5.2L19.5 10l-5.4 1.8L12 17l-2.1-5.2L4.5 10l5.4-1.8L12 3z"/>',
+                steps: '<path d="M4 18h4v-4H4v4zm6 0h4v-9h-4v9zm6 0h4V6h-4v12z" fill="currentColor" stroke="none"/>',
+                progress: '<path d="M4 16.5l4.5-5 3 3.2L16 8l4 3.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>'
+            };
+
+            function benefitHtml(name, copyKey) {
+                return `<span class="paywall-benefit">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${BENEFIT_ICONS[name]}</svg>
+                    <span class="paywall-benefit-text">${pw(copyKey)}</span>
+                </span>`;
+            }
+
             function offerCardHtml(entry, facts, deadline) {
-                const product = entry.kind === 'annual' ? facts.annual : facts.monthly;
+                const isAnnual = entry.kind === 'annual';
+                const product = isAnnual ? facts.annual : facts.monthly;
                 const sel = entry.pkg.identifier === paywallData.selectedId;
                 const trial = paywallTrialInfo(entry.pkg);
-                // Precio principal: string localizado del SDK. Sin fallback inventado.
-                const mainPrice = product.formatted;
-                const daily = paywallDailyEquivalent(product);
-                const comparison = entry.kind === 'annual' && facts.comparison ? facts.comparison : null;
-                const isAnnual = entry.kind === 'annual';
+                const price = pwMoney(product, '');
+                const daily = pwDaily(product);
+                const comparison = isAnnual && facts.comparison ? facts.comparison : null;
+
+                const dailyLine = daily
+                    ? `<span class="plan-card-line plan-card-line-muted">${pw(isAnnual ? 'onlyPerDay' : 'aboutPerDay', { daily: daily })}</span>`
+                    : '';
+                const saveLine = (isAnnual && comparison && comparison.savingsPercent)
+                    ? `<span class="plan-card-line plan-card-line-muted">${pw('saveVsMonthly', { save: comparison.savingsPercent })}</span>`
+                    : '';
+
+                // Tres ramas reales. El trial SOLO se muestra si el producto
+                // lo trae: sin trial no se inventa "$0 hoy" ni badge.
+                let trialLines;
+                if (isAnnual && trial) {
+                    const cur = (product && product.currency) || 'USD';
+                    const free = formatPaywallMoney(0, cur).replace(/\.00(?![\d])/, '');
+                    trialLines = `
+                        <span class="plan-card-line plan-card-line-strong">${pw('zeroToday', { price: free })}</span>
+                        <span class="plan-card-line">${pw('thenPerYear', { price: price })}</span>
+                        ${dailyLine}${saveLine}`;
+                } else if (isAnnual) {
+                    trialLines = `
+                        <span class="plan-card-line plan-card-line-strong">${pw('perYear', { price: price })}</span>
+                        ${dailyLine}${saveLine}`;
+                } else {
+                    trialLines = `
+                        <span class="plan-card-line plan-card-line-strong">${pw('perMonth', { price: price })}</span>
+                        ${dailyLine}
+                        <span class="plan-card-line plan-card-line-muted">${pw('chargedTodayCancelAnytime')}</span>`;
+                }
+
+                const badges = isAnnual ? `
+                    <span class="plan-badge">${pw('bestValue')}</span>
+                    ${trial ? `<span class="plan-badge plan-badge-trial">${trial.days === 7 ? pw('trialBadgeSeven', { n: 7 }) : pw('trialBadgeAny')}</span>` : ''}
+                ` : '';
+
                 return `
                     <label class="plan-card ${sel ? 'selected' : ''}" data-pkg="${entry.pkg.identifier}" for="plan-${entry.kind}">
                         <input class="plan-card-radio" type="radio" name="funnel-plan" id="plan-${entry.kind}"
                             value="${entry.pkg.identifier}" ${sel ? 'checked' : ''}>
                         <span class="plan-card-main">
                             <span class="plan-card-head">
-                                <span class="plan-card-title">${isAnnual ? localizedText('Annual plan', 'Annual plan') : localizedText('Monthly plan', 'Monthly plan')}</span>
-                                ${isAnnual ? `<span class="plan-badge">${localizedText('Most popular', 'Most popular')}</span>` : ''}
+                                <span class="plan-card-title">${isAnnual ? pw('annualName') : pw('monthlyName')}</span>
+                                ${badges}
                             </span>
-                            <span class="plan-card-price-row">
-                                <span class="plan-card-price">${mainPrice}</span>
-                                <span class="plan-card-period">${periodLabel(entry.pkg)}</span>
-                            </span>
-                            ${daily ? `<span class="plan-card-daily">${daily}</span>` : ''}
-                            ${comparison && comparison.savingsText ? `<span class="plan-card-save">${comparison.savingsText}</span>` : ''}
-                            ${comparison && comparison.equivalentText ? `<span class="plan-card-compare">${comparison.equivalentText}</span>` : ''}
-                            ${trial ? `<span class="plan-card-trial">${localizedText('Includes trial', 'Includes trial')}: ${trial.text}</span>` : ''}
-                            ${!isAnnual ? `<span class="plan-card-note">${localizedText('Flexible monthly billing', 'Flexible monthly billing')}</span>` : ''}
+                            ${trialLines}
                         </span>
                         <span class="plan-card-state">
                             <span class="plan-card-check" aria-hidden="true"></span>
-                            ${sel ? `<span class="plan-card-selected-text">${localizedText('Selected', 'Selected')}</span>` : ''}
+                            ${sel ? `<span class="plan-card-selected-text">${pw('selectedPlan')}</span>` : ''}
                         </span>
                     </label>`;
             }
 
-            function disclosureHtml(entry, facts) {
-                const isAnnual = entry && entry.kind === 'annual';
-                const product = isAnnual ? facts.annual : facts.monthly;
-                const trial = entry ? paywallTrialInfo(entry.pkg) : null;
-                const price = product ? (product.formatted || '') : '';
-                const unitWord = isAnnual ? localizedText('year', 'year') : localizedText('month', 'month');
-                const planWord = isAnnual ? localizedText('annual', 'annual') : localizedText('monthly', 'monthly');
-                let base;
-                if (trial) {
-                    base = localizedText(
-                        `By selecting Claim My Plan, you agree to begin a ${trial.text} trial. Unless cancelled before the trial ends, your subscription will automatically renew at ${price} per ${unitWord}.`,
-                        `By selecting Claim My Plan, you agree to begin a ${trial.text} trial. Unless cancelled before the trial ends, your subscription will automatically renew at ${price} per ${unitWord}.`
-                    );
-                } else {
-                    base = localizedText(
-                        `By selecting Claim My Plan, you agree to start a ${planWord} Brainy subscription for ${price} per ${unitWord}. You will be charged today. Your subscription renews automatically at the then-current price unless you cancel before the next renewal date.`,
-                        `By selecting Claim My Plan, you agree to start a ${planWord} Brainy subscription for ${price} per ${unitWord}. You will be charged today. Your subscription renews automatically at the then-current price unless you cancel before the next renewal date.`
-                    );
-                }
-                const manage = localizedText(
-                    'You can manage or cancel your subscription according to the billing provider’s terms.',
-                    'You can manage or cancel your subscription according to the billing provider’s terms.'
-                );
+            // Timeline del trial: SOLO con anual seleccionado y trial real.
+            function trialTimelineHtml(entry, facts) {
+                if (!entry || entry.kind !== 'annual') return '';
+                const trial = paywallTrialInfo(entry.pkg);
+                if (!trial || !trial.days) return '';
+                const price = pwMoney(facts.annual, '');
+                const cur = (facts.annual && facts.annual.currency) || 'USD';
+                const free = formatPaywallMoney(0, cur).replace(/\.00(?![\d])/, '');
                 return `
-                    <p class="paywall-disclosure">${base} ${manage}</p>
-                    <p class="paywall-legal">
-                        <a href="terms.html" target="_blank" rel="noopener">${localizedText('Terms of Service', 'Terms of Service')}</a>
-                        <span aria-hidden="true">·</span>
-                        <a href="privacy.html" target="_blank" rel="noopener">${localizedText('Privacy Policy', 'Privacy Policy')}</a>
-                        <span aria-hidden="true">·</span>
-                        <a href="support.html" target="_blank" rel="noopener">${localizedText('Support', 'Support')}</a>
-                    </p>`;
+                    <div class="paywall-timeline">
+                        <span class="paywall-timeline-point">
+                            <span class="paywall-timeline-label">${pw('timelineToday')}</span>
+                            <span class="paywall-timeline-amount">${pw('timelineTodayAmount', { price: free })}</span>
+                        </span>
+                        <span class="paywall-timeline-rule" aria-hidden="true"></span>
+                        <span class="paywall-timeline-point">
+                            <span class="paywall-timeline-label">${pw('timelineDay', { n: trial.days })}</span>
+                            <span class="paywall-timeline-amount">${pw('timelineDayAmount', { price: price })}</span>
+                        </span>
+                    </div>`;
             }
 
-            function secureBlockHtml() {
+            // CTA + nota de cobro: cambian con la seleccion. Un solo boton y un
+            // solo handler (startCheckout), que lee paywallData.selectedId.
+            function ctaBlockHtml(entry, facts, checkoutAllowed, expired) {
+                if (expired) {
+                    return `<button class="btn btn-dopamine paywall-cta" type="button" id="purchaseBtn" disabled aria-disabled="true">${pw('offerExpired')}</button>`;
+                }
+                if (!checkoutAllowed) {
+                    return `<button class="btn btn-dopamine paywall-cta" type="button" id="purchaseBtn" disabled aria-disabled="true">${pw('checkoutUnavailable')}</button>`;
+                }
+                const isAnnual = entry && entry.kind === 'annual';
+                const trial = entry ? paywallTrialInfo(entry.pkg) : null;
+                const price = pwMoney(isAnnual ? facts.annual : facts.monthly, '');
+                const cur = (isAnnual ? facts.annual : facts.monthly) ? (isAnnual ? facts.annual.currency : facts.monthly.currency) : 'USD';
+                const free = formatPaywallMoney(0, cur).replace(/\.00(?![\d])/, '');
+                const canTryFree = isAnnual && !!trial;
+                const label = canTryFree ? pw('ctaAnnual', { price: free }) : pw('ctaMonthly');
+                const note = canTryFree
+                    ? pw('ctaNoteAnnual', { price: price })
+                    : (isAnnual
+                        ? pw('ctaNoteAnnualNoTrial', { price: price })
+                        : pw('ctaNoteMonthly', { price: price }));
+                return `<button class="btn btn-dopamine paywall-cta" type="button" id="purchaseBtn">${label}</button>
+                        <p class="paywall-cta-note">${note}</p>`;
+            }
+
+            function footerHtml() {
                 return `
-                    <div class="paywall-secure">
-                        <div class="paywall-secure-head">
-                            <span class="paywall-secure-icon" aria-hidden="true"></span>
-                            <span class="paywall-secure-title">SECURE CHECKOUT</span>
-                        </div>
-                        <p class="paywall-secure-text">${localizedText(
-                            'Your payment is processed securely. You can manage or cancel your subscription through the billing provider.',
-                            'Your payment is processed securely. You can manage or cancel your subscription through the billing provider.'
-                        )}</p>
-                        <ul class="paywall-secure-list">
-                            <li>${localizedText('Secure payment processing', 'Secure payment processing')}</li>
-                            <li>${localizedText('Automatic renewal disclosed before purchase', 'Automatic renewal disclosed before purchase')}</li>
-                        </ul>
-                    </div>`;
+                    <nav class="paywall-footer" aria-label="${pw('footerManage')}">
+                        <a href="terms.html" target="_blank" rel="noopener">${pw('footerTerms')}</a>
+                        <span aria-hidden="true">·</span>
+                        <a href="privacy.html" target="_blank" rel="noopener">${pw('footerPrivacy')}</a>
+                        <span aria-hidden="true">·</span>
+                        <a href="/manage-subscription/">${pw('footerManage')}</a>
+                    </nav>`;
             }
 
             function renderPaywallCards() {
@@ -8346,33 +8499,34 @@
                 root.innerHTML = `
                     ${backButtonHtml()}
                     ${cardOpen('step-paywall')}
-                        <div class="card-head paywall-head">
-                            <h1>${localizedText('Unlock your personalized Brainy plan', 'Unlock your personalized Brainy plan')}</h1>
-                            <p class="sub">${localizedText('Small daily steps. Visible progress. A plan built for you.', 'Small daily steps. Visible progress. A plan built for you.')}</p>
+                        <div class="paywall-top">
+                            <div class="paywall-top-text">
+                                <h1>${pw('title')}</h1>
+                                <p class="sub">${pw('subtitle')}</p>
+                            </div>
+                            <img class="paywall-logo" src="assets/logomain.png" alt="" aria-hidden="true" width="76" height="76">
+                        </div>
+                        <div class="paywall-benefits">
+                            ${benefitHtml('plan', 'benefitPlan')}
+                            ${benefitHtml('steps', 'benefitSteps')}
+                            ${benefitHtml('progress', 'benefitProgress')}
                         </div>
                         <div class="paywall-banner">
-                            <span class="paywall-banner-label">${localizedText('THIS OFFER ENDS IN', 'THIS OFFER ENDS IN')}</span>
+                            <span class="paywall-banner-label">${pw('offerEndsIn')}</span>
                             <span class="paywall-countdown" id="paywallCountdown" data-deadline="${deadline}">
                                 <span class="paywall-countdown-numbers">
-                                    <span class="paywall-countdown-unit"><span class="paywall-countdown-value" id="paywallMinutes">15</span><span class="paywall-countdown-caption">${localizedText('MINUTES', 'MINUTES')}</span></span>
+                                    <span class="paywall-countdown-unit"><span class="paywall-countdown-value" id="paywallMinutes">15</span><span class="paywall-countdown-caption">${pw('offerMinutes')}</span></span>
                                     <span class="paywall-countdown-sep" aria-hidden="true">:</span>
-                                    <span class="paywall-countdown-unit"><span class="paywall-countdown-value" id="paywallSeconds">00</span><span class="paywall-countdown-caption">${localizedText('SECONDS', 'SECONDS')}</span></span>
+                                    <span class="paywall-countdown-unit"><span class="paywall-countdown-value" id="paywallSeconds">00</span><span class="paywall-countdown-caption">${pw('offerSeconds')}</span></span>
                                 </span>
                             </span>
                         </div>
                         <p class="sr-only" role="status" aria-live="polite" id="paywallCountdownStatus"></p>
                         <div class="plan-cards">${ordered.map((e) => offerCardHtml(e, facts, deadline)).join('')}</div>
-                        <p class="paywall-expired" id="paywallExpired" ${expired ? '' : 'hidden'}>${localizedText('This offer has expired.', 'This offer has expired.')}</p>
-                        <p class="manage-subscription-note">${localizedText('Cancela cuando quieras desde el correo de confirmación de pago o en brainyadhd.com/manage-subscription/.', 'Cancel anytime from your payment confirmation email or at brainyadhd.com/manage-subscription/.')}</p>
-                        <div class="actions">
-                            ${checkoutAllowed && !expired
-                                ? `<button class="btn btn-dopamine paywall-cta" type="button" id="purchaseBtn">${localizedText('Claim My Plan', 'Claim My Plan')}</button>`
-                                : `<button class="btn btn-dopamine paywall-cta" type="button" id="purchaseBtn" disabled aria-disabled="true">${expired
-                                    ? localizedText('This offer has expired.', 'This offer has expired.')
-                                    : localizedText('Checkout no disponible en modo demo', 'Checkout unavailable in demo mode')}</button>`}
-                        </div>
-                        ${disclosureHtml(entry, facts)}
-                        ${secureBlockHtml()}
+                        ${trialTimelineHtml(entry, facts)}
+                        <p class="paywall-expired" id="paywallExpired" ${expired ? '' : 'hidden'}>${pw('offerExpired')}</p>
+                        ${ctaBlockHtml(entry, facts, checkoutAllowed, expired)}
+                        ${footerHtml()}
                     </article>`;
 
                 function syncCountdown() {
@@ -8396,7 +8550,7 @@
                         if (cta) {
                             cta.disabled = true;
                             cta.setAttribute('aria-disabled', 'true');
-                            cta.textContent = localizedText('This offer has expired.', 'This offer has expired.');
+                            cta.textContent = pw('offerExpired');
                         }
                         const note = document.getElementById('paywallExpired');
                         if (note) note.hidden = false;
@@ -8416,8 +8570,8 @@
                         const hit = (minutes === 5 && seconds === 0) ? 'five'
                             : (minutes === 1 && seconds === 0 ? 'one' : null);
                         const msg = hit === 'five'
-                            ? localizedText('5 minutes left on this offer.', '5 minutes left on this offer.')
-                            : (hit === 'one' ? localizedText('1 minute left on this offer.', '1 minute left on this offer.') : '');
+                            ? pw('minutesLeft', { n: 5 })
+                            : (hit === 'one' ? pw('minuteLeft', { n: 1 }) : '');
                         if (msg && status.textContent !== msg) {
                             status.textContent = msg;
                         }
