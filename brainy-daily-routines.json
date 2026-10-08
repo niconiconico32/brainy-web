@@ -13,36 +13,36 @@
       "tasks": [
         {
           "title": "Mira lo que tienes pendiente para hoy.",
-          "title_en": "Look at what you have pending today.",
+          "title_en": "Look at what you need to get done today.",
           "position": 1
         },
         {
           "title": "Elige una tarea necesaria, una importante y una opcional.",
-          "title_en": "Choose one necessary task, one important task, and one optional task.",
+          "title_en": "Choose one must-do, one important task, and one optional task.",
           "position": 2
         },
         {
           "title": "Ordénalas según lo que conviene empezar primero.",
-          "title_en": "Put them in the order that makes the most sense to start.",
+          "title_en": "Put them in the order that makes the most sense to tackle them.",
           "position": 3
         },
         {
           "title": "Escribe la primera acción física y concreta de la prioridad principal.",
-          "title_en": "Write the first physical, concrete action for your main priority.",
+          "title_en": "Write down the first clear, physical action for your top priority.",
           "position": 4
         },
         {
           "title": "Dedica dos minutos a comenzar esa acción.",
-          "title_en": "Spend two minutes starting that action.",
+          "title_en": "Spend two minutes getting that action started.",
           "position": 5
         }
       ],
-      "why_en": "Limiting your attention to three priorities reduces competition between unfinished tasks and makes it clearer what needs to happen first."
+      "why_en": "Limiting your day to three priorities reduces competition between unfinished tasks and makes it easier to see what needs your attention first."
     },
     {
       "templateId": "pausa_pantallas",
       "name": "Hacer una pausa breve de pantallas",
-      "name_en": "Take a short screen break",
+      "name_en": "Take a quick screen break",
       "days": [
         "daily"
       ],
@@ -52,12 +52,12 @@
       "tasks": [
         {
           "title": "Termina la frase o acción que estás haciendo ahora.",
-          "title_en": "Finish the sentence or action you are doing now.",
+          "title_en": "Finish the sentence or small action you are working on.",
           "position": 1
         },
         {
           "title": "Deja la pantalla fuera de tu campo de visión.",
-          "title_en": "Move the screen out of your line of sight.",
+          "title_en": "Move the screen out of sight.",
           "position": 2
         },
         {
@@ -67,16 +67,16 @@
         },
         {
           "title": "Mantén la pausa entre cinco y diez minutos.",
-          "title_en": "Keep the break between five and ten minutes.",
+          "title_en": "Take a five- to ten-minute break.",
           "position": 4
         },
         {
           "title": "Antes de volver, decide cuál será tu única acción siguiente.",
-          "title_en": "Before returning, choose the one action you will do next.",
+          "title_en": "Before you return, choose the one action you will do next.",
           "position": 5
         }
       ],
-      "why_en": "A short pause can reduce overload and make it easier to return with a clearer intention."
+      "why_en": "A short break can ease mental overload and help you come back with a clearer sense of what to do next."
     },
     {
       "templateId": "arranque_dos_minutos",
@@ -96,7 +96,7 @@
         },
         {
           "title": "Define una acción que puedas hacer en menos de dos minutos.",
-          "title_en": "Define one action you can do in under two minutes.",
+          "title_en": "Pick one action you can finish in under two minutes.",
           "position": 2
         },
         {
@@ -106,16 +106,16 @@
         },
         {
           "title": "Decide si quieres continuar o detenerte; el arranque ya cuenta.",
-          "title_en": "Decide whether to continue or stop; getting started already counts.",
+          "title_en": "Decide whether to keep going or stop. Starting still counts.",
           "position": 4
         }
       ],
-      "why_en": "Reducing a task to one tiny first action means getting started requires fewer decisions and less preparation."
+      "why_en": "Shrinking a task to one tiny first action makes starting feel easier and requires less planning."
     },
     {
       "templateId": "hidratacion_anclaje",
       "name": "Empezar el día con agua y luz",
-      "name_en": "Start the day with water and light",
+      "name_en": "Start the day with water and daylight",
       "days": [
         "daily"
       ],
@@ -130,12 +130,12 @@
         },
         {
           "title": "Bebe el agua antes de pasar a otra actividad.",
-          "title_en": "Drink it before moving on to another activity.",
+          "title_en": "Drink it before moving on to something else.",
           "position": 2
         },
         {
           "title": "Si tienes medicación indicada para esa hora, tómala según la indicación profesional.",
-          "title_en": "If you have medication prescribed for this time, take it as directed by your healthcare professional.",
+          "title_en": "If you take medication at this time, follow your healthcare professional's instructions.",
           "position": 3
         },
         {
@@ -149,12 +149,12 @@
           "position": 5
         }
       ],
-      "why_en": "Repeating a short sequence after waking reduces the number of decisions you need to make and gives the day a familiar starting point."
+      "why_en": "Repeating a short sequence after you wake up reduces decisions and gives your day a familiar starting point."
     },
     {
       "templateId": "orden_5_min",
       "name": "Ordenar una zona durante cinco minutos",
-      "name_en": "Tidy one area for five minutes",
+      "name_en": "Tidy one small area for five minutes",
       "days": [
         "daily"
       ],
@@ -169,7 +169,7 @@
         },
         {
           "title": "Reserva cinco minutos para esa zona.",
-          "title_en": "Set aside five minutes for that area.",
+          "title_en": "Give that area five minutes.",
           "position": 2
         },
         {
@@ -188,12 +188,12 @@
           "position": 5
         }
       ],
-      "why_en": "Focusing on one specific area for a short amount of time makes tidying feel finishable instead of like an endless project."
+      "why_en": "Focusing on one small area for a short time makes tidying feel finishable instead of endless."
     },
     {
       "templateId": "primer_paso_manana",
-      "name": "️ Dejar preparado el primer paso de mañana",
-      "name_en": "️ Set up tomorrow’s first step",
+      "name": "Dejar preparado el primer paso de mañana",
+      "name_en": "Set up tomorrow's first step",
       "days": [
         "daily"
       ],
@@ -208,7 +208,7 @@
         },
         {
           "title": "Escríbela como una acción concreta, no como un proyecto completo.",
-          "title_en": "Write it as a concrete action, not a complete project.",
+          "title_en": "Write it as a specific action, not a whole project.",
           "position": 2
         },
         {
@@ -222,12 +222,12 @@
           "position": 4
         }
       ],
-      "why_en": "Deciding on the first step ahead of time reduces the friction of getting started the next day."
+      "why_en": "Choosing your first step ahead of time makes it easier to get started the next day."
     },
     {
       "templateId": "luz_solar",
-      "name": "️ Tomar unos minutos de luz natural",
-      "name_en": "️ Get a few minutes of natural light",
+      "name": "Tomar unos minutos de luz natural",
+      "name_en": "Get a few minutes of natural light",
       "days": [
         "daily"
       ],
@@ -237,12 +237,12 @@
       "tasks": [
         {
           "title": "Abre las cortinas o busca el lugar con más luz disponible.",
-          "title_en": "Open the curtains or find the brightest available spot.",
+          "title_en": "Open the curtains or find the brightest spot available.",
           "position": 1
         },
         {
           "title": "Acércate a una ventana o sal al exterior si puedes hacerlo.",
-          "title_en": "Stand by a window or go outside if you can.",
+          "title_en": "Stand by a window or step outside if you can.",
           "position": 2
         },
         {
@@ -252,7 +252,7 @@
         },
         {
           "title": "Respira con calma o mueve suavemente el cuerpo mientras esperas.",
-          "title_en": "Breathe slowly or gently move your body while you wait.",
+          "title_en": "Breathe slowly or move your body gently while you wait.",
           "position": 4
         },
         {
@@ -261,12 +261,12 @@
           "position": 5
         }
       ],
-      "why_en": "Adding natural light near the beginning of the day can create a clear cue that it is time to shift into your daily activities."
+      "why_en": "Getting natural light early in the day can create a clear cue that it is time to shift into your daily activities."
     },
     {
       "templateId": "desayuno_energia",
       "name": "Preparar un desayuno que me sostenga",
-      "name_en": "Make a breakfast that keeps me going",
+      "name_en": "Make a simple breakfast that keeps you going",
       "days": [
         "daily"
       ],
@@ -276,26 +276,26 @@
       "tasks": [
         {
           "title": "Mira qué opción sencilla tienes disponible hoy.",
-          "title_en": "See which simple option is available today.",
+          "title_en": "See what simple option you have available today.",
           "position": 1
         },
         {
           "title": "Añade una fuente de proteína si forma parte de tu alimentación habitual.",
-          "title_en": "Add a source of protein if that is part of the way you normally eat.",
+          "title_en": "Add a source of protein if that fits the way you usually eat.",
           "position": 2
         },
         {
           "title": "Prepara la versión más simple de ese desayuno.",
-          "title_en": "Make the simplest version of that breakfast.",
+          "title_en": "Make the easiest version of that breakfast.",
           "position": 3
         },
         {
           "title": "Siéntate y come los primeros minutos sin hacer otra tarea a la vez.",
-          "title_en": "Sit down and spend the first few minutes eating without doing another task.",
+          "title_en": "Sit down and spend the first few minutes eating without doing another task at the same time.",
           "position": 4
         }
       ],
-      "why_en": "Having a simple, repeatable option reduces decisions and keeps making breakfast from becoming another overwhelming task."
+      "why_en": "A simple, repeatable breakfast reduces decisions and keeps the meal from becoming another overwhelming task."
     },
     {
       "templateId": "movimiento_corto",
@@ -320,26 +320,26 @@
         },
         {
           "title": "Empieza con un minuto suave, sin buscar intensidad.",
-          "title_en": "Start with one gentle minute without aiming for intensity.",
+          "title_en": "Begin with one gentle minute. You do not need to make it intense.",
           "position": 3
         },
         {
           "title": "Continúa hasta completar el tiempo elegido.",
-          "title_en": "Continue until you reach the amount of time you chose.",
+          "title_en": "Keep going until you reach the amount of time you chose.",
           "position": 4
         },
         {
           "title": "Detente o sigue un poco más según cómo te sientas.",
-          "title_en": "Stop or keep going a little longer based on how you feel.",
+          "title_en": "Stop or continue a little longer, depending on how you feel.",
           "position": 5
         }
       ],
-      "why_en": "Starting with just a few minutes lowers the barrier to getting started and lets movement count even on low-energy days."
+      "why_en": "Starting with only a few minutes lowers the barrier to movement and lets it count even on low-energy days."
     },
     {
       "templateId": "cuidado_personal",
       "name": "Hacer mi cuidado personal básico",
-      "name_en": "Do my basic personal care",
+      "name_en": "Do the basics of personal care",
       "days": [
         "daily"
       ],
@@ -349,7 +349,7 @@
       "tasks": [
         {
           "title": "Ve al baño y comienza por la acción que te resulte más fácil.",
-          "title_en": "Go to the bathroom and begin with whichever action feels easiest.",
+          "title_en": "Go to the bathroom and begin with whichever step feels easiest.",
           "position": 1
         },
         {
@@ -364,7 +364,7 @@
         },
         {
           "title": "Haz tu cuidado elegido: hidratante, protector solar, sérum, afeitado o barba.",
-          "title_en": "Do your chosen care step: moisturizer, sunscreen, serum, shaving, or beard care.",
+          "title_en": "Do one care step: moisturizer, sunscreen, serum, shaving, or beard care.",
           "position": 4
         },
         {
@@ -375,12 +375,12 @@
       ],
       "note": "El paso 4 conserva su carácter configurable. La variante debe elegirse al crear la rutina y no asignarse automáticamente.",
       "note_en": "Step 4 remains customizable. The variation should be selected when the routine is created rather than assigned automatically.",
-      "why_en": "A small, consistent sequence reduces how many decisions it takes to start caring for yourself."
+      "why_en": "A short, familiar sequence reduces the number of decisions it takes to start taking care of yourself."
     },
     {
       "templateId": "pausa_agua_movimiento",
       "name": "Hacer una pausa de agua y movimiento",
-      "name_en": "Take a water and movement break",
+      "name_en": "Take a water-and-movement break",
       "days": [
         "daily"
       ],
@@ -405,11 +405,11 @@
         },
         {
           "title": "Elige con qué acción concreta volverás.",
-          "title_en": "Choose the concrete action you will return to.",
+          "title_en": "Choose the specific action you will return to.",
           "position": 4
         }
       ],
-      "why_en": "A short break combines two easy actions and creates a reset point in the middle of the day."
+      "why_en": "Combining two simple actions gives you a quick reset point during the day."
     },
     {
       "templateId": "brain_dump_nocturno",
@@ -429,7 +429,7 @@
         },
         {
           "title": "Escribe durante cinco minutos todo lo que siga dando vueltas.",
-          "title_en": "Spend five minutes writing down anything still on your mind.",
+          "title_en": "Spend five minutes writing down anything that is still on your mind.",
           "position": 2
         },
         {
@@ -448,12 +448,12 @@
           "position": 5
         }
       ],
-      "why_en": "Moving unfinished thoughts out of your head helps you close the day without trying to solve everything before sleep."
+      "why_en": "Moving unfinished thoughts out of your head helps you end the day without trying to solve everything before sleep."
     },
     {
       "templateId": "rutina_cierre_sueno",
       "name": "Cerrar el día con menos estímulos",
-      "name_en": "End the day with less stimulation",
+      "name_en": "Wind down with fewer distractions",
       "days": [
         "daily"
       ],
@@ -478,7 +478,7 @@
         },
         {
           "title": "Elige una actividad tranquila: leer, respirar o estirar.",
-          "title_en": "Choose a calming activity: reading, breathing, or stretching.",
+          "title_en": "Choose a quiet activity, such as reading, breathing, or stretching.",
           "position": 4
         },
         {
@@ -488,11 +488,11 @@
         },
         {
           "title": "Deja el teléfono fuera de alcance como último paso.",
-          "title_en": "Leave your phone out of reach as the final step.",
+          "title_en": "As your final step, leave your phone out of reach.",
           "position": 6
         }
       ],
-      "why_en": "Repeating a calming sequence can make it easier to shift from the day’s activity into a time for rest, with fewer decisions to make."
+      "why_en": "A calm, familiar sequence can make it easier to shift from the day's activity into rest."
     },
     {
       "templateId": "reinicio_bloqueo",
@@ -517,7 +517,7 @@
         },
         {
           "title": "Reduce lo pendiente a la acción más pequeña que puedas ver.",
-          "title_en": "Reduce what is pending to the smallest action you can see.",
+          "title_en": "Shrink the task to the smallest visible action.",
           "position": 3
         },
         {
@@ -527,7 +527,7 @@
         },
         {
           "title": "Decide el siguiente paso solo después de terminar esos dos minutos.",
-          "title_en": "Choose the next step only after those two minutes are over.",
+          "title_en": "Choose your next step only after those two minutes are over.",
           "position": 5
         }
       ],
